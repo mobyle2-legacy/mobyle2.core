@@ -1,0 +1,6 @@
+[paste.app_factory]
+main = mobyle2.core.webserver:wsgi_app_factory
+
+[console_scripts]
+mobyle2.core = mobyle2.core.webserver:main
+
