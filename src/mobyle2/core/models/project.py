@@ -3,6 +3,8 @@ from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
 
+from ordereddict import OrderedDict
+
 class Project(Base):
     __tablename__ = 'project'
     id = Column(Integer, primary_key=True)
@@ -25,7 +27,7 @@ class Projects:
         self.__parent__ = parent
         self.request = parent.request
         self.session = parent.session
-        self.items = dict([("%s"%a.id, ProjectRessource(a, self))
+        self.items = OrderedDict([("%s"%a.id, ProjectRessource(a, self))
                               for a in self.session.query(Project).all()])
 
     def __getitem__(self, item):

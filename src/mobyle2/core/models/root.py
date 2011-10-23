@@ -3,7 +3,11 @@
 __docformat__ = 'restructuredtext en'
 from mobyle2.core.models import DBSession
 from project import Projects
-mapping_apps = { 'projects': Projects, }
+
+from ordereddict import OrderedDict
+mapping_apps = OrderedDict([
+    ('projects', Projects),
+])
 class Root(object):
     def __init__(self, request):
         self.__name__ = ''

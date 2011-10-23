@@ -33,6 +33,7 @@ setup(
             "pyramid_xmlrpc",
             "pyramid",
             "repoze.tm2",
+            "ordereddict",
             "cryptacular",
             "PasteDeploy",
             "Paste",
