@@ -1,3 +1,0 @@
-<%inherit file="master.mako"/>
-
-

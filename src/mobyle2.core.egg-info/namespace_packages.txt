@@ -1,2 +1,0 @@
-mobyle2
-mobyle2.core

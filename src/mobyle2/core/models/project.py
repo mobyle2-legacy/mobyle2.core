@@ -1,4 +1,4 @@
-from mobyle2.core.models import Base, DBSession
+from mobyle2.core.models import Base
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
@@ -14,23 +14,20 @@ class Project(Base):
         self.description = description
 
 class ProjectRessource(object):
-    def __init__(self, p, n, parent):
+    def __init__(self, p, parent):
         self.project = p
-        self.__name__ = "%s"%n
+        self.__name__ = "%s"%p.id
         self.__parent__ = parent
 
-class Projects(object):
-    def __init__(self, request):
-        self.__name__ = ''
-        self.__parent__ = None
-        self.request = request
-        session = DBSession()
-        self.projects = dict([("%s"%a.id, ProjectRessource(a, id, self)) 
-                              for a in session.query(Project).all()])
+class Projects:
+    def __init__(self, name, parent):
+        self.__name__ = name
+        self.__parent__ = parent
+        self.request = parent.request
+        self.session = parent.session
+        self.items = dict([("%s"%a.id, ProjectRessource(a, self))
+                              for a in self.session.query(Project).all()])
 
     def __getitem__(self, item):
-        return self.projects.get(item, None) 
-
-def project_factory(request):
-    return Projects(request)
+        return self.items.get(item, None)
 
