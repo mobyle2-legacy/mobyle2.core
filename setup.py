@@ -29,6 +29,7 @@ setup(
         "elementtree",
         "gunicorn",
         "lxml",
+        "zope.testbrowser",
         "ordereddict",
         "Paste",
         "PasteDeploy",
