@@ -9,9 +9,14 @@
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
         <link rel="shortcut icon" href="/s/pylons.ico'"/>
         <%block name="js_slot">
+          <script type="text/javascript" src="${request.static_url('mobyle2.core:static/js/jquery-1.7.min.js')}"></script>
+          <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
+          <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>
+          <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery.form.js')}"></script>
         </%block>
         <%block name="css_slot">
-          <link rel="stylesheet" href="/s/mobyle2.css" type="text/css" media="screen" charset="utf-8"/>
+          <link rel="stylesheet" type="text/css" href="${request.static_url('mobyle2.core:static/mobyle2.css')}"/>
+          <link rel="stylesheet" type="text/css" href="${request.static_url('deform:static/css/form.css')}"/>
         </%block>
       </%block>
     </head>
@@ -74,4 +79,3 @@
     </body>
   </html>
 </%block>
-
