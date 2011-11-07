@@ -5,21 +5,36 @@ from sqlalchemy import Integer
 
 
 from cryptacular.bcrypt import BCRYPTPasswordManager
+
+
 crypt = BCRYPTPasswordManager()
+
+user_statuses = {
+    'p' : 'Pending',
+    'a' : 'Active',
+    's' : 'Suspended',
+}
 
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     userid = Column(Unicode(20))
+    email = Column(Unicode(20))
     password = Column(Unicode(20))
     fullname = Column(Unicode(40))
     about = Column(Unicode(255))
+    status = Column(Unicode(1))
 
-    def __init__(self, userid, password, fullname, about):
+    def __init__(self, userid, email, password, fullname, about, status):
         self.userid = userid
+        self.email = email
         self.password = crypt.encode(password)
         self.fullname = fullname
         self.about = about
+        self.status = status
+
+    def get_status(self):
+        user_statuses.get(self.status, None)
 
 def check_login(login, password):
     session = DBSession()

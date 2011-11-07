@@ -16,10 +16,13 @@ setup(
     license = 'GPL',
     keywords = '',
     url='http://pypi.python.org/pypi/%s' % name,
-    install_requires = [           
+    install_requires = [
+        "apex",
         "CherryPy",
         "colander",
         "cryptacular",
+        "Babel",
+        "lingua",
         "deform",
         "demjson",
         "egenix-mx-base",
@@ -33,12 +36,17 @@ setup(
         "psycopg2",
         "pylint",
         "pyramid",
+        "pyramid_beaker",
         "pyramid_debugtoolbar",
+        "pyramid_formalchemy",
+        "fa.jquery",
         "pyramid_extdirect",
         "pyramid_who",
         "pyramid_xmlrpc",
         "pyramid_zcml",
         "python-ldap",
+        "repoze.retry",
+        "repoze.tm2",
         "repoze.tm2",
         "repoze.vhm",
         "simplejson",
@@ -63,6 +71,21 @@ setup(
     extras_require={'test': ['IPython', 'zope.testing'
     #, 'mocker'
     ]},
+    message_extractors = {
+        '': [
+            ('**.pt',   'lingua_xml', None ), 
+            ('**.py',   'lingua_python', None ),
+            ('**.mako', 'mako', None),
+            ('static/**', 'ignore', None),
+        ],
+        #'': [
+        #    ('**.pt',   'lingua_xml', None ), 
+        #    ('**.py',   'lingua_python', None ),
+        #    ('**.mako', 'mako', None),
+        #    ('static/**', 'ignore', None),
+        #],
+    
+    },
     entry_points = {
         'paste.app_factory':  [
             'main=mobyle2.core.webserver:wsgi_app_factory' ,

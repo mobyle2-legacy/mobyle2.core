@@ -4,6 +4,7 @@ from sqlalchemy import Unicode
 from sqlalchemy import Integer
 
 from ordereddict import OrderedDict
+from mobyle2.core.utils import _
 
 class Project(Base):
     __tablename__ = 'project'
@@ -25,6 +26,7 @@ class Projects:
     def __init__(self, name, parent):
         self.__name__ = name
         self.__parent__ = parent
+        self.__description__ = _("Projects")
         self.request = parent.request
         self.session = parent.session
         self.items = OrderedDict([("%s"%a.id, ProjectRessource(a, self))

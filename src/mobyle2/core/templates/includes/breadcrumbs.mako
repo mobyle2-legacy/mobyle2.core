@@ -1,6 +1,6 @@
 <%block name="breadcrumbs">
   <div id="breadcrumbs">
-    <p class="title">You are here:</p>
+    <p class="title">${_('You are here')}:</p>
     <ul>
       % for i in v.get_breadcrumbs():
       <li class="${i['class']}">

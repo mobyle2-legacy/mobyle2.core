@@ -6,9 +6,14 @@ from pyramid.url import resource_url
 from pyramid.traversal import resource_path, resource_path_tuple, traverse
 from pyramid.renderers import render_to_response
 
+from mobyle2.core.utils import auto_translate
+
 def get_nav_infos(context, request, default_nav_title=''):
+    def t(string):
+        return auto_translate(request, string)
+    _ = t# for babel
     i = {}
-    i['name'] = getattr(context, '__description__', default_nav_title)
+    i['name'] = _(getattr(context, '__description__', default_nav_title))
     i['url'] = resource_url(context, request)
     i['path'] = resource_path(context)
     return i
@@ -27,6 +32,9 @@ class Base:
     template = None # define in child classes.
     def __init__(self, request):
         self.request = request
+    
+    def translate(self, string):
+        return auto_translate(self.request, string)
 
     def __call__(self):
         params = get_base_params(self)
