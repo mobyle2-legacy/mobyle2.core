@@ -1,0 +1,132 @@
+# French translations for mobyle2.core.
+# Copyright (C) 2011 ORGANIZATION
+# This file is distributed under the same license as the mobyle2.core
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mobyle2.core 1.0\n"
+"Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
+"POT-Creation-Date: 2011-11-07 10:46+0100\n"
+"PO-Revision-Date: 2011-11-07 10:46+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: src/mobyle2/core/models/auth.py:62
+msgid "Authentication backends"
+msgstr "Méthodes d'identification"
+
+#: src/mobyle2/core/models/project.py:29
+msgid "Projects"
+msgstr "Projets"
+
+#: src/mobyle2/core/models/root.py:17
+msgid "Home"
+msgstr "Acceuil"
+
+#: src/mobyle2/core/templates/auth/auth_add.mako:3
+msgid "Backend configuration"
+msgstr "Configuration des méthodes d'identification"
+
+#: src/mobyle2/core/templates/auth/auth_home.mako:3
+msgid "Authentication backends configuration"
+msgstr "Configuration des méthodes d'identification"
+
+#: src/mobyle2/core/templates/auth/auth_home.mako:5
+msgid "Edit general authentication settings"
+msgstr "Editer les paramêtres généreaux d'identification"
+
+#: src/mobyle2/core/templates/auth/auth_home.mako:6
+msgid "List backends"
+msgstr "Lister les méthodes d'identification"
+
+#: src/mobyle2/core/templates/auth/auth_list.mako:3
+msgid "Add a new identification backend"
+msgstr "Ajouter une nouvelle méthode d'identification"
+
+#: src/mobyle2/core/templates/auth/auth_manage_settings.mako:3
+msgid "Manage general authentication settings"
+msgstr "Editer les paramêtres généreaux d'identification"
+
+#: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
+msgid "You are here"
+msgstr "Vous êtes ici"
+
+#: src/mobyle2/core/views/auth.py:54 src/mobyle2/core/views/auth.py:145
+msgid "Send"
+msgstr "Envoyer"
+
+#: src/mobyle2/core/views/auth.py:78
+msgid "Backend name"
+msgstr "Nom de la méthode"
+
+#: src/mobyle2/core/views/auth.py:79
+msgid "Backend description"
+msgstr "Description de la méthode"
+
+#: src/mobyle2/core/views/auth.py:80
+msgid "Is this backend enabled ?"
+msgstr "Est ce que cette méthode est activée ?"
+
+#: src/mobyle2/core/views/auth.py:85
+msgid "Authentication backend"
+msgstr "Méthode d'identification"
+
+#: src/mobyle2/core/views/auth.py:88 src/mobyle2/core/views/auth.py:95
+msgid "Host"
+msgstr "Hote"
+
+#: src/mobyle2/core/views/auth.py:89 src/mobyle2/core/views/auth.py:96
+msgid "Port"
+msgstr "Port"
+
+#: src/mobyle2/core/views/auth.py:90 src/mobyle2/core/views/auth.py:97
+msgid "Password"
+msgstr "Mot de passe"
+
+#: src/mobyle2/core/views/auth.py:91
+msgid "User"
+msgstr "Utilisateur"
+
+#: src/mobyle2/core/views/auth.py:92
+msgid "Database"
+msgstr "Base de données"
+
+#: src/mobyle2/core/views/auth.py:98
+msgid "Base dn to connect as"
+msgstr "DN LDAP pour se connecter"
+
+#: src/mobyle2/core/views/auth.py:99
+msgid "LDAP filter to grab users"
+msgstr "Filtre LDAP pour chercher les utilisateurs"
+
+#: src/mobyle2/core/views/auth.py:100
+msgid "LDAP filter to grab groups"
+msgstr "Filtre LDAP pour chercher les groupes"
+
+#: src/mobyle2/core/views/auth.py:103
+msgid "API consumer"
+msgstr "Clé d'API"
+
+#: src/mobyle2/core/views/auth.py:104
+msgid "API consumer secret"
+msgstr "password lié à la clé d'API"
+
+#: src/mobyle2/core/views/auth.py:107
+msgid "Service url"
+msgstr "URL du service"
+
+#: src/mobyle2/core/views/auth.py:110
+msgid "Full path to the file"
+msgstr "Chemin complet vers le fichier"
+
+#: src/mobyle2/core/views/auth.py:142
+msgid "Authentication backend details"
+msgstr "Détails de la méthode d'identification"
+
