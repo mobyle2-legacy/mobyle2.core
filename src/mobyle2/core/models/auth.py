@@ -8,7 +8,6 @@ from ordereddict import OrderedDict
 from mobyle2.core.utils import _
 
 AUTH_BACKENDS =OrderedDict([
-	( ''                         , '')         ,
 	( 'openid'                   , 'openid')   ,
 	( 'facebook'                 , 'facebook') ,
 	( 'twitter'                  , 'twitter')  ,
@@ -62,7 +61,7 @@ class AuthenticationBackends:
         self.__description__ = _('Authentication backends')
         self.request = parent.request
         self.session = parent.session
-        self.items = OrderedDict([("%s"%a.id, AuthenticationBackends(a, self))
+        self.items = OrderedDict([("%s"%a.id, AuthenticationBackendRessource(a, self))
                               for a in self.session.query(AuthenticationBackend).all()])
 
     def __getitem__(self, item):

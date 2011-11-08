@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
 
-
 import os
 import pkg_resources
 from webob import Request, exc
@@ -16,54 +15,6 @@ from sqlalchemy import engine_from_config
 from mobyle2.core.models.init import initialize_sql
 from mobyle2.core.config import dn
 from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolicy
-
-def get_config(settings, debug=False):
-    authentication_policy = AuthTktAuthenticationPolicy(dn)
-    authorization_policy = ACLAuthorizationPolicy()
-    session_factory = session_factory_from_settings(settings)
-    config = Configurator(
-        root_factory='%s.models.root.root_factory'%dn,
-        authentication_policy=authentication_policy,
-        authorization_policy=authorization_policy,
-        locale_negotiator=locale_negotiator,
-        settings=settings,
-    )
-    # activate if you want to enable global components
-    #  globalreg = getGlobalSiteManager()
-    #  config = Configurator(registry=globalreg)
-    #  config.setup_registry(settings=settings)
-    #  config.include('pyramid_zcml')
-    config.begin()
-    config.hook_zca()
-    if debug:
-        config.add_view('%s.views.root.Reload' % dn,     name='reload', context='%s.models.root.Root' % dn)
-    for z in settings['zcmls']:
-        config.load_zcml(z)
-    config.scan('%s.models'%dn)
-    config.set_session_factory(session_factory)
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    initialize_sql(engine)
-    config.add_translation_dirs('%s:locale/'%dn)
-    config.add_subscriber('%s.subscribers.add_renderer_globals'%dn, 'pyramid.events.BeforeRender')
-    config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
-    # static files
-    config.add_static_view('s', '%s:static'%dn)
-    config.add_static_view('deform', 'deform:static')
-    # basr urls
-    config.add_view('%s.views.root.Home' % dn,       name='',       context='%s.models.root.Root' % dn)
-    # auth managment
-    config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.ManageSettings' % dn,    name='manage-settings',  context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.List' % dn,    name='list',  context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.Add' % dn,    name='add',  context='%s.models.auth.AuthenticationBackends' % dn)
-    #config.add_view('%s.views.auth.Helper' % dn,    name='helper',  context='%s.models.auth.AuthenticationBackends' % dn)
-    # project urls
-    config.add_view('%s.views.project.List' % dn, name='',     context='%s.models.project.Projects' % dn)
-    config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
-    config.add_view('%s.views.project.View' % dn, name='',     context='%s.models.project.ProjectRessource' % dn)
-    #
-    config.end()
-    return config
 
 def locale_negotiator(request):
     """This code is inspired by the plonelanguatetool negociation!"""
@@ -120,6 +71,54 @@ def locale_negotiator(request):
         locale_name = os.environ.get('LANG', 'en')[:2]
     return locale_name
 
+def includeme(config, debug=False):
+    settings = config.registry.settings
+    authentication_policy = AuthTktAuthenticationPolicy(dn)
+    authorization_policy = ACLAuthorizationPolicy()
+    if len([k.startswith('session..') for k in settings]):
+        session_factory = session_factory_from_settings(settings)
+        config.set_session_factory(session_factory)
+    if len([k.startswith('sqlalchemy.') for k in settings]):
+        engine = engine_from_config(settings, 'sqlalchemy.')
+        initialize_sql(engine)
+    config.set_root_factory('%s.models.root.root_factory'%dn)
+    config.set_authorization_policy(authorization_policy)
+    config.set_authentication_policy(authentication_policy)
+    config.set_locale_negotiator(locale_negotiator)
+    # activate if you want to enable global components
+    #  globalreg = getGlobalSiteManager()
+    #  config = Configurator(registry=globalreg)
+    #  config.setup_registry(settings=settings)
+    #  config.include('pyramid_zcml')
+    config.begin()
+    config.hook_zca()
+    if settings.get('application.debug', False):
+        config.add_view('%s.views.root.Reload' % dn,     name='reload', context='%s.models.root.Root' % dn)
+    config.scan('%s.models'%dn)
+    # translation directories
+    config.add_translation_dirs('%s:locale/'%dn)
+    #config.add_translation_dirs('deform:locale/')
+    config.add_subscriber('%s.subscribers.add_renderer_globals'%dn, 'pyramid.events.BeforeRender')
+    config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
+    # static files
+    config.add_static_view('s', '%s:static'%dn)
+    config.add_static_view('deform', 'deform:static')
+    # basr urls
+    config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn)
+    # auth managment
+    config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn)
+    config.add_view('%s.views.auth.ManageSettings' % dn,    name='manage-settings',  context='%s.models.auth.AuthenticationBackends' % dn)
+    config.add_view('%s.views.auth.List' % dn,    name='list',  context='%s.models.auth.AuthenticationBackends' % dn)
+    config.add_view('%s.views.auth.Add' % dn,    name='add',  context='%s.models.auth.AuthenticationBackends' % dn)
+    #config.add_view('%s.views.auth.Helper' % dn,    name='helper',  context='%s.models.auth.AuthenticationBackends' % dn)
+    # project urls
+    config.add_view('%s.views.project.List' % dn, name='',     context='%s.models.project.Projects' % dn)
+    config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
+    config.add_view('%s.views.project.View' % dn, name='',     context='%s.models.project.ProjectRessource' % dn)
+    #
+    config.end()
+    return config
+
 def wsgi_app_factory(global_config, **local_config):
     """
     A paste.httpfactory to wrap a pyramid WSGI based application.
@@ -128,22 +127,10 @@ def wsgi_app_factory(global_config, **local_config):
     settings.update(**local_config)
     debug = False
     if global_config.get('debug', 'False').lower() == 'true':
-        debug = True
-    if debug:
-        settings['pyramid.debug_authorization'] = 'true'
-        settings['pyramid.debug_notfound'] = 'true'
-        settings['pyramid.reload_templates'] = 'true'
-    settings['zcmls' ] = utils.splitstrip(settings['zcmls'])
-    if not settings['zcmls']:
-        settings['zcmls'] = []
-    settings['zcmls'].insert(0, 'configure.zcml')
-    for i, zcml in enumerate(settings['zcmls']):
-        if os.path.sep in zcml:
-            zcml = os.path.abspath(zcml)
-        else:
-            zcml = pkg_resources.resource_filename(dn, zcml)
-        settings['zcmls'][i] = zcml
-    config = get_config(settings, debug=debug)
+        settings['application.debug'] = True
+    config = Configurator(settings=settings)
+    # split configuration in another callable to reuse in tests.
+    includeme(config)
     app = config.make_wsgi_app()
     def webbuilder_app(environ, start_response):
         req = Request(environ)

@@ -6,6 +6,7 @@ import os
 from ConfigParser import ConfigParser
 import random
 import socket
+import unittest
 import threading
 
 from paste.httpserver import serve
@@ -13,9 +14,13 @@ from paste.deploy import loadapp
 from sqlalchemy import create_engine
 
 from mobyle2.core.models import DBSession
+from mobyle2.core.models import root
 from mobyle2.core.models.init import initialize_sql
+from mobyle2.core.utils import _
 
-from mobyle2.core import webserver as w
+from pyramid.i18n import get_localizer
+
+from paste.fixture import TestApp
 
 D = os.path.dirname
 J = os.path.join
@@ -95,16 +100,35 @@ class PyramidLayer:
         """
         # sqlalchemy intialization
         self.session = get_session()
-        self.config = config = w.get_config(get_app_infos())
-        self.app = config.make_wsgi_app()
+        self.config = testing.setUp(settings=get_app_infos())
+        self.config.include('mobyle2.core.webserver') 
+        self.app = self.config.make_wsgi_app()
     setUp = classmethod(setUp)
 
     def tearDown(self):
         self.session.get_bind().dispose()
     tearDown = classmethod(tearDown)
 
+
+from pyramid import testing
+
+class PyramidTestCase(unittest.TestCase):
+    def setUp(self, *args, **kwargs):
+        """
+        Some global are registred there
+            - server: wsgi server
+            - app: the Pylon wsgi application
+        """
+        # server thread
+        # share just one pylons across all tests
+        self.config = testing.setUp(settings=get_app_infos())
+        self.config.include('mobyle2.core.webserver')
+        self.wsgiapp = TestApp(get_app())
+
+    def tearDown(self):
+        pass
+
 class PyramidFunctionnalLayer(PyramidLayer):
-    #def testStUp(self, *args, **kwargs):
     def setUp(self, *args, **kwargs):
         """
         Some global are registred there
@@ -133,4 +157,15 @@ class PyramidFunctionnalLayer(PyramidLayer):
         self.server.server_close(self.server)
         self.t.join()
     tearDown = classmethod(tearDown)
+
+
+class DummyRequest(testing.DummyRequest):
+    def __init__(self, *args, **kw):
+        testing.DummyRequest.__init__(self, *args, **kw)
+        self.root = root.root_factory(self)
+
+    def translate(self, string):
+        localizer = get_localizer(self)
+        return localizer.translate(_(string)) 
+
 # vim:set et sts=4 ts=4 tw=80:

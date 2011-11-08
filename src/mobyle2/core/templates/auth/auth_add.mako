@@ -15,10 +15,14 @@
       function bind_auth_events() {
         $("*[name='auth_backend']").change(
         function() {
+          data = $('#add_auth_backend').serializeArray();
+          data[data.length] = {'name': 'load_auth_backend_details', 
+            'value': $('*[name=auth_backend]').val()
+          };
           $.ajax({
             url: '',
             type: 'POST',
-            data: $('#add_auth_backend').serializeArray(),
+            data: data,
             success: set_add_params,
             dataType: 'html'
           }); 

@@ -4,6 +4,8 @@ __docformat__ = 'restructuredtext en'
 
 from pyramid.url import resource_url
 from pyramid.traversal import resource_path, resource_path_tuple, traverse
+
+from pyramid.renderers import get_renderer
 from pyramid.renderers import render_to_response
 
 from mobyle2.core.utils import auto_translate
@@ -18,9 +20,17 @@ def get_nav_infos(context, request, default_nav_title=''):
     i['path'] = resource_path(context)
     return i
 
-def get_base_params(view):
+def get_base_params(view, 
+                    breadcrumbs=True, 
+                    globaltabs=True,
+                    main=True,
+                    banner=True):
     req = view.request
     p = {}
+    if banner:     p['banner'] =      get_renderer('../templates/includes/banner.pt').implementation()
+    if globaltabs: p['globaltabs'] =  get_renderer('../templates/includes/globaltabs.pt').implementation() 
+    if breadcrumbs:p['breadcrumbs'] = get_renderer('../templates/includes/breadcrumbs.pt').implementation() 
+    if main:       p['main'] =        get_renderer('../templates/master.pt').implementation() 
     p['v'] = view
     p['u'] = resource_url
     p['root'] = getattr(req, 'root', None)

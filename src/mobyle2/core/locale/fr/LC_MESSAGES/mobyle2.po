@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
-"POT-Creation-Date: 2011-11-07 10:46+0100\n"
-"PO-Revision-Date: 2011-11-07 10:46+0100\n"
+"POT-Creation-Date: 2011-11-08 21:00+0100\n"
+"PO-Revision-Date: 2011-11-08 19:00+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -18,7 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: src/mobyle2/core/models/auth.py:62
+#: src/mobyle2/core/validator.py:11
+msgid "You must set a not null string"
+msgstr "Vous devez saisir une chaine non vide"
+
+#: src/mobyle2/core/models/auth.py:61
 msgid "Authentication backends"
 msgstr "Méthodes d'identification"
 
@@ -31,6 +35,7 @@ msgid "Home"
 msgstr "Acceuil"
 
 #: src/mobyle2/core/templates/auth/auth_add.mako:3
+#: src/mobyle2/core/templates/auth/auth_add.pt:3
 msgid "Backend configuration"
 msgstr "Configuration des méthodes d'identification"
 
@@ -55,78 +60,83 @@ msgid "Manage general authentication settings"
 msgstr "Editer les paramêtres généreaux d'identification"
 
 #: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
+#: src/mobyle2/core/templates/includes/breadcrumbs.pt:3
 msgid "You are here"
 msgstr "Vous êtes ici"
 
-#: src/mobyle2/core/views/auth.py:54 src/mobyle2/core/views/auth.py:145
+#: src/mobyle2/core/views/auth.py:55 src/mobyle2/core/views/auth.py:154
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/mobyle2/core/views/auth.py:78
-msgid "Backend name"
-msgstr "Nom de la méthode"
-
 #: src/mobyle2/core/views/auth.py:79
+msgid "Name"
+msgstr "Nom"
+
+#: src/mobyle2/core/views/auth.py:80
 msgid "Backend description"
 msgstr "Description de la méthode"
 
-#: src/mobyle2/core/views/auth.py:80
+#: src/mobyle2/core/views/auth.py:81
+msgid "Enabled"
+msgstr "Activé"
+
+#: src/mobyle2/core/views/auth.py:81
 msgid "Is this backend enabled ?"
 msgstr "Est ce que cette méthode est activée ?"
 
-#: src/mobyle2/core/views/auth.py:85
+#: src/mobyle2/core/views/auth.py:87
 msgid "Authentication backend"
 msgstr "Méthode d'identification"
 
-#: src/mobyle2/core/views/auth.py:88 src/mobyle2/core/views/auth.py:95
+#: src/mobyle2/core/views/auth.py:91 src/mobyle2/core/views/auth.py:98
 msgid "Host"
 msgstr "Hote"
 
-#: src/mobyle2/core/views/auth.py:89 src/mobyle2/core/views/auth.py:96
+#: src/mobyle2/core/views/auth.py:92 src/mobyle2/core/views/auth.py:99
 msgid "Port"
 msgstr "Port"
 
-#: src/mobyle2/core/views/auth.py:90 src/mobyle2/core/views/auth.py:97
+#: src/mobyle2/core/views/auth.py:93 src/mobyle2/core/views/auth.py:100
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/mobyle2/core/views/auth.py:91
+#: src/mobyle2/core/views/auth.py:94
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/mobyle2/core/views/auth.py:92
+#: src/mobyle2/core/views/auth.py:95
 msgid "Database"
 msgstr "Base de données"
 
-#: src/mobyle2/core/views/auth.py:98
+#: src/mobyle2/core/views/auth.py:101
 msgid "Base dn to connect as"
 msgstr "DN LDAP pour se connecter"
 
-#: src/mobyle2/core/views/auth.py:99
+#: src/mobyle2/core/views/auth.py:102
 msgid "LDAP filter to grab users"
 msgstr "Filtre LDAP pour chercher les utilisateurs"
 
-#: src/mobyle2/core/views/auth.py:100
+#: src/mobyle2/core/views/auth.py:103
 msgid "LDAP filter to grab groups"
 msgstr "Filtre LDAP pour chercher les groupes"
 
-#: src/mobyle2/core/views/auth.py:103
+#: src/mobyle2/core/views/auth.py:106
 msgid "API consumer"
 msgstr "Clé d'API"
 
-#: src/mobyle2/core/views/auth.py:104
+#: src/mobyle2/core/views/auth.py:107
 msgid "API consumer secret"
 msgstr "password lié à la clé d'API"
 
-#: src/mobyle2/core/views/auth.py:107
+#: src/mobyle2/core/views/auth.py:110
 msgid "Service url"
 msgstr "URL du service"
 
-#: src/mobyle2/core/views/auth.py:110
+#: src/mobyle2/core/views/auth.py:113
 msgid "Full path to the file"
 msgstr "Chemin complet vers le fichier"
 
-#: src/mobyle2/core/views/auth.py:142
+#: src/mobyle2/core/views/auth.py:152
 msgid "Authentication backend details"
 msgstr "Détails de la méthode d'identification"
 
