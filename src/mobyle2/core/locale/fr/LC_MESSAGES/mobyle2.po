@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
-"POT-Creation-Date: 2011-11-09 01:51+0100\n"
-"PO-Revision-Date: 2011-11-09 01:50+0100\n"
+"POT-Creation-Date: 2011-11-09 11:29+0100\n"
+"PO-Revision-Date: 2011-11-09 11:29+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -22,11 +22,12 @@ msgstr ""
 msgid "You must set a not null string"
 msgstr "Vous devez saisir une chaine non vide"
 
-#: src/mobyle2/core/models/auth.py:81
+#: src/mobyle2/core/models/auth.py:88
+#: src/mobyle2/core/templates/auth/auth_list.pt:3
 msgid "Authentication backends"
 msgstr "Méthodes d'identification"
 
-#: src/mobyle2/core/models/project.py:29
+#: src/mobyle2/core/models/project.py:35
 msgid "Projects"
 msgstr "Projets"
 
@@ -40,7 +41,6 @@ msgid "Backend configuration"
 msgstr "Configuration des méthodes d'identification"
 
 #: src/mobyle2/core/templates/auth/auth_edit.pt:3
-#: src/mobyle2/core/templates/auth/auth_view.pt:3
 msgid "Backend"
 msgstr "Lister les méthodes d'identification"
 
@@ -59,6 +59,10 @@ msgstr "Editer les paramêtres généreaux d'identification"
 msgid "List backends"
 msgstr "Lister les méthodes d'identification"
 
+#: src/mobyle2/core/templates/auth/auth_home.pt:7
+msgid "Add a backend"
+msgstr "Ajouter une méthode d'identification"
+
 #: src/mobyle2/core/templates/auth/auth_list.mako:3
 msgid "Add a new identification backend"
 msgstr "Ajouter une nouvelle méthode d'identification"
@@ -68,20 +72,95 @@ msgstr "Ajouter une nouvelle méthode d'identification"
 msgid "Manage general authentication settings"
 msgstr "Editer les paramêtres généreaux d'identification"
 
+#: src/mobyle2/core/templates/auth/auth_view.pt:4
+msgid "Name :"
+msgstr "Nom :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:5
+msgid "Description :"
+msgstr "Description de la méthode :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:6
+msgid "Enabled :"
+msgstr "Activé :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:9
+#: src/mobyle2/core/templates/auth/auth_view.pt:16
+msgid "Host :"
+msgstr "Host :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:10
+#: src/mobyle2/core/templates/auth/auth_view.pt:17
+msgid "Port :"
+msgstr "Port :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:11
+msgid "lDAP Dn:"
+msgstr "DN LDAP"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:12
+msgid "LDAP Users filter :"
+msgstr "Filtre pour rapatrier les utilisateurs LDAP"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:13
+msgid "LDAP Groups filter:"
+msgstr "Filtre pour rapatrier les groupes LDAP"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:18
+msgid "Username :"
+msgstr "Utilisateur :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:19
+msgid "Database :"
+msgstr "Base de données :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:22
+msgid "File"
+msgstr "Fichier"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:25
+msgid "API Key :"
+msgstr "Clé d'API"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:26
+msgid "API Secret :"
+msgstr "Mot dx passe de la clé d'API"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:29
+msgid "Backend url :"
+msgstr "URL du service d'identification"
+
 #: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
 #: src/mobyle2/core/templates/includes/breadcrumbs.pt:3
 msgid "You are here"
 msgstr "Vous êtes ici"
 
-#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:189
+#: src/mobyle2/core/templates/project/project_add.pt:3
+msgid "Project configuration"
+msgstr "Configuration du projet"
+
+#: src/mobyle2/core/templates/project/project_home.pt:3
+msgid "Projects configuration"
+msgstr "Configuration des projets"
+
+#: src/mobyle2/core/templates/project/project_home.pt:5
+msgid "List projects"
+msgstr "Liste des projets"
+
+#: src/mobyle2/core/templates/project/project_home.pt:6
+msgid "Add a project"
+msgstr "Ajouter un projet"
+
+#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:191
+#: src/mobyle2/core/views/project.py:37
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/mobyle2/core/views/auth.py:78
+#: src/mobyle2/core/views/auth.py:78 src/mobyle2/core/views/project.py:23
 msgid "Name"
 msgstr "Nom"
 
-#: src/mobyle2/core/views/auth.py:79
+#: src/mobyle2/core/views/auth.py:79 src/mobyle2/core/views/project.py:24
 msgid "Backend description"
 msgstr "Description de la méthode"
 
@@ -145,15 +224,16 @@ msgstr "URL du service"
 msgid "Full path to the file"
 msgstr "Chemin complet vers le fichier"
 
-#: src/mobyle2/core/views/auth.py:162 src/mobyle2/core/views/auth.py:169
+#: src/mobyle2/core/views/auth.py:163 src/mobyle2/core/views/auth.py:170
 msgid "Authentication backend details"
 msgstr "Détails de la méthode d'identification"
 
-#: src/mobyle2/core/views/auth.py:220
+#: src/mobyle2/core/views/auth.py:222
 msgid "A new authentication backend has been created"
 msgstr "Une nouvelle méthode d'identification a été crée"
 
-#: src/mobyle2/core/views/auth.py:226 src/mobyle2/core/views/auth.py:285
+#: src/mobyle2/core/views/auth.py:228 src/mobyle2/core/views/auth.py:291
+#: src/mobyle2/core/views/project.py:69 src/mobyle2/core/views/project.py:116
 msgid ""
 "You can try to change some settings because an exception occured while "
 "adding your new authbackend : ${msg}"
@@ -162,7 +242,15 @@ msgstr ""
 "s'est produite pendant l'enregistrement de votre nouvelle méthode "
 "d'identification : ${msg}"
 
-#: src/mobyle2/core/views/auth.py:279
+#: src/mobyle2/core/views/auth.py:285
 msgid "Backend has been updated"
 msgstr "La méthode d'identification a été mise à jour"
+
+#: src/mobyle2/core/views/project.py:63
+msgid "A new project has been created"
+msgstr "Un nouveau projet a été créé"
+
+#: src/mobyle2/core/views/project.py:110
+msgid "Project has been updated"
+msgstr "Le projet a été mis à jour"
 
