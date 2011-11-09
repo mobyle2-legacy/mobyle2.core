@@ -23,14 +23,18 @@ class ProjectRessource(object):
         self.__parent__ = parent
 
 class Projects:
+    @property
+    def items(self):
+        self._items = OrderedDict([("%s"%a.id, ProjectRessource(a, self))
+                                   for a in self.session.query(Project).all()]) 
+        return self._items
+
     def __init__(self, name, parent):
         self.__name__ = name
         self.__parent__ = parent
         self.__description__ = _("Projects")
         self.request = parent.request
         self.session = parent.session
-        self.items = OrderedDict([("%s"%a.id, ProjectRessource(a, self))
-                              for a in self.session.query(Project).all()])
 
     def __getitem__(self, item):
         return self.items.get(item, None)

@@ -1,0 +1,9 @@
+<metal metal:use-macro="main.macros['main']">
+<metal metal:fill-slot="content_body"> 
+  <p i18n:translate="">Projects configuration</p>
+  <ul>
+    <li><a i18n:translate="" href="@@list">List projects</a></li>
+    <li><a i18n:translate="" href="@@add">Add a project</a></li>
+  </ul>
+</metal>
+</metal>

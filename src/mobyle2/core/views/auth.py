@@ -67,7 +67,7 @@ class List(Base):
 
 class Home(Base):
     template ='../templates/auth/auth_home.pt'
- 
+
 
 class AuthView(Base):
     def __init__(self, request):
@@ -134,9 +134,10 @@ class AuthView(Base):
             'port': 'port',
             'user': 'username',
             'dn': 'ldap_dn',
+            'file': 'file',
             'users': 'ldap_users_filter',
             'groups': 'ldap_groups_filter',
-        } 
+        }
         request = self.request
         def global_auth_backend_validator(form, value):
             pass
@@ -145,7 +146,7 @@ class AuthView(Base):
             #    exc['title'] = 'Must start with name %s' % value['name']
             #    raise exc
         self.sh = self.sh_map['base'](validator=global_auth_backend_validator)
-        self.skip_validation = False
+        self.for_ajax_form = False
         # maybe we are in an ajax request to solve remaining fields for a particular authtype.
         at = ''
         details_added = False
@@ -153,39 +154,41 @@ class AuthView(Base):
             at = request.POST.get('load_auth_backend_details')
             if at in auth.AUTH_BACKENDS:
                 self.sh['auth_backend'].default = at
-                self.skip_validation = True
+                self.for_ajax_form = True
             if not at:
                 at = request.POST.get('auth_backend')
             if at in auth.AUTH_BACKENDS:
                 details_added = True
-                ash = self.sh_map[at](name="auth_backend_infos", 
+                ash = self.sh_map[at](name="auth_backend_infos",
                                       description=_('Authentication backend details'))
                 self.sh.add(ash)
         ctx = self.request.context
         if isinstance(ctx, auth.AuthenticationBackendRessource):
             ab = ctx.ab
             if not details_added:
-                ash = self.sh_map[ab.backend_type](name="auth_backend_infos", 
+                ash = self.sh_map[ab.backend_type](name="auth_backend_infos",
                                       description=_('Authentication backend details'))
-                self.sh.add(ash) 
+                self.sh.add(ash)
             keys = {'name': 'name', 'description':'description', 'backend_type':'auth_backend', 'enabled':'enabled'}
             dkeys = {}
             if (ab.backend_type == at and at != '') or (at == ''):
                 if ab.backend_type in ['facebook', 'live', 'yahoo', 'twitter', 'openid']:
                     dkeys.update({'username':'key', 'password':'secret'})
+                if ab.backend_type in ['file']:
+                    dkeys.update({'file':'file'})
                 if ab.backend_type in ['openid']:
                     dkeys.update({'username':'key', 'password':'secret'})
                 if ab.backend_type in ['ldap']:
                     dkeys.update({'ldap_groups_filter':'groups', 'ldap_users_filter':'users',
-                                  'dn':'ldap_dn', 'hostname':'host', 'port':'port','password':'password'})
+                                  'ldap_dn':'dn', 'hostname':'host', 'port':'port','password':'password'})
                 if ab.backend_type in ['db']:
                     dkeys.update({'hostname':'host', 'database':'db','password':'password','port':'port',
                                   'username':'user','password':'password'})
             for k in keys:
-                self.sh[keys[k]].default = getattr(ab, k) 
+                self.sh[keys[k]].default = getattr(ab, k)
             for k in dkeys:
                 self.sh['auth_backend_infos'][dkeys[k]].default = getattr(ab, k)
-        self.form = deform.Form(self.sh, buttons=(_('Send'),), formid = 'add_auth_backend') 
+        self.form = deform.Form(self.sh, buttons=(_('Send'),), formid = 'add_auth_backend')
 
 class Add(AuthView):
     template ='../templates/auth/auth_add.pt'
@@ -197,7 +200,7 @@ class Add(AuthView):
         form = self.form
         if request.method == 'POST':
             controls = request.POST.items()
-            if self.skip_validation:
+            if self.for_ajax_form:
                 params['f_content'] = form.render(controls)
             else:
                 # we are in regular post, just registering data in database
@@ -205,9 +208,9 @@ class Add(AuthView):
                     struct = form.validate(controls)
                     fmap = self.fmap
                     kwargs = {}
-                    cstruct = dict([(a, struct[a]) 
+                    cstruct = dict([(a, struct[a])
                                     for a in struct if not a =='auth_backend_infos']+
-                                   [(a, struct.get('auth_backend_infos', {})[a]) 
+                                   [(a, struct.get('auth_backend_infos', {})[a])
                                     for a in struct.get('auth_backend_infos', {})])
                     for k in cstruct:
                         kwargs[fmap.get(k, k)] = cstruct[k]
@@ -216,7 +219,7 @@ class Add(AuthView):
                         session.add(ba)
                         session.commit()
                         self.request.session.flash(
-                            _('A new authentication backend has been created'), 
+                            _('A new authentication backend has been created'),
                             'info')
                         item = self.request.root['auths']["%s"%ba.id]
                         url = request.resource_url(item)
@@ -225,8 +228,8 @@ class Add(AuthView):
                         message = _(u'You can try to change some '
                                     'settings because an exception occured '
                                     'while adding your new authbackend '
-                                    ': ${msg}', 
-                                    mapping={'msg': u'%s'%e}) 
+                                    ': ${msg}',
+                                    mapping={'msg': u'%s'%e})
                         self.request.session.flash(message, 'error')
                         session.rollback()
                     # we are set, create the request
@@ -234,14 +237,18 @@ class Add(AuthView):
                 except  ValidationFailure, e:
                     params['f_content'] = e.render()
         if not 'f_content' in params:
-            params['f_content'] = form.render()
-        return render_to_response(self.template, params, self.request)
+            params['f_content'] = form.render()        
+        if self.for_ajax_form:
+            response = Response(params['f_content'])
+        else:
+            response = render_to_response(self.template, params, self.request) 
+        return response
 
 class View(AuthView):
     template ='../templates/auth/auth_view.pt'
     def __call__(self):
         params = get_base_params(self)
-        params['ab'] = self.request.context
+        params['ab'] = self.request.context.ab
         if not 'f_content' in params:
             params['f_content'] = self.form.render(readonly=True)
         return render_to_response(self.template, params, self.request)
@@ -255,18 +262,18 @@ class Edit(AuthView):
         form = self.form
         if request.method == 'POST':
             controls = request.POST.items()
-            if self.skip_validation:
+            if self.for_ajax_form:
                 params['f_content'] = self.form.render(controls)
-            else: 
+            else:
                 # we are in regular post, just registering data in database
                 try:
                     struct = form.validate(controls)
                     try:
                         fmap = self.fmap
                         kwargs = {}
-                        cstruct = dict([(a, struct[a]) 
+                        cstruct = dict([(a, struct[a])
                                         for a in struct if not a =='auth_backend_infos']+
-                                       [(a, struct.get('auth_backend_infos', {})[a]) 
+                                       [(a, struct.get('auth_backend_infos', {})[a])
                                         for a in struct.get('auth_backend_infos', {})])
                         for k in cstruct:
                             kwargs[fmap.get(k, k)] = cstruct[k]
@@ -275,22 +282,26 @@ class Edit(AuthView):
                         session.add(ab)
                         session.commit()
                         self.request.session.flash(
-                            _('Backend has been updated'), 
-                            'info') 
+                            _('Backend has been updated'),
+                            'info')
                         item = self.request.root['auths']["%s"%ab.id]
                         url = request.resource_url(item)
-                        return HTTPFound(location=url) 
+                        return HTTPFound(location=url)
                     except Exception, e:
                         message = _(u'You can try to change some '
                                     'settings because an exception occured '
                                     'while adding your new authbackend '
-                                    ': ${msg}', 
-                                    mapping={'msg': u'%s'%e}) 
+                                    ': ${msg}',
+                                    mapping={'msg': u'%s'%e})
                         self.request.session.flash(message, 'error')
-                        session.rollback() 
+                        session.rollback()
                 except  ValidationFailure, e:
-                    params['f_content'] = e.render() 
+                    params['f_content'] = e.render()
         if not 'f_content' in params:
-            params['f_content'] = self.form.render() 
-        return render_to_response(self.template, params, self.request) 
+            params['f_content'] = self.form.render()
+        if self.for_ajax_form:
+            response = Response(params['f_content'])
+        else:
+            response = render_to_response(self.template, params, self.request) 
+        return response
 # vim:set et sts=4 ts=4 tw=0:

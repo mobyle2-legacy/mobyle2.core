@@ -37,6 +37,7 @@ class AuthenticationBackend(Base):
     ldap_users_filter = Column(Unicode(255))
     ldap_dn = Column(Unicode(255))
     description = Column(Unicode(255))
+    file = Column(Unicode(255))
 
     def __init__(self,
                  name=None,

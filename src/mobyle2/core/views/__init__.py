@@ -20,19 +20,19 @@ def get_nav_infos(context, request, default_nav_title=''):
     i['path'] = resource_path(context)
     return i
 
-def get_base_params(view, 
-                    breadcrumbs=True, 
+def get_base_params(view,
+                    breadcrumbs=True,
                     globaltabs=True,
                     main=True,
                     banner=True):
     req = view.request
     p = {}
     if banner:     p['banner'] =      get_renderer('../templates/includes/banner.pt').implementation()
-    if globaltabs: p['globaltabs'] =  get_renderer('../templates/includes/globaltabs.pt').implementation() 
-    if breadcrumbs:p['breadcrumbs'] = get_renderer('../templates/includes/breadcrumbs.pt').implementation() 
-    if main:       p['main'] =        get_renderer('../templates/master.pt').implementation() 
+    if globaltabs: p['globaltabs'] =  get_renderer('../templates/includes/globaltabs.pt').implementation()
+    if breadcrumbs:p['breadcrumbs'] = get_renderer('../templates/includes/breadcrumbs.pt').implementation()
+    if main:       p['main'] =        get_renderer('../templates/master.pt').implementation()
     p['v'] = view
-    p['u'] = resource_url
+    p['u'] = req.resource_url
     p['root'] = getattr(req, 'root', None)
     p['c'] = getattr(req, 'context', None)
     p['request'] = req
@@ -42,7 +42,7 @@ class Base:
     template = None # define in child classes.
     def __init__(self, request):
         self.request = request
-    
+
     def translate(self, string):
         return auto_translate(self.request, string)
 

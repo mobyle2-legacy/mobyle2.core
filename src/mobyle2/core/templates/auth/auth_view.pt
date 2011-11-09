@@ -1,9 +1,33 @@
 <metal metal:use-macro="main.macros['main']">
-<metal metal:fill-slot="content_body">
-  <h1 i18n:translate="">This backend</h1>
-  <a href="@@edit" i18n:translate="">Edit</a>
-  <div id="add_auth_backend_holder">
-    <tal i18n:translate="" tal:content="structure f_content"/>
-  </div>
-</metal>
+  <metal metal:fill-slot="content_body">
+    <a class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a>
+    <p><strong i18n:translate="">Name : </strong> ${ab.name}</p>
+    <p><strong i18n:translate="">Description : </strong> ${ab.description}</p>
+    <p><strong i18n:translate="">Enabled : </strong> ${ab.enabled}</p>
+    <div class="authentication_details">
+      <tal:b tal:condition="ab.backend_type=='ldap'">
+        <p><strong i18n:translate="">Host : </strong> ${ab.hostname}</p>
+        <p><strong i18n:translate="">Port : </strong> ${ab.password}</p>
+        <p><strong i18n:translate="">lDAP Dn: </strong>${ab.ldap_dn}</p>
+        <p><strong i18n:translate="">LDAP Users filter : </strong> ${ab.ldap_users_filter}</p>
+        <p><strong i18n:translate="">LDAP Groups filter: </strong> ${ab.ldap_groups_filter}</p>
+      </tal:b>
+      <tal:b tal:condition="ab.backend_type=='db'">
+        <p><strong i18n:translate="">Host : </strong> ${ab.hostname}</p>
+        <p><strong i18n:translate="">Port : </strong> ${ab.port}</p>
+        <p><strong i18n:translate="">Username : </strong> ${ab.username}</p>
+        <p><strong i18n:translate="">Database :</strong> ${ab.database}</p>
+      </tal:b>
+      <tal:b tal:condition="ab.backend_type=='file'">
+        <p><strong i18n:translate="">File</strong> ${ab.file}</p>
+      </tal:b>
+      <tal:b tal:condition="ab.backend_type in ['facebook', 'live', 'twitter', 'yahoo', 'openid']">
+        <p><strong i18n:translate="">API Key : </strong> ${ab.username}</p>
+        <p><strong i18n:translate="">API Secret : </strong> ${ab.password}</p>
+      </tal:b>
+      <tal:b tal:condition="ab.backend_type=='openid'">
+        <p><strong i18n:translate="">Backend url : </strong> ${ab.url_ba}</p>
+      </tal:b>
+    </div>
+  </metal>
 </metal>

@@ -114,7 +114,8 @@ def includeme(config, debug=False):
     config.add_view('%s.views.auth.Edit' % dn, name='edit', context='%s.models.auth.AuthenticationBackendRessource' % dn)
     #config.add_view('%s.views.auth.Helper' % dn,    name='helper',  context='%s.models.auth.AuthenticationBackends' % dn)
     # project urls
-    config.add_view('%s.views.project.List' % dn, name='',     context='%s.models.project.Projects' % dn)
+    config.add_view('%s.views.project.Home' % dn, name='', context='%s.models.project.Projects' % dn)
+    config.add_view('%s.views.project.List' % dn, name='list', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
     config.add_view('%s.views.project.View' % dn, name='',     context='%s.models.project.ProjectRessource' % dn)
     #
