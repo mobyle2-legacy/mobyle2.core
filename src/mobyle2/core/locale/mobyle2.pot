@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-11-07 10:46+0100\n"
+"POT-Creation-Date: 2011-11-09 01:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: src/mobyle2/core/models/auth.py:62
+#: src/mobyle2/core/validator.py:11
+msgid "You must set a not null string"
+msgstr ""
+
+#: src/mobyle2/core/models/auth.py:81
 msgid "Authentication backends"
 msgstr ""
 
@@ -30,18 +34,27 @@ msgid "Home"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_add.mako:3
+#: src/mobyle2/core/templates/auth/auth_add.pt:3
 msgid "Backend configuration"
 msgstr ""
 
+#: src/mobyle2/core/templates/auth/auth_edit.pt:3
+#: src/mobyle2/core/templates/auth/auth_view.pt:3
+msgid "Backend"
+msgstr ""
+
 #: src/mobyle2/core/templates/auth/auth_home.mako:3
+#: src/mobyle2/core/templates/auth/auth_home.pt:3
 msgid "Authentication backends configuration"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_home.mako:5
+#: src/mobyle2/core/templates/auth/auth_home.pt:5
 msgid "Edit general authentication settings"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_home.mako:6
+#: src/mobyle2/core/templates/auth/auth_home.pt:6
 msgid "List backends"
 msgstr ""
 
@@ -50,19 +63,21 @@ msgid "Add a new identification backend"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_manage_settings.mako:3
+#: src/mobyle2/core/templates/auth/auth_manage_settings.pt:3
 msgid "Manage general authentication settings"
 msgstr ""
 
 #: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
+#: src/mobyle2/core/templates/includes/breadcrumbs.pt:3
 msgid "You are here"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:54 src/mobyle2/core/views/auth.py:145
+#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:189
 msgid "Send"
 msgstr ""
 
 #: src/mobyle2/core/views/auth.py:78
-msgid "Backend name"
+msgid "Name"
 msgstr ""
 
 #: src/mobyle2/core/views/auth.py:79
@@ -70,62 +85,80 @@ msgid "Backend description"
 msgstr ""
 
 #: src/mobyle2/core/views/auth.py:80
+msgid "Enabled"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:80
 msgid "Is this backend enabled ?"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:85
+#: src/mobyle2/core/views/auth.py:86
 msgid "Authentication backend"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:88 src/mobyle2/core/views/auth.py:95
+#: src/mobyle2/core/views/auth.py:90 src/mobyle2/core/views/auth.py:97
 msgid "Host"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:89 src/mobyle2/core/views/auth.py:96
+#: src/mobyle2/core/views/auth.py:91 src/mobyle2/core/views/auth.py:98
 msgid "Port"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:90 src/mobyle2/core/views/auth.py:97
+#: src/mobyle2/core/views/auth.py:92 src/mobyle2/core/views/auth.py:99
 msgid "Password"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:91
+#: src/mobyle2/core/views/auth.py:93
 msgid "User"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:92
+#: src/mobyle2/core/views/auth.py:94
 msgid "Database"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:98
+#: src/mobyle2/core/views/auth.py:100
 msgid "Base dn to connect as"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:99
+#: src/mobyle2/core/views/auth.py:101
 msgid "LDAP filter to grab users"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:100
+#: src/mobyle2/core/views/auth.py:102
 msgid "LDAP filter to grab groups"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:103
+#: src/mobyle2/core/views/auth.py:105
 msgid "API consumer"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:104
+#: src/mobyle2/core/views/auth.py:106
 msgid "API consumer secret"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:107
+#: src/mobyle2/core/views/auth.py:109
 msgid "Service url"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:110
+#: src/mobyle2/core/views/auth.py:112
 msgid "Full path to the file"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:142
+#: src/mobyle2/core/views/auth.py:162 src/mobyle2/core/views/auth.py:169
 msgid "Authentication backend details"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:220
+msgid "A new authentication backend has been created"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:226 src/mobyle2/core/views/auth.py:285
+msgid ""
+"You can try to change some settings because an exception occured while adding"
+" your new authbackend : ${msg}"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:279
+msgid "Backend has been updated"
 msgstr ""
 

@@ -7,7 +7,6 @@ def add_renderer_globals(event):
         event['_'] = request.translate
         event['localizer'] = request.localizer
 
-
 def add_localizer(event):
     request = event.request
     localizer = get_localizer(request)

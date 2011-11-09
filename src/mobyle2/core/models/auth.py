@@ -1,6 +1,7 @@
 from mobyle2.core.models import Base
 from sqlalchemy import Column
 from sqlalchemy import Unicode
+from sqlalchemy import Integer as Int
 from sqlalchemy import Boolean
 from sqlalchemy import Integer
 
@@ -8,7 +9,6 @@ from ordereddict import OrderedDict
 from mobyle2.core.utils import _
 
 AUTH_BACKENDS =OrderedDict([
-	( ''                         , '')         ,
 	( 'openid'                   , 'openid')   ,
 	( 'facebook'                 , 'facebook') ,
 	( 'twitter'                  , 'twitter')  ,
@@ -24,30 +24,49 @@ class AuthenticationBackend(Base):
     __tablename__ = 'authentication_backend'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
-    username = Column(Unicode(50), unique=True)
-    password = Column(Unicode(50), unique=True)
-    url_ba = Column(Unicode(50), unique=True)
-    backend_type = Column(Unicode(50), unique=True)
+    username = Column(Unicode(50))
+    password = Column(Unicode(50))
+    port = Column(Int(4))
+    url_ba = Column(Unicode(50),)
+    backend_type = Column(Unicode(50),)
     enabled = Column(Boolean())
+    description = Column(Unicode(255))
+    hostname = Column(Unicode(255))
+    database = Column(Unicode(255))
+    ldap_groups_filter = Column(Unicode(255))
+    ldap_users_filter = Column(Unicode(255))
+    ldap_dn = Column(Unicode(255))
     description = Column(Unicode(255))
 
     def __init__(self,
-                 name='',
-                 username='',
-                 password='',
-                 url_ba='',
-                 backend_type='',
-                 enabled='',
-                 description='',
+                 name=None,
+                 username=None,
+                 password=None,
+                 url_ba=None,
+                 database=None,
+                 hostname=None,
+                 port=None,
+                 backend_type=None,
+                 enabled=False,
+                 description=None,
+                 ldap_dn=None,
+                 ldap_groups_filter=None,
+                 ldap_users_filter=None,
                 ):
-        self.name = name
-        self.description = description
-        self.username = username
-        self.password = password
-        self.url_ba = url_ba
         self.backend_type = backend_type
-        self.enabled = enabled
+        self.database = database
         self.description = description
+        self.description = description
+        self.enabled = enabled
+        self.hostname = hostname
+        self.ldap_dn = ldap_dn
+        self.ldap_groups_filter = ldap_groups_filter
+        self.ldap_users_filter = ldap_users_filter
+        self.name = name
+        self.password = password
+        self.port = port
+        self.url_ba = url_ba
+        self.username = username
 
 class AuthenticationBackendRessource(object):
     def __init__(self, ab, parent):
@@ -56,14 +75,18 @@ class AuthenticationBackendRessource(object):
         self.__parent__ = parent
 
 class AuthenticationBackends:
+
+    @property
+    def items(self):
+        return OrderedDict([("%s"%a.id, AuthenticationBackendRessource(a, self))               
+                            for a in self.session.query(AuthenticationBackend).all()])         
+
     def __init__(self, name, parent):
         self.__name__ = name
         self.__parent__ = parent
         self.__description__ = _('Authentication backends')
         self.request = parent.request
         self.session = parent.session
-        self.items = OrderedDict([("%s"%a.id, AuthenticationBackends(a, self))
-                              for a in self.session.query(AuthenticationBackend).all()])
 
     def __getitem__(self, item):
         return self.items.get(item, None)

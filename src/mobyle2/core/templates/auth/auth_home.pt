@@ -1,0 +1,10 @@
+<metal metal:use-macro="main.macros['main']">
+<metal metal:fill-slot="content_body"> 
+  <p i18n:translate="">Authentication backends configuration</p>
+  <ul>
+    <li><a i18n:translate="" href="@@manage-settings">Edit general authentication settings</a></li>
+    <li><a i18n:translate="" href="@@list">List backends</a></li>
+    <li><a i18n:translate="" href="@@add">Add a backend</a></li>
+  </ul>
+</metal>
+</metal>

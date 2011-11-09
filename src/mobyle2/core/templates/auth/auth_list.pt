@@ -1,0 +1,22 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body"> 
+    <p i18n:translate="">Authentication backends</p>
+    <table>
+      <th>
+        <td>Resource</td>
+        <td>type</td>
+        <td>description</td>
+      </th>
+      <tal:r tal:repeat="it python:c.items">
+        <tr tal:define="item c.items[it]">
+          <td>
+            <a tal:attributes="href python:request.resource_url(item)" 
+              tal:content="python:item.ab.name">ANCHOR</a>
+          </td>
+          <td><p tal:content="python:item.ab.backend_type"/></td>
+          <td><p tal:content="python:item.ab.description"/></td>
+        </tr>
+      </tal:r>
+    </table>
+  </metal>
+</metal>
