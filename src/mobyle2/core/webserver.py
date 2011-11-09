@@ -117,6 +117,7 @@ def includeme(config, debug=False):
     config.add_view('%s.views.project.Home' % dn, name='', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.List' % dn, name='list', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
+    config.add_view('%s.views.project.Add' % dn, name='add', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.View' % dn, name='',     context='%s.models.project.ProjectRessource' % dn)
     #
     config.end()
