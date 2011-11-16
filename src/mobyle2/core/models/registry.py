@@ -1,4 +1,5 @@
-from mobyle2.core.models import Base
+from mobyle2.core.models import Base, DBSession
+from mobyle2.core.utils import asbool
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
@@ -33,4 +34,21 @@ def register_default_keys(session):
             except exc.IntegrityError:
                 session.rollback()
     session.flush()
+
+class NotSet(object):pass
+notset = NotSet()
+    
+def get_registry_key(key, default=notset, as_bool=True):
+    session = DBSession()
+    res = None
+    try:
+        res = session.query(Registry).filter(Registry.name == key).one().value
+        if as_bool:
+            res = asbool(res)
+    except exc.NoResultFound, e: 
+        if isinstance(default, notset):
+            raise
+        else:
+            res = default
+    return res
 

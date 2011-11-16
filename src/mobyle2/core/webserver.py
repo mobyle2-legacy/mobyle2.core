@@ -16,6 +16,8 @@ from mobyle2.core.models.init import initialize_sql
 from mobyle2.core.config import dn
 from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolicy
 
+from mobyle2.core.interfaces import IMobyle2View
+
 def locale_negotiator(request):
     """This code is inspired by the plonelanguatetool negociation!"""
     settings = get_current_registry().settings
@@ -72,6 +74,8 @@ def locale_negotiator(request):
     return locale_name
 
 def includeme(config, debug=False):
+    config.include('apex', route_prefix='/auth')
+    #
     settings = config.registry.settings
     authentication_policy = AuthTktAuthenticationPolicy(dn)
     authorization_policy = ACLAuthorizationPolicy()
@@ -98,7 +102,6 @@ def includeme(config, debug=False):
     # translation directories
     config.add_translation_dirs('%s:locale/'%dn)
     #config.add_translation_dirs('deform:locale/')
-    config.add_subscriber('%s.subscribers.add_renderer_globals'%dn, 'pyramid.events.BeforeRender')
     config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
     # static files
     config.add_static_view('s', '%s:static'%dn)
@@ -119,7 +122,13 @@ def includeme(config, debug=False):
     config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
     config.add_view('%s.views.project.Add' % dn, name='add', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.View' % dn, name='',     context='%s.models.project.ProjectRessource' % dn)
-    #
+    # redirect after login
+    config.add_route('redirect_after_login', '/redirect_after_login')
+    config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login')
+    # apex overrides
+    render_template = 'mobyle2.core:templates/apex_template.pt'
+    config.add_view('mobyle2.core.views.apexviews.login', route_name='apex_login', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template)
     config.end()
     return config
 

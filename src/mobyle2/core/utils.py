@@ -13,3 +13,13 @@ def splitstrip(l):
     return [a.strip()
             for a in l.split()
             if a.strip()] 
+
+def asbool(value):
+    if isinstance(value, basestring):
+        if value.lower()  in ['y', 'yes', 'ok', '1', 'true', 't']:
+            value = True
+        elif value.lower()  in ['n', 'no', 'ko', '0', 'false', 'f']:
+            value = False
+    if isinstance(value, int):
+        value = bool(value)
+    return value 

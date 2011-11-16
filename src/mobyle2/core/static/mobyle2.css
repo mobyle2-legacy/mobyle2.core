@@ -50,3 +50,8 @@ form#add_auth_backend label.field_opt{
 }
 form#add_auth_backend div.field_input {
 }
+
+
+#login-box {
+  float:right;
+}

@@ -43,7 +43,8 @@ class Add(ProjectView):
         #_ = self.translate
         request = self.request
         struct = {}
-        params = get_base_params(self)
+        params = {}
+        params.update(get_base_params(self))
         form = self.form
         if request.method == 'POST':
             controls = request.POST.items()
@@ -87,7 +88,8 @@ class View(Base):
 class Edit(Add):
     template ='../templates/project/project_add.pt'
     def __call__(self):
-        params = get_base_params(self)
+        params = {'view': self}
+        params.update(get_base_params(self))
         request = self.request
         params['ab'] = ab = self.request.context.project
         form = self.form

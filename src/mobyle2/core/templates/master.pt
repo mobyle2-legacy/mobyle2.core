@@ -37,7 +37,7 @@
         </div>
         <div class="breadcrumbs-wrap">
           <metal:define metal:use-macro="breadcrumbs.macros['main']"/>
-        </div>
+        </div>  
         </metal:define>
       </div>
       </metal:define>
@@ -45,8 +45,15 @@
         <metal:define metal:define-slot="content">
         <metal:define metal:define-slot="right_slot">
         <div class="right_slot">
+          <div class="login-wrap">
+            <metal:define metal:use-macro="login.macros['main']"/>
+          </div> 
         </div>
         </metal:define>
+        <metal:define metal:define-slot="left_slot">
+          <div class="left_slot">
+          </div>
+        </metal:define> 
         <metal:define metal:define-slot="middle_slot">
         <div class="middle_slot">
           <div id="above-content">
@@ -78,10 +85,6 @@
             <metal:define metal:define-slot="below_content">
             </metal:define>
           </div>
-        </div>
-        </metal:define>
-        <metal:define metal:define-slot="left_slot">
-        <div class="left_slot">
         </div>
         </metal:define>
         </metal:define>

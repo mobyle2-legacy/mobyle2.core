@@ -1,7 +1,7 @@
 from mobyle2.core.models import Base
+from mobyle2.core.models.registry import get_registry_key
 from sqlalchemy import Column
 from sqlalchemy import Unicode
-from sqlalchemy import Integer as Int
 from sqlalchemy import Boolean
 from sqlalchemy import Integer
 
@@ -14,7 +14,7 @@ AUTH_BACKENDS =OrderedDict([
 	( 'twitter'                  , 'twitter')  ,
 	( 'yahoo'                    , 'yahoo')    ,
 	( 'live'                     , 'live')     ,
-	( 'db'                       , 'db')       ,
+#	( 'db'                       , 'db')       ,
 	( 'ldap'                     , 'ldap')     ,
 	( 'file'                     , 'file')     ,
 ])
@@ -26,7 +26,7 @@ class AuthenticationBackend(Base):
     name = Column(Unicode(50), unique=True)
     username = Column(Unicode(50))
     password = Column(Unicode(50))
-    port = Column(Int(4))
+    port = Column(Integer)
     url_ba = Column(Unicode(50),)
     backend_type = Column(Unicode(50),)
     enabled = Column(Boolean())
@@ -79,8 +79,11 @@ class AuthenticationBackends:
 
     @property
     def items(self):
-        return OrderedDict([("%s"%a.id, AuthenticationBackendRessource(a, self))               
-                            for a in self.session.query(AuthenticationBackend).all()])         
+        return OrderedDict(
+            [("%s"%a.id, 
+              AuthenticationBackendRessource(a, self))               
+             for a in self.session.query(
+                 AuthenticationBackend).all()])         
 
     def __init__(self, name, parent):
         self.__name__ = name
@@ -91,4 +94,8 @@ class AuthenticationBackends:
 
     def __getitem__(self, item):
         return self.items.get(item, None)
+
+def self_registration():
+    return get_registry_key('auth.self_registration')
+
 

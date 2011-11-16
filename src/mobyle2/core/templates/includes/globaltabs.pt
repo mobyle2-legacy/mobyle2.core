@@ -1,10 +1,10 @@
 <metal:define metal:define-macro="main">
 <div id="globaltabs">
   <ul>
-    <tal:r tal:repeat="i python:v.get_globaltabs()">
+    <tal:r tal:repeat="i python:get_globaltabs(request)">
     <li tal:attributes="class python:i['class']">
     <a tal:attributes="href python:i['url']" tal:content="python:i['name']"></a>
-    </li> 
+    </li>
     </tal:r>
   </ul>
 </div>

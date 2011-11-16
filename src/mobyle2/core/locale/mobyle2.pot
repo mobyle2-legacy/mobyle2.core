@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-11-09 11:29+0100\n"
+"POT-Creation-Date: 2011-11-16 12:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,11 @@ msgstr ""
 msgid "You must set a not null string"
 msgstr ""
 
-#: src/mobyle2/core/models/auth.py:88
+#: src/mobyle2/core/forms/__init__.py:54
+msgid "Self registration is turned off by the administrator on this portal."
+msgstr ""
+
+#: src/mobyle2/core/models/auth.py:91
 #: src/mobyle2/core/templates/auth/auth_list.pt:3
 msgid "Authentication backends"
 msgstr ""
@@ -134,6 +138,18 @@ msgstr ""
 msgid "You are here"
 msgstr ""
 
+#: src/mobyle2/core/templates/includes/login.pt:10
+msgid "Login"
+msgstr ""
+
+#: src/mobyle2/core/templates/includes/login.pt:15
+msgid "Welcome"
+msgstr ""
+
+#: src/mobyle2/core/templates/includes/login.pt:18
+msgid "Logout"
+msgstr ""
+
 #: src/mobyle2/core/templates/project/project_add.pt:3
 msgid "Project configuration"
 msgstr ""
@@ -150,7 +166,7 @@ msgstr ""
 msgid "Add a project"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:191
+#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:196
 #: src/mobyle2/core/views/project.py:37
 msgid "Send"
 msgstr ""
@@ -195,58 +211,53 @@ msgstr ""
 msgid "Database"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:100
-msgid "Base dn to connect as"
-msgstr ""
-
 #: src/mobyle2/core/views/auth.py:101
-msgid "LDAP filter to grab users"
+msgid ""
+"Base dn mask to connect as in the form \"cn=USERID,ou=people\", ex: "
+"\"cn=USERID,o=paster,dc=paris,dc=net. USERID is the placeholder for the login"
+" string the user will input."
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:102
-msgid "LDAP filter to grab groups"
-msgstr ""
-
-#: src/mobyle2/core/views/auth.py:105
+#: src/mobyle2/core/views/auth.py:110
 msgid "API consumer"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:106
+#: src/mobyle2/core/views/auth.py:111
 msgid "API consumer secret"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:109
+#: src/mobyle2/core/views/auth.py:114
 msgid "Service url"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:112
+#: src/mobyle2/core/views/auth.py:117
 msgid "Full path to the file"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:163 src/mobyle2/core/views/auth.py:170
+#: src/mobyle2/core/views/auth.py:168 src/mobyle2/core/views/auth.py:175
 msgid "Authentication backend details"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:222
+#: src/mobyle2/core/views/auth.py:227
 msgid "A new authentication backend has been created"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:228 src/mobyle2/core/views/auth.py:291
-#: src/mobyle2/core/views/project.py:69 src/mobyle2/core/views/project.py:116
+#: src/mobyle2/core/views/auth.py:233 src/mobyle2/core/views/auth.py:296
+#: src/mobyle2/core/views/project.py:70 src/mobyle2/core/views/project.py:118
 msgid ""
 "You can try to change some settings because an exception occured while adding"
 " your new authbackend : ${msg}"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:285
+#: src/mobyle2/core/views/auth.py:290
 msgid "Backend has been updated"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:63
+#: src/mobyle2/core/views/project.py:64
 msgid "A new project has been created"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:110
+#: src/mobyle2/core/views/project.py:112
 msgid "Project has been updated"
 msgstr ""
 

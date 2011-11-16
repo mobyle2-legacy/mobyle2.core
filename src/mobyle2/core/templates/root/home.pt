@@ -1,0 +1,1 @@
+<metal:main metal:use-macro="main.macros['main']"/>

@@ -97,9 +97,14 @@ class AuthView(Base):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
             port = colander.SchemaNode(colander.String(), description=_('Port'))
             password = colander.SchemaNode(colander.String(), description=_('Password'))
-            dn = colander.SchemaNode(colander.String(), description=_('Base dn to connect as'))
-            users = colander.SchemaNode(colander.String(), description=_('LDAP filter to grab users'))
-            groups = colander.SchemaNode(colander.String(), description=_('LDAP filter to grab groups'))
+            dn = colander.SchemaNode(colander.String(), 
+                                     description=_('Base dn mask to connect as in the '
+                                                   'form "cn=USERID,ou=people", '
+                                                   'ex: "cn=USERID,o=paster,dc=paris,dc=net. '
+                                                   'USERID is the placeholder for the login '
+                                                   'string the user will input.'))
+            # users = colander.SchemaNode(colander.String(), description=_('LDAP filter to grab users'))
+            # groups = colander.SchemaNode(colander.String(), description=_('LDAP filter to grab groups'))
 
         class SimpleOauthSchema(colander.MappingSchema):
             key = colander.SchemaNode(colander.String(), description=_('API consumer'))
