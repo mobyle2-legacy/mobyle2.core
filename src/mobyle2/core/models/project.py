@@ -1,9 +1,12 @@
-from mobyle2.core.models import Base
+from ordereddict import OrderedDict
+
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
+from sqlalchemy import ForeignKey
 
-from ordereddict import OrderedDict
+from mobyle2.core.models import Base
+from mobyle2.core.models.user import User
 from mobyle2.core.utils import _
 
 class Project(Base):
@@ -11,10 +14,12 @@ class Project(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
+    user_id = Column(Integer, ForeignKey('users.id'))
 
-    def __init__(self, name, description):
+    def __init__(self, name, description, user_id):
         self.name = name
         self.description = description
+        self.user_id = user_id
 
 class ProjectRessource(object):
     def __init__(self, p, parent):
@@ -26,7 +31,7 @@ class Projects:
     @property
     def items(self):
         self._items = OrderedDict([("%s"%a.id, ProjectRessource(a, self))
-                                   for a in self.session.query(Project).all()]) 
+                                   for a in self.session.query(Project).all()])
         return self._items
 
     def __init__(self, name, parent):

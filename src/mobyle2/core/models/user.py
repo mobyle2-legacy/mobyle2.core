@@ -19,8 +19,8 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     userid = Column(Unicode(20))
-    email = Column(Unicode(20))
-    password = Column(Unicode(20))
+    email = Column(Unicode(50))
+    password = Column(Unicode(255))
     fullname = Column(Unicode(40))
     about = Column(Unicode(255))
     status = Column(Unicode(1))
