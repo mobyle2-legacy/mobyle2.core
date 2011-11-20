@@ -1,7 +1,11 @@
 <metal metal:use-macro="main.macros['main']">
   <metal metal:fill-slot="content_body">
-    <a class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a>
+    <ul class="actions authbackend-actions">
+      <li><a class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a></li>
+      <li><a class="edit" tal:attributes="href python:u(c)+'@@delete'">Delete</a></li>
+    </ul>
     <p><strong i18n:translate="">Name : </strong> ${ab.name}</p>
+
     <p><strong i18n:translate="">Description : </strong> ${ab.description}</p>
     <p><strong i18n:translate="">Enabled : </strong> ${ab.enabled}</p>
     <div class="authentication_details">
