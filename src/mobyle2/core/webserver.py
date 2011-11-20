@@ -18,6 +18,8 @@ from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolic
 
 from mobyle2.core.interfaces import IMobyle2View
 
+from mobyle2.core.events import RegenerateVelruseConfigEvent
+
 def locale_negotiator(request):
     """This code is inspired by the plonelanguatetool negociation!"""
     settings = get_current_registry().settings
@@ -103,6 +105,7 @@ def includeme(config, debug=False):
     config.add_translation_dirs('%s:locale/'%dn)
     #config.add_translation_dirs('deform:locale/')
     config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
+    config.add_subscriber('%s.subscribers.regenerate_velruse_config'%dn, '%s.events.RegenerateVelruseConfigEvent' % dn)
     # static files
     config.add_static_view('s', '%s:static'%dn)
     config.add_static_view('deform', 'deform:static')
@@ -115,6 +118,7 @@ def includeme(config, debug=False):
     config.add_view('%s.views.auth.Add' % dn,  name='add',  context='%s.models.auth.AuthenticationBackends' % dn)
     config.add_view('%s.views.auth.View' % dn, name='',     context='%s.models.auth.AuthenticationBackendRessource' % dn)
     config.add_view('%s.views.auth.Edit' % dn, name='edit', context='%s.models.auth.AuthenticationBackendRessource' % dn)
+    config.add_view('%s.views.auth.Delete' % dn, name='delete', context='%s.models.auth.AuthenticationBackendRessource' % dn)
     #config.add_view('%s.views.auth.Helper' % dn,    name='helper',  context='%s.models.auth.AuthenticationBackends' % dn)
     # project urls
     config.add_view('%s.views.project.Home' % dn, name='', context='%s.models.project.Projects' % dn)
@@ -130,6 +134,8 @@ def includeme(config, debug=False):
     config.add_view('mobyle2.core.views.apexviews.login', route_name='apex_login', renderer=render_template)
     config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template)
     config.end()
+    config.commit()
+    config.registry.notify(RegenerateVelruseConfigEvent(config.registry))
     return config
 
 def wsgi_app_factory(global_config, **local_config):
