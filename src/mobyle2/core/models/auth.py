@@ -12,6 +12,7 @@ AUTH_BACKENDS =OrderedDict([
 	( 'openid'                   , 'openid')   ,
 	( 'facebook'                 , 'facebook') ,
 	( 'twitter'                  , 'twitter')  ,
+	( 'github'                   , 'github')  ,
 	( 'yahoo'                    , 'yahoo')    ,
 	( 'live'                     , 'live')     ,
 #	( 'db'                       , 'db')       ,
@@ -19,15 +20,18 @@ AUTH_BACKENDS =OrderedDict([
 	( 'file'                     , 'file')     ,
 ])
 
+ONLY_ONE_OF = ['twitter', 'github', 'yahoo', 'live']
+
 
 class AuthenticationBackend(Base):
     __tablename__ = 'authentication_backend'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
-    username = Column(Unicode(50))
-    password = Column(Unicode(50))
+    username = Column(Unicode(255))
+    password = Column(Unicode(255))
+    authorize = Column(Unicode(255))
     port = Column(Integer)
-    url_ba = Column(Unicode(50),)
+    url_ba = Column(Unicode(255),)
     backend_type = Column(Unicode(50),)
     enabled = Column(Boolean())
     description = Column(Unicode(255))
@@ -48,6 +52,7 @@ class AuthenticationBackend(Base):
                  hostname=None,
                  port=None,
                  backend_type=None,
+                 authorize=None,
                  enabled=False,
                  description=None,
                  ldap_dn=None,
@@ -59,6 +64,7 @@ class AuthenticationBackend(Base):
         self.description = description
         self.description = description
         self.enabled = enabled
+        self.authorize = authorize
         self.hostname = hostname
         self.ldap_dn = ldap_dn
         self.ldap_groups_filter = ldap_groups_filter
@@ -80,10 +86,10 @@ class AuthenticationBackends:
     @property
     def items(self):
         return OrderedDict(
-            [("%s"%a.id, 
-              AuthenticationBackendRessource(a, self))               
+            [("%s"%a.id,
+              AuthenticationBackendRessource(a, self))
              for a in self.session.query(
-                 AuthenticationBackend).all()])         
+                 AuthenticationBackend).all()])
 
     def __init__(self, name, parent):
         self.__name__ = name
