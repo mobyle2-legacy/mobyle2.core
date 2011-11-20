@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from mobyle2.core.views import Base
+
+from pyramid.httpexceptions import HTTPFound
 import os
 from signal import SIGUSR2
 class Home(Base):
@@ -8,11 +10,14 @@ class Home(Base):
 
 class RedirectAfterLogin(Base):
     def __call__(self):
-        import pdb;pdb.set_trace()  ## Breakpoint ##
-
+        return HTTPFound(
+            self.request.resource_url(
+                self.request.root
+            )
+        )
 
 class Reload(Base):
-    template = 'root/reload.mako'
+    template = '../templates/root/reload.pt'
     def __call__(self):
         req = self.request
         if(req.params.get('submitted', '0') == '1' and

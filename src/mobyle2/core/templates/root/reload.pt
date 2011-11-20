@@ -1,0 +1,8 @@
+<metal:main metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    <form method="post">
+      <input type="hidden" name="submitted" value="1"/>
+      <input type="submit" name="reload" value="Reload the webserver"/>
+    </form> 
+  </metal>
+</metal:main>
