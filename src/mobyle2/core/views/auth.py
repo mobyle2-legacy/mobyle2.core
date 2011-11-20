@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import copy
+
 from ordereddict import OrderedDict
 
 from pyramid.renderers import render_to_response
@@ -18,6 +20,7 @@ from pyramid.httpexceptions import HTTPFound
 import deform
 import colander
 
+from mobyle2.core.events import RegenerateVelruseConfigEvent
 
 bool_values = {
     '1': True,
@@ -73,6 +76,12 @@ class AuthView(Base):
     def __init__(self, request):
         Base.__init__(self, request)
         at = auth.AUTH_BACKENDS.copy()
+        existing_types = session.query(auth.AuthenticationBackend.backend_type
+                                       ).filter(auth.AuthenticationBackend.enabled == True
+                                               ).group_by(auth.AuthenticationBackend.backend_type)
+        for item in copy.deepcopy(at):
+            if (item in existing_types) and (item in auth.ONLY_ONE_OF):
+                del at[item]
         atv = [('', '')]  + at.items()
         class AuthentSchema(colander.MappingSchema):
             name = colander.SchemaNode(colander.String(), title=_('Name'), validator = v.not_empty_string)
@@ -97,7 +106,7 @@ class AuthView(Base):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
             port = colander.SchemaNode(colander.String(), description=_('Port'))
             password = colander.SchemaNode(colander.String(), description=_('Password'))
-            dn = colander.SchemaNode(colander.String(), 
+            dn = colander.SchemaNode(colander.String(),
                                      description=_('Base dn mask to connect as in the '
                                                    'form "cn=USERID,ou=people", '
                                                    'ex: "cn=USERID,o=paster,dc=paris,dc=net. '
@@ -106,9 +115,12 @@ class AuthView(Base):
             # users = colander.SchemaNode(colander.String(), description=_('LDAP filter to grab users'))
             # groups = colander.SchemaNode(colander.String(), description=_('LDAP filter to grab groups'))
 
-        class SimpleOauthSchema(colander.MappingSchema):
+        class SimpleOpenidSchema(colander.MappingSchema):
             key = colander.SchemaNode(colander.String(), description=_('API consumer'))
             secret = colander.SchemaNode(colander.String(), description=_('API consumer secret'))
+
+        class SimpleOauthSchema(SimpleOpenidSchema):
+            authorize = colander.SchemaNode(colander.String(), description=_('API Scope'), missing=None)
 
         class FullOauthSchema(SimpleOauthSchema):
             url = colander.SchemaNode(colander.String(), description=_('Service url'), validator = v.not_empty_string)
@@ -118,9 +130,10 @@ class AuthView(Base):
 
         self.sh_map = {'openid': FullOauthSchema,
                        'facebook': SimpleOauthSchema,
-                       'twitter': SimpleOauthSchema,
-                       'yahoo': SimpleOauthSchema,
+                       'twitter':  SimpleOauthSchema,
+                       'yahoo': SimpleOpenidSchema,
                        'live': SimpleOauthSchema,
+                       'github': SimpleOauthSchema,
                        'db': DBSchema,
                        'ldap': LDAPSchema,
                        'file': FileSchema,
@@ -131,6 +144,7 @@ class AuthView(Base):
             'enabled': 'enabled',
             'name': 'name',
             'description': 'description',
+            'authorize': 'authorize',
             'key' : 'username',
             'secret' : 'password',
             'url': 'url_ba',
@@ -178,7 +192,7 @@ class AuthView(Base):
             dkeys = {}
             if (ab.backend_type == at and at != '') or (at == ''):
                 if ab.backend_type in ['facebook', 'live', 'yahoo', 'twitter', 'openid']:
-                    dkeys.update({'username':'key', 'password':'secret'})
+                    dkeys.update({'username':'key', 'password':'secret', 'authorize': 'authorize'})
                 if ab.backend_type in ['file']:
                     dkeys.update({'file':'file'})
                 if ab.backend_type in ['openid']:
@@ -222,6 +236,7 @@ class Add(AuthView):
                     try:
                         ba = auth.AuthenticationBackend(**kwargs)
                         session.add(ba)
+                        self.request.registry.notify(RegenerateVelruseConfigEvent(self.request.registry))
                         session.commit()
                         self.request.session.flash(
                             _('A new authentication backend has been created'),
@@ -242,11 +257,11 @@ class Add(AuthView):
                 except  ValidationFailure, e:
                     params['f_content'] = e.render()
         if not 'f_content' in params:
-            params['f_content'] = form.render()        
+            params['f_content'] = form.render()
         if self.for_ajax_form:
             response = Response(params['f_content'])
         else:
-            response = render_to_response(self.template, params, self.request) 
+            response = render_to_response(self.template, params, self.request)
         return response
 
 class View(AuthView):
@@ -285,6 +300,7 @@ class Edit(AuthView):
                         for k in kwargs:
                             setattr(ab, k, kwargs[k])
                         session.add(ab)
+                        self.request.registry.notify(RegenerateVelruseConfigEvent(self.request.registry))
                         session.commit()
                         self.request.session.flash(
                             _('Backend has been updated'),
@@ -307,6 +323,48 @@ class Edit(AuthView):
         if self.for_ajax_form:
             response = Response(params['f_content'])
         else:
-            response = render_to_response(self.template, params, self.request) 
+            response = render_to_response(self.template, params, self.request)
+        return response
+
+class Delete(AuthView):
+    template ='../templates/auth/auth_delete.pt'
+    def __call__(self):
+        auths_list = self.request.resource_url(
+            self.request.root['auths']
+        ) + '@@list'
+        class authbackend_delete_schema(colander.MappingSchema):
+            submitted = colander.SchemaNode(
+                colander.String(),
+                widget=deform.widget.HiddenWidget(),
+                default='true',
+                validator = colander.OneOf(['true']),
+                title= _('delete me'))
+        params = get_base_params(self)
+        request = self.request
+        params['ab'] = ab = self.request.context.ab
+        form = deform.Form(authbackend_delete_schema(), buttons=(_('Send'),), use_ajax=True)
+        params['f_content'] = form.render()
+        if request.method == 'POST':
+            controls = request.POST.items()
+            # we are in regular post, just registering data in database
+            try:
+                struct = form.validate(controls)
+                try:
+                    session.delete(ab)
+                    self.request.registry.notify(RegenerateVelruseConfigEvent(self.request.registry))
+                    session.commit()
+                    return HTTPFound(location=auths_list)
+                except Exception, e:
+                    message = _(u'You can try to change some '
+                                'settings because an exception occured '
+                                'while adding your new authbackend '
+                                ': ${msg}',
+                                mapping={'msg': u'%s'%e})
+                    self.request.session.flash(message, 'error')
+                    session.rollback()
+            except  ValidationFailure, e:
+                params['f_content'] = e.render()
+        response = render_to_response(self.template,
+                                      params, self.request)
         return response
 # vim:set et sts=4 ts=4 tw=0:
