@@ -8,6 +8,11 @@ from auth import AuthenticationBackends
 
 from ordereddict import OrderedDict
 from mobyle2.core.utils import _
+
+from pyramid.security import Everyone
+from pyramid.security import Allow
+from pyramid.security import Authenticated 
+
 mapping_apps = OrderedDict([
     ('projects', Projects),
 ])
@@ -28,6 +33,14 @@ class Root(object):
 
     def __getitem__(self, item):
         return self.items.get(item, None)
+
+    @property
+    def __acl__(self):
+        acls = [
+            (Allow, Everyone, 'view'),
+            (Allow, Authenticated, 'authenticated'),
+        ]
+        return acls
 
 def root_factory(request):
     return Root(request)
