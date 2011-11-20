@@ -54,4 +54,11 @@ class RegisterForm(forms.RegisterForm):
                    'by the administrator on this portal.'))
          return errors
 
+     def after_signup(self, user, **kwargs):
+         """
+         TODO: Link to a new related workspace
+         """
+         pass
+
+
 # vim:set et sts=4 ts=4 tw=80:
