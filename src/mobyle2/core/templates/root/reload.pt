@@ -1,8 +1,44 @@
 <metal:main metal:use-macro="main.macros['main']">
   <metal metal:fill-slot="content_body">
-    <form method="post">
+    <p 
+      i18n:translate=""
+      tal:condition="python:request.GET.get('confirm', False)|nothing">Are you sure you want to reload the webserver ?</p>
+    <form>
+      <input type="hidden" id="server_reloaded" 
+        value="Server was reloaded, please refresh in a few seconds." i18n:attributes="value"/>
+    </form>
+    <form id="reloadform" method="post">
       <input type="hidden" name="submitted" value="1"/>
       <input type="submit" name="reload" value="Reload the webserver"/>
+      <input 
+        type="submit"
+        name="back"
+        value="Cancel"
+        i18n:attributes="value"
+        onClick="javascript:history.goBack();"
+        tal:condition="python:request.GET.get('confirm', False)|nothing"/>
     </form> 
+    <script type="text/JavaScript"> 
+      // prepare the form when the DOM is ready 
+      $(document).ready(function() { 
+          var options = { 
+              target:        '#reloadform',   // target element(s) to be updated with server response 
+              type:          'post',
+              //beforeSubmit:  showRequest,  // pre-submit callback 
+              success:       showResponse  // post-submit callback 
+          }; 
+       
+          // bind form using 'ajaxForm' 
+          $('#reloadform').ajaxForm(options); 
+      }); 
+      function showRequest(formData, jqForm, options) { 
+          var queryString = $.param(formData); 
+          alert('About to submit: \n\n' + queryString); 
+          return true; 
+      } 
+      function showResponse(responseText, statusText, xhr, $form)  { 
+          $('#reloadform').append($('#server_reloaded').val());
+      } 
+    </script>  
   </metal>
 </metal:main>
