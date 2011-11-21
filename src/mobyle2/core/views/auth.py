@@ -76,9 +76,14 @@ class AuthView(Base):
     def __init__(self, request):
         Base.__init__(self, request)
         at = auth.AUTH_BACKENDS.copy()
-        existing_types = session.query(auth.AuthenticationBackend.backend_type
-                                       ).filter(auth.AuthenticationBackend.enabled == True
-                                               ).group_by(auth.AuthenticationBackend.backend_type)
+        existing_types = [a[0]
+                          for a in session.query(
+                              auth.AuthenticationBackend.backend_type
+                          ).filter(
+                              auth.AuthenticationBackend.enabled == True
+                          ).group_by(
+                              auth.AuthenticationBackend.backend_type).all()
+                         ]
         for item in copy.deepcopy(at):
             if (item in existing_types) and (item in auth.ONLY_ONE_OF):
                 del at[item]
@@ -94,6 +99,7 @@ class AuthView(Base):
                                                validator = colander.OneOf(at.keys()),
                                                title= _('Authentication backend')
                                               )
+
 
         class DBSchema(colander.MappingSchema):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
@@ -134,6 +140,7 @@ class AuthView(Base):
                        'yahoo': SimpleOpenidSchema,
                        'live': SimpleOauthSchema,
                        'github': SimpleOauthSchema,
+                       'google': SimpleOauthSchema,
                        'db': DBSchema,
                        'ldap': LDAPSchema,
                        'file': FileSchema,
@@ -164,7 +171,16 @@ class AuthView(Base):
             #    exc = colander.Invalid(form, 'Title must start with name')
             #    exc['title'] = 'Must start with name %s' % value['name']
             #    raise exc
-        self.sh = self.sh_map['base'](validator=global_auth_backend_validator)
+        def auth_schema_afterbind(node, kw):
+            if kw.get('remove_ab'):
+               del node['auth_backend']
+        self.sh = self.sh_map['base'](
+            validator=global_auth_backend_validator,
+            after_bind=auth_schema_afterbind)
+        ctx = self.request.context
+        # if we are in the context of an auth backend, we cant change the type
+        if isinstance(ctx, auth.AuthenticationBackendRessource):
+            self.sh = self.sh.bind(remove_ab=True)
         self.for_ajax_form = False
         # maybe we are in an ajax request to solve remaining fields for a particular authtype.
         at = ''
@@ -181,7 +197,7 @@ class AuthView(Base):
                 ash = self.sh_map[at](name="auth_backend_infos",
                                       description=_('Authentication backend details'))
                 self.sh.add(ash)
-        ctx = self.request.context
+        # if we are in the context of an auth backend, filling edit properties
         if isinstance(ctx, auth.AuthenticationBackendRessource):
             ab = ctx.ab
             if not details_added:
@@ -191,8 +207,8 @@ class AuthView(Base):
             keys = {'name': 'name', 'description':'description', 'backend_type':'auth_backend', 'enabled':'enabled'}
             dkeys = {}
             if (ab.backend_type == at and at != '') or (at == ''):
-                if ab.backend_type in ['facebook', 'live', 'yahoo', 'twitter', 'openid']:
-                    dkeys.update({'username':'key', 'password':'secret', 'authorize': 'authorize'})
+                if ab.backend_type in ['facebook', 'live', 'yahoo', 'twitter', 'openid', 'google', 'github']:
+                    dkeys.update({'username': 'key', 'password':'secret', 'authorize': 'authorize'})
                 if ab.backend_type in ['file']:
                     dkeys.update({'file':'file'})
                 if ab.backend_type in ['openid']:
@@ -204,9 +220,12 @@ class AuthView(Base):
                     dkeys.update({'hostname':'host', 'database':'db','password':'password','port':'port',
                                   'username':'user','password':'password'})
             for k in keys:
-                self.sh[keys[k]].default = getattr(ab, k)
+                if k in self.sh:
+                    self.sh[keys[k]].default = getattr(ab, k)
             for k in dkeys:
-                self.sh['auth_backend_infos'][dkeys[k]].default = getattr(ab, k)
+                value = getattr(ab, k)
+                if value:
+                    self.sh['auth_backend_infos'][dkeys[k]].default = value
         self.form = deform.Form(self.sh, buttons=(_('Send'),), formid = 'add_auth_backend')
 
 class Add(AuthView):
@@ -274,7 +293,7 @@ class View(AuthView):
         return render_to_response(self.template, params, self.request)
 
 class Edit(AuthView):
-    template ='../templates/auth/auth_add.pt'
+    template ='../templates/auth/auth_edit.pt'
     def __call__(self):
         params = get_base_params(self)
         request = self.request

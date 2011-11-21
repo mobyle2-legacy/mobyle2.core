@@ -14,13 +14,14 @@ AUTH_BACKENDS =OrderedDict([
 	( 'twitter'                  , 'twitter')  ,
 	( 'github'                   , 'github')  ,
 	( 'yahoo'                    , 'yahoo')    ,
+	( 'google'                   , 'google')    ,
 	( 'live'                     , 'live')     ,
 #	( 'db'                       , 'db')       ,
 	( 'ldap'                     , 'ldap')     ,
 	( 'file'                     , 'file')     ,
 ])
 
-ONLY_ONE_OF = ['twitter', 'github', 'yahoo', 'live']
+ONLY_ONE_OF = ['twitter', 'github', 'yahoo', 'live', 'google']
 
 
 class AuthenticationBackend(Base):

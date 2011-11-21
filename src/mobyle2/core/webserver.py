@@ -135,7 +135,6 @@ def includeme(config, debug=False):
     config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template)
     config.end()
     config.commit()
-    config.registry.notify(RegenerateVelruseConfigEvent(config.registry))
     return config
 
 def wsgi_app_factory(global_config, **local_config):
