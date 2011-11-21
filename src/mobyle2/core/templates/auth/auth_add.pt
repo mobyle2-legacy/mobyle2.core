@@ -1,6 +1,6 @@
 <metal metal:use-macro="main.macros['main']">
 <metal metal:fill-slot="content_body">
-  <h1 i18n:translate="">Backend configuration</h1>
+  <h1 i18n:translate="">Backend</h1>
   <div id="add_auth_backend_holder">
     <tal tal:content="structure f_content"/>
   </div>
@@ -11,12 +11,12 @@
         $('#add_auth_backend_holder > *').remove();
         $('#add_auth_backend_holder').append($(data));
         bind_auth_events();
-      } 
+      }
       function bind_auth_events() {
         $("*[name='auth_backend']").change(
         function() {
           data = $('#add_auth_backend').serializeArray();
-          data[data.length] = {'name': 'load_auth_backend_details', 
+          data[data.length] = {'name': 'load_auth_backend_details',
             'value': $('*[name=auth_backend]').val()
           };
           $.ajax({
@@ -25,7 +25,7 @@
             data: data,
             success: set_add_params,
             dataType: 'html'
-          }); 
+          });
       })};
       bind_auth_events();
     });
