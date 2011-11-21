@@ -3,6 +3,9 @@
     <ul class="actions authbackend-actions">
       <li><a class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a></li>
       <li><a class="edit" tal:attributes="href python:u(c)+'@@delete'">Delete</a></li>
+      <li
+        tal:condition="python:request.GET.get('reload', False)|nothing" ><a class="restart" 
+        tal:attributes="href python:u(request.root)+'@@reload?confirm=1'">Restart the server to appply configuration</a></li>
     </ul>
     <p><strong i18n:translate="">Name : </strong> ${ab.name}</p>
 
@@ -25,7 +28,7 @@
       <tal:b tal:condition="ab.backend_type=='file'">
         <p><strong i18n:translate="">File</strong> ${ab.file}</p>
       </tal:b>
-      <tal:b tal:condition="ab.backend_type in ['facebook', 'live', 'twitter', 'yahoo', 'openid']">
+      <tal:b tal:condition="ab.backend_type in ['facebook', 'live', 'twitter', 'yahoo', 'openid', 'github', 'google']">
         <p><strong i18n:translate="">API Key : </strong> ${ab.username}</p>
         <p><strong i18n:translate="">API Secret : </strong> ${ab.password}</p>
       </tal:b>
