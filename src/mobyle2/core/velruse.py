@@ -3,7 +3,7 @@
 __docformat__ = 'restructuredtext en'
 
 from sqlalchemy import engine_from_config
-from mobyle2.core.models.init import initialize_sql
+from mobyle2.core.models import initialize_sql
 from mobyle2.core.models.auth import AuthenticationBackend
 from mobyle2.core.models import DBSession  as session
 from openid.store import sqlstore

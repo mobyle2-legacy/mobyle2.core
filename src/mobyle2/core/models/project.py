@@ -10,20 +10,45 @@ from mobyle2.core.utils import _
 from mobyle2.core.models import Base
 import mobyle2
 
+"""
+>>> from mobyle2.core.models import user,project,job,workflow
+>>> from mobyle2.core.models import DBSession as session
+>>> uu1 = user.AuthUser();session.add(uu1);session.commit()
+>>> uu2 = user.User(uu1.id,'a');session.add(uu2);session.commit()
+>>> p = project.Project("bbb", "bbb", uu2)
+>>> session.add(p)
+>>> session.commit()
+>>> j = job.Job("bbb", "bbb", p)
+>>> session.add(j)
+>>> session.commit()
+>>> w = workflow.Workflow("bbb", "bbb", p, [j])
+>>> session.add(w)
+>>> session.commit()
+>>> w.jobs[0] == j
+True
+>>> w.project == p
+True
+ 
+"""
+
 class Project(Base):
     __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
     user_id = Column(Integer, ForeignKey("users.id", "fk_project_user", use_alter=True))
+    workflows = relationship("Workflow", backref="project", uselist=True)
+    jobs = relationship("Job", backref="project", uselist=True)
 
 
-    def __init__(self, name, description, user_id):
+    def __init__(self, name, description, user, workflows=None, jobs=None):
         self.name = name
         self.description = description
-        self.user_id = user_id
-        self.workflows = relationship("Workflow", backref="project")
-        self.jobs = relationship("Job", backref="project")
+        self.user = user
+        if jobs is not None:
+            self.jobs.extend(jobs)
+        if workflows is not None:
+            self.workflows.extend(workflows)
 
 class ProjectRessource(object):
     def __init__(self, p, parent):

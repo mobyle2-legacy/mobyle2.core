@@ -16,11 +16,11 @@ class Job(Base):
     project_id = Column(Integer,  ForeignKey("projects.id" , "fk_job_proijec", use_alter=True),  nullable=True)
     workflow_id = Column(Integer, ForeignKey("workflows.id", "fk_job_workflow", use_alter=True), nullable=True)
 
-    def __init__(self, name, description, project_id=None, workflow_id=None):
+    def __init__(self, name, description, project=None, workflow=None):
         self.name = name
         self.description = description
-        self.project_id = project_id
-        self.workflow_id = workflow_id
+        self.project = project
+        self.workflow = workflow
 
 
 

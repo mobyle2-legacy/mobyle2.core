@@ -6,7 +6,7 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 import apex
 
-from apex.models import AuthUser
+from apex import models
 import mobyle2
 
 user_statuses = {
@@ -15,19 +15,21 @@ user_statuses = {
     's' : 'Suspended',
 }
 
+class AuthUser(Base, models.AuthUser):
+    def __init__(self, *args, **kwargs):
+        Base.__init__(self, *args, **kwargs)
+        models.AuthUser.__init__(self, *args, **kwargs)
 
-class AuthUser(AuthUser, Base):pass
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, ForeignKey("auth_users.id", "fk_user_authuser", use_alter=True), primary_key=True)
+    id = Column(Integer, ForeignKey(AuthUser.id, "fk_user_authuser", use_alter=True), primary_key=True)
     status = Column(Unicode(1))
     base_user = relationship("AuthUser", backref="mobyle_user")
+    projects = relationship("Project", uselist=True, backref="user")
 
     def __init__(self, id, status):
         self.id = id
         self.status = status
-        self.projects = relationship("Project", backref="user")
-        self.abase_user = relationship("AuthUser", backref="mobyle_user")
 
     def get_status(self):
         user_statuses.get(self.status, None)

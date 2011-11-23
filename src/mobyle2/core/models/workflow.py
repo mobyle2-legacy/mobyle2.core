@@ -15,11 +15,13 @@ class Workflow(Base):
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
     project_id = Column(Integer, ForeignKey("projects.id", name="fk_workflow_project", use_alter=True), nullable=True)
+    jobs = relationship("Job", backref="workflow") 
 
-    def __init__(self, name, description, project_id=None):
+    def __init__(self, name, description, project=None, jobs=None):
         self.name = name
         self.description = description
-        self.project_id = project_id
-        self.jobs = relationship("Job", backref="workflow")
+        self.project = project
+        if jobs is not None:
+            self.jobs.extend(jobs)
 
 
