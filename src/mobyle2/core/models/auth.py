@@ -1,4 +1,4 @@
-from mobyle2.core.models import Base
+from mobyle2.core.models.base import Base
 from mobyle2.core.models.registry import get_registry_key
 from sqlalchemy import Column
 from sqlalchemy import Unicode

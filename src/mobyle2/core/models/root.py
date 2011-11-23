@@ -3,6 +3,7 @@
 __docformat__ = 'restructuredtext en'
 from copy import deepcopy
 from mobyle2.core.models import DBSession
+from mobyle2.core.models import project
 from project import Projects
 from auth import AuthenticationBackends
 
@@ -11,7 +12,7 @@ from mobyle2.core.utils import _
 
 from pyramid.security import Everyone
 from pyramid.security import Allow
-from pyramid.security import Authenticated 
+from pyramid.security import Authenticated
 
 mapping_apps = OrderedDict([
     ('projects', Projects),

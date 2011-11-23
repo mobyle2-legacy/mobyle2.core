@@ -1,0 +1,26 @@
+from ordereddict import OrderedDict
+
+from sqlalchemy import Column
+from sqlalchemy import Unicode
+from sqlalchemy import Integer
+from sqlalchemy import ForeignKey
+
+from mobyle2.core.models.base import Base
+from mobyle2.core.utils import _
+
+from mobyle2.core.models import project
+
+class Workflow(Base):
+    __tablename__ = 'workflows'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(50), unique=True)
+    description = Column(Unicode(255))
+    project_id = Column(Integer, ForeignKey(project.Project.id), nullable=True)
+
+    def __init__(self, name, description, project_id=None):
+        self.name = name
+        self.description = description
+        self.project_id = project_id
+        self.project = relationship(project.Project, backref="workflows")
+
+

@@ -1,13 +1,12 @@
-from mobyle2.core.models import Base, DBSession
+from mobyle2.core.models.base import Base
+from mobyle2.core.models import DBSession
 from sqlalchemy import Column
 from sqlalchemy import Unicode
+from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy.orm import relationship
 
-
-from cryptacular.bcrypt import BCRYPTPasswordManager
-
-
-crypt = BCRYPTPasswordManager()
+from apex import models as apex
 
 user_statuses = {
     'p' : 'Pending',
@@ -17,21 +16,12 @@ user_statuses = {
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    userid = Column(Unicode(20))
-    email = Column(Unicode(50))
-    password = Column(Unicode(255))
-    fullname = Column(Unicode(40))
-    about = Column(Unicode(255))
+    id = Column(Integer, ForeignKey(apex.AuthUser.id), primary_key=True)
     status = Column(Unicode(1))
 
-    def __init__(self, userid, email, password, fullname, about, status):
-        self.userid = userid
-        self.email = email
-        self.password = crypt.encode(password)
-        self.fullname = fullname
-        self.about = about
+    def __init__(self, status):
         self.status = status
+        self.base_user = relationshipp(apex.AuthUse, backref="mobyle_user")
 
     def get_status(self):
         user_statuses.get(self.status, None)

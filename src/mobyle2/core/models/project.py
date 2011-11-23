@@ -4,28 +4,32 @@ from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
-from mobyle2.core.models import Base
-from mobyle2.core.models.user import User
 from mobyle2.core.utils import _
+from mobyle2.core.models.base import Base
+
+from mobyle2.core.models import user
 
 class Project(Base):
     __tablename__ = 'project'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey(user.User.id))
 
     def __init__(self, name, description, user_id):
         self.name = name
         self.description = description
         self.user_id = user_id
+        self.user = relationship(user.User, backref="projects")
 
 class ProjectRessource(object):
     def __init__(self, p, parent):
         self.project = p
         self.__name__ = "%s"%p.id
         self.__parent__ = parent
+
 
 class Projects:
     @property
