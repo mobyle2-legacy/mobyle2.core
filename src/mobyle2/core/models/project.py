@@ -7,22 +7,23 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 from mobyle2.core.utils import _
-from mobyle2.core.models.base import Base
-
-from mobyle2.core.models import user
+from mobyle2.core.models import Base
+import mobyle2
 
 class Project(Base):
-    __tablename__ = 'project'
+    __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
-    user_id = Column(Integer, ForeignKey(user.User.id))
+    user_id = Column(Integer, ForeignKey("users.id", "fk_project_user", use_alter=True))
+
 
     def __init__(self, name, description, user_id):
         self.name = name
         self.description = description
         self.user_id = user_id
-        self.user = relationship(user.User, backref="projects")
+        self.workflows = relationship("Workflow", backref="project")
+        self.jobs = relationship("Job", backref="project")
 
 class ProjectRessource(object):
     def __init__(self, p, parent):

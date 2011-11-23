@@ -1,5 +1,5 @@
 from mobyle2.core.models import DBSession
-from mobyle2.core.models.base import Base
+from mobyle2.core.models import Base
 from mobyle2.core.utils import asbool
 from sqlalchemy import Column
 from sqlalchemy import Unicode

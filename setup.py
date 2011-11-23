@@ -24,6 +24,7 @@ setup(
         "Chameleon",
         "translationstring",
         "Babel",
+        'zope.dottedname',
         "lingua",
         "deform",
         "demjson",
@@ -75,18 +76,18 @@ setup(
     ]},
     message_extractors = {
         '': [
-            ('**.pt',   'lingua_xml', None ), 
+            ('**.pt',   'lingua_xml', None ),
             ('**.py',   'lingua_python', None ),
             ('**.mako', 'mako', None),
             ('static/**', 'ignore', None),
         ],
         #'': [
-        #    ('**.pt',   'lingua_xml', None ), 
+        #    ('**.pt',   'lingua_xml', None ),
         #    ('**.py',   'lingua_python', None ),
         #    ('**.mako', 'mako', None),
         #    ('static/**', 'ignore', None),
         #],
-    
+
     },
     entry_points = {
         'paste.app_factory':  [

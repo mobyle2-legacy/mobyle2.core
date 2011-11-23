@@ -12,7 +12,7 @@ from pyramid.threadlocal import get_current_registry
 
 from sqlalchemy import engine_from_config
 
-from mobyle2.core.models.init import initialize_sql
+from mobyle2.core.models import initialize_sql, DBSession
 from mobyle2.core.config import dn
 from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolicy
 
@@ -100,7 +100,7 @@ def includeme(config, debug=False):
     config.hook_zca()
     if settings.get('application.debug', False):
         config.add_view('%s.views.root.Reload' % dn,     name='reload', context='%s.models.root.Root' % dn)
-    config.scan('%s.models'%dn)
+    #config.scan('%s.models'%dn)
     # translation directories
     config.add_translation_dirs('%s:locale/'%dn)
     #config.add_translation_dirs('deform:locale/')

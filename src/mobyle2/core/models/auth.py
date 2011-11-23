@@ -1,4 +1,4 @@
-from mobyle2.core.models.base import Base
+from mobyle2.core.models import Base
 from mobyle2.core.models.registry import get_registry_key
 from sqlalchemy import Column
 from sqlalchemy import Unicode
@@ -9,16 +9,16 @@ from ordereddict import OrderedDict
 from mobyle2.core.utils import _
 
 AUTH_BACKENDS =OrderedDict([
-	( 'openid'                   , 'openid')   ,
-	( 'facebook'                 , 'facebook') ,
-	( 'twitter'                  , 'twitter')  ,
-	( 'github'                   , 'github')  ,
-	( 'yahoo'                    , 'yahoo')    ,
-	( 'google'                   , 'google')    ,
-	( 'live'                     , 'live')     ,
-#	( 'db'                       , 'db')       ,
-	( 'ldap'                     , 'ldap')     ,
-	( 'file'                     , 'file')     ,
+    ( 'openid'                   , 'openid')   ,
+    ( 'facebook'                 , 'facebook') ,
+    ( 'twitter'                  , 'twitter')  ,
+    ( 'github'                   , 'github')  ,
+    ( 'yahoo'                    , 'yahoo')    ,
+    ( 'google'                   , 'google')    ,
+    ( 'live'                     , 'live')     ,
+    ( 'db'                       , 'db')       ,
+    ( 'ldap'                     , 'ldap')     ,
+    ( 'file'                     , 'file')     ,
 ])
 
 ONLY_ONE_OF = ['twitter', 'github', 'yahoo', 'live', 'google']
