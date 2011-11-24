@@ -107,6 +107,8 @@ def get_base_params(view=None,
     p['root'] = getattr(req, 'root', None)
     p['get_globaltabs'] = get_globaltabs
     p['get_breadcrumbs'] = get_breadcrumbs
+    p['static'] = req.static_url('mobyle2.core:static/')[:-1]
+    p['dstatic'] = req.static_url('deform:static/')[:-1]
     p['c'] = getattr(req, 'context', None)
     p['request'] = req
     return p
