@@ -38,6 +38,7 @@ class AuthenticationBackend(Base):
     description = Column(Unicode(255))
     hostname = Column(Unicode(255))
     database = Column(Unicode(255))
+    use_ssl = Column(Boolean())
     ldap_groups_filter = Column(Unicode(255))
     ldap_users_filter = Column(Unicode(255))
     ldap_dn = Column(Unicode(255))
@@ -59,6 +60,7 @@ class AuthenticationBackend(Base):
                  ldap_dn=None,
                  ldap_groups_filter=None,
                  ldap_users_filter=None,
+                 use_ssl=False,
                 ):
         self.backend_type = backend_type
         self.database = database
@@ -75,6 +77,7 @@ class AuthenticationBackend(Base):
         self.port = port
         self.url_ba = url_ba
         self.username = username
+        self.use_ssl = use_ssl
 
 class AuthenticationBackendRessource(object):
     def __init__(self, ab, parent):

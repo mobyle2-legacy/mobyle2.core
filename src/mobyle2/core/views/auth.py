@@ -111,6 +111,7 @@ class AuthView(Base):
         class LDAPSchema(colander.MappingSchema):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
             port = colander.SchemaNode(colander.String(), description=_('Port'))
+            use_ssl = colander.SchemaNode(colander.Boolean(), description=_('Use SSL?'))
             password = colander.SchemaNode(colander.String(), description=_('Password'))
             dn = colander.SchemaNode(colander.String(),
                                      description=_('Base dn mask to connect as in the '
@@ -161,6 +162,7 @@ class AuthView(Base):
             'user': 'username',
             'dn': 'ldap_dn',
             'file': 'file',
+            'use_ssl': 'use_ssl',
             'users': 'ldap_users_filter',
             'groups': 'ldap_groups_filter',
         }
@@ -215,7 +217,7 @@ class AuthView(Base):
                     dkeys.update({'username':'key', 'password':'secret'})
                 if ab.backend_type in ['ldap']:
                     dkeys.update({'ldap_groups_filter':'groups', 'ldap_users_filter':'users',
-                                  'ldap_dn':'dn', 'hostname':'host', 'port':'port','password':'password'})
+                                  'ldap_dn':'dn', 'hostname':'host', 'port':'port','password':'password', 'use_ssl':'use_ssl'})
                 if ab.backend_type in ['db']:
                     dkeys.update({'hostname':'host', 'database':'db','password':'password','port':'port',
                                   'username':'user','password':'password'})

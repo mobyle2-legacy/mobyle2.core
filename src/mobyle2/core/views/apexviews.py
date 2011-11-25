@@ -6,9 +6,12 @@ from mobyle2.core.views import get_base_params
 
 from pyramid.httpexceptions import HTTPFound
 
+from pyramid.response import Response
+
 def wrap_view(view, request):
     params = view(request)
-    if not isinstance(params, HTTPFound):
+    if not (isinstance(params, HTTPFound)
+            or isinstance(params, Response)):
         params.update(get_base_params(request=request))
         login_params = params['login_params']
         params['velruse_forms'] = login_params.get('velruse_forms', None)

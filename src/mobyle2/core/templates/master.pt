@@ -72,6 +72,11 @@
                           <li class="info" tal:content="item"/>
                       </tal:r>
                     </ul> 
+                    <ul>
+                      <tal:r tal:repeat="item request.session.pop_flash('notice')">
+                          <li class="info" tal:content="item"/>
+                      </tal:r>
+                    </ul>  
                   </metal:define> 
                   <metal:define metal:define-slot="above_content">
                   </metal:define>
