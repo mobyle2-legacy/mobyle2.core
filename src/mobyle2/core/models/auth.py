@@ -21,7 +21,8 @@ AUTH_BACKENDS =OrderedDict([
     ( 'file'                     , 'file')     ,
 ])
 
-ONLY_ONE_OF = ['twitter', 'github', 'yahoo', 'live', 'google']
+ONLY_ONE_OF = ['twitter', 'github', 'yahoo',
+               'live', 'google', 'openid',]
 
 
 class AuthenticationBackend(Base):
@@ -32,7 +33,7 @@ class AuthenticationBackend(Base):
     password = Column(Unicode(255))
     authorize = Column(Unicode(255))
     port = Column(Integer)
-    url_ba = Column(Unicode(255),)
+    realm = Column(Unicode(255),)
     backend_type = Column(Unicode(50),)
     enabled = Column(Boolean())
     description = Column(Unicode(255))
@@ -49,7 +50,7 @@ class AuthenticationBackend(Base):
                  name=None,
                  username=None,
                  password=None,
-                 url_ba=None,
+                 realm=None,
                  database=None,
                  hostname=None,
                  port=None,
@@ -75,7 +76,7 @@ class AuthenticationBackend(Base):
         self.name = name
         self.password = password
         self.port = port
-        self.url_ba = url_ba
+        self.realm = realm
         self.username = username
         self.use_ssl = use_ssl
 

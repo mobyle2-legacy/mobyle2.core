@@ -11,7 +11,7 @@ from pyramid.response import Response
 from mobyle2.core.models import auth
 from mobyle2.core.models import DBSession as session
 from mobyle2.core.models import registry as r
-from mobyle2.core.views import Base, get_base_params
+from mobyle2.core.views import Base as bBase, get_base_params as get_base_params
 from mobyle2.core import validator as v
 from mobyle2.core.utils import _
 
@@ -22,6 +22,8 @@ import colander
 
 from mobyle2.core.events import RegenerateVelruseConfigEvent
 
+from mobyle2.core.models.registry import get_registry_key
+
 bool_values = {
     '1': True,
     '0': False,
@@ -30,6 +32,14 @@ bool_values = {
     'true': True,
     'false': False,
 }
+
+class Base(bBase):
+    def __call__(self):
+        params = {'view': self}
+        params.update(get_base_params(self))
+        params['need_restart'] = get_registry_key('mobyle2.needrestart')
+        return render_to_response(self.template, params, self.request) 
+
 class ManageSettings(Base):
     template ='../templates/auth/auth_manage_settings.pt'
 
@@ -126,27 +136,31 @@ class AuthView(Base):
             key = colander.SchemaNode(colander.String(), description=_('API consumer'))
             secret = colander.SchemaNode(colander.String(), description=_('API consumer secret'))
 
+        class OpenidSchema(colander.MappingSchema):
+            realm = colander.SchemaNode(colander.String(), description=_('Openid Realm'), missing=None)
+
         class SimpleOauthSchema(SimpleOpenidSchema):
             authorize = colander.SchemaNode(colander.String(), description=_('API Scope'), missing=None)
 
         class FullOauthSchema(SimpleOauthSchema):
-            url = colander.SchemaNode(colander.String(), description=_('Service url'), validator = v.not_empty_string)
+            realm = colander.SchemaNode(colander.String(), description=_('Service Realm'), validator = v.not_empty_string, missing=None)
 
         class FileSchema(colander.MappingSchema):
             passwd_file = colander.SchemaNode(colander.String(), description=_('Full path to the file'))
 
-        self.sh_map = {'openid': FullOauthSchema,
-                       'facebook': SimpleOauthSchema,
-                       'twitter':  SimpleOauthSchema,
-                       'yahoo': SimpleOpenidSchema,
-                       'live': SimpleOauthSchema,
-                       'github': SimpleOauthSchema,
-                       'google': SimpleOauthSchema,
-                       'db': DBSchema,
-                       'ldap': LDAPSchema,
-                       'file': FileSchema,
-                       'base': AuthentSchema,
-                      }
+        self.sh_map = {
+            'base': AuthentSchema,
+            'db': DBSchema,
+            'facebook': SimpleOauthSchema,
+            'file': FileSchema,
+            'github': SimpleOauthSchema,
+            'google': SimpleOauthSchema,
+            'ldap': LDAPSchema,
+            'live': SimpleOauthSchema,
+            'openid': OpenidSchema,
+            'twitter':  SimpleOauthSchema,
+            'yahoo': SimpleOpenidSchema,
+        }
         self.fmap = {
             'auth_backend': 'backend_type',
             'enabled': 'enabled',
@@ -155,7 +169,8 @@ class AuthView(Base):
             'authorize': 'authorize',
             'key' : 'username',
             'secret' : 'password',
-            'url': 'url_ba',
+            'url': 'realm',
+            'realm': 'realm',
             'db': 'database',
             'host': 'hostname',
             'port': 'port',
@@ -214,7 +229,7 @@ class AuthView(Base):
                 if ab.backend_type in ['file']:
                     dkeys.update({'file':'file'})
                 if ab.backend_type in ['openid']:
-                    dkeys.update({'username':'key', 'password':'secret'})
+                    dkeys.update({'realm':'realm',})
                 if ab.backend_type in ['ldap']:
                     dkeys.update({'ldap_groups_filter':'groups', 'ldap_users_filter':'users',
                                   'ldap_dn':'dn', 'hostname':'host', 'port':'port','password':'password', 'use_ssl':'use_ssl'})
@@ -257,7 +272,7 @@ class Add(AuthView):
                     try:
                         ba = auth.AuthenticationBackend(**kwargs)
                         session.add(ba)
-                        self.request.registry.notify(RegenerateVelruseConfigEvent(self.request.registry))
+                        self.request.registry.notify(RegenerateVelruseConfigEvent(self.request))
                         session.commit()
                         self.request.session.flash(
                             _('A new authentication backend has been created'),
@@ -266,6 +281,7 @@ class Add(AuthView):
                         url = request.resource_url(item)
                         return HTTPFound(location=url)
                     except Exception, e:
+                        raise
                         message = _(u'You can try to change some '
                                     'settings because an exception occured '
                                     'while adding your new authbackend '
@@ -321,7 +337,7 @@ class Edit(AuthView):
                         for k in kwargs:
                             setattr(ab, k, kwargs[k])
                         session.add(ab)
-                        self.request.registry.notify(RegenerateVelruseConfigEvent(self.request.registry))
+                        self.request.registry.notify(RegenerateVelruseConfigEvent(self.request))
                         session.commit()
                         self.request.session.flash(
                             _('Backend has been updated'),
@@ -330,6 +346,7 @@ class Edit(AuthView):
                         url = request.resource_url(item)
                         return HTTPFound(location=url)
                     except Exception, e:
+                        raise
                         message = _(u'You can try to change some '
                                     'settings because an exception occured '
                                     'while adding your new authbackend '
@@ -372,7 +389,7 @@ class Delete(AuthView):
                 struct = form.validate(controls)
                 try:
                     session.delete(ab)
-                    self.request.registry.notify(RegenerateVelruseConfigEvent(self.request.registry))
+                    self.request.registry.notify(RegenerateVelruseConfigEvent(self.request))
                     session.commit()
                     return HTTPFound(location=auths_list)
                 except Exception, e:
