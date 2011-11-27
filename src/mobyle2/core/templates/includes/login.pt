@@ -11,8 +11,9 @@
       <metal metal:use-macro="login_form.macros['main']"/>
     </div>
   </tal:if>
-  <div id="user_box" tal:condition="request.user">
-    <tal:b  i18n:translate="">Welcome</tal:b> <a href="${request.route_url('apex_edit')}"><tal:b tal:content="request.user.username"/></a>
+  <div id="user_box" tal:condition="request.user"
+    tal:define="uid request.user.email|request.user.username">
+    <tal:b  i18n:translate="">Welcome</tal:b> <a href="${request.route_url('apex_edit')}"><tal:b tal:content="uid"/></a>
     <ul>
       <li>
       <a i18n:translate="" href="${request.route_url('apex_logout')}?came_from=${request.url}">Logout</a>
