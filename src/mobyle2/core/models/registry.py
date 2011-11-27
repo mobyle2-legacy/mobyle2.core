@@ -53,3 +53,18 @@ def get_registry_key(key, default=notset, as_bool=True):
             res = default
     return res
 
+def set_registry_key(key, value):
+    session = DBSession()
+    res = None
+    try:
+        try:
+            res = session.query(Registry).filter(Registry.name == key).one()
+            res.value = value
+        except exc.NoResultFound, e:
+            res = Registry(key, value)
+            session.add(res)
+        session.commit()
+    except exc.NoResultFound, e:
+        raise
+    return res
+             
