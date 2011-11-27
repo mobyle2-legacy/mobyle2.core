@@ -12,7 +12,7 @@
     </div>
   </tal:if>
   <div id="user_box" tal:condition="request.user"
-    tal:define="uid request.user.email|request.user.username">
+    tal:define="uid request.user.email|request.user.username|nothing">
     <tal:b  i18n:translate="">Welcome</tal:b> <a href="${request.route_url('apex_edit')}"><tal:b tal:content="uid"/></a>
     <ul>
       <li>
