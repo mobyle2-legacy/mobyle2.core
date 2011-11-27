@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from mobyle2.core.views import Base
-from mobyle2.core.utils import waiting_for_reload
+
+from mobyle2.core.models.registry import set_registry_key
 
 from pyramid.httpexceptions import HTTPFound
 import os
@@ -25,6 +26,6 @@ class Reload(Base):
            'reload' in req.params):
             os._exit(SIGUSR2)
         req.session.flash('Code reloaded')
-        waiting_for_reload(reset=True)
+        set_registry_key('mobyle2_need_restart', False)
         return Base.__call__(self)
 # vim:set et sts=4 ts=4 tw=80:

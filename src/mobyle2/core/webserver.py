@@ -135,6 +135,8 @@ def includeme(config, debug=False):
     config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template)
     config.end()
     config.commit()
+    from mobyle2.core.models.registry import set_registry_key
+    set_registry_key('mobyle2.needrestart', False)
     return config
 
 def wsgi_app_factory(global_config, **local_config):
