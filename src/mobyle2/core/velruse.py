@@ -77,6 +77,10 @@ def velruse_config(config):
             lk = 'velruse.providers.ldapprovider.urls'
             settings[lk] = settings.get(lk, '')+'\n%s' % url
             settings['velruse.providers.ldapprovider.basedn'] = ab.ldap_dn
+        if ab.backend_type in ['openid',]:
+            providers += '\n%s' % 'velruse.providers.openidconsumer'
+            if ab.realm:
+                settings['velruse.openid.realm'] = ab.realm
         if ab.backend_type in ['twitter', 'github', 'google']:
             providers += '\n%s' % 'velruse.providers.%s' % (t)
             settings['velruse.%s.consumer_key'    % (t)] = ab.username
