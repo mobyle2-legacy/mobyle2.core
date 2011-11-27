@@ -24,20 +24,3 @@ def asbool(value):
         value = bool(value)
     return value 
 
-
-def waiting_for_reload(registry, items=None, reset=False):
-    k = 'mobyle2.reload'
-    settings = registry.settings
-    if (not k in settings) or reset:
-        settings[k] = []
-    if isinstance(items, list):
-        settings[k].extend(items)
-    else:
-        settings[k].append(items)
-    return settings[k]
-
-        
-
-
-
-
