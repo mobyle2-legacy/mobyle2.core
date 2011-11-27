@@ -4,8 +4,8 @@ from mobyle2.core.utils import __
 from mobyle2.core.views import get_base_params
 
 from mobyle2.core.models.auth import AuthenticationBackend
+from mobyle2.core.models.registry import set_registry_key
 from mobyle2.core.models import DBSession as session
-from mobyle2.core.utils import waiting_for_reload
 
 def add_renderer_globals(event):
     params = get_base_params(event=event)
@@ -24,8 +24,5 @@ def add_localizer(event):
     request.translate = auto_translate
 
 def regenerate_velruse_config(event):
-    """Regenerate the velruse authentication configuration file with the backends specified on the website database."""
-    registry = event.registry
-    if not 'auth' in waiting_for_reload(registry):
-        waiting_for_reload(registry, 'auth')
+    set_registry_key('mobyle2.needrestart', True)
 
