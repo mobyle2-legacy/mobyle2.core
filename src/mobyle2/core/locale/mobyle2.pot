@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-11-16 12:36+0100\n"
+"POT-Creation-Date: 2011-11-29 15:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,30 +21,34 @@ msgstr ""
 msgid "You must set a not null string"
 msgstr ""
 
-#: src/mobyle2/core/forms/__init__.py:54
+#: src/mobyle2/core/forms/__init__.py:53
 msgid "Self registration is turned off by the administrator on this portal."
 msgstr ""
 
-#: src/mobyle2/core/models/auth.py:91
+#: src/mobyle2/core/models/auth.py:105
 #: src/mobyle2/core/templates/auth/auth_list.pt:3
 msgid "Authentication backends"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:35
+#: src/mobyle2/core/models/project.py:70
 msgid "Projects"
 msgstr ""
 
-#: src/mobyle2/core/models/root.py:17
+#: src/mobyle2/core/models/root.py:23
 msgid "Home"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_add.mako:3
-#: src/mobyle2/core/templates/auth/auth_add.pt:3
 msgid "Backend configuration"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_edit.pt:3
+#: src/mobyle2/core/templates/auth/auth_add.pt:3
+#: src/mobyle2/core/templates/auth/auth_delete.pt:3
 msgid "Backend"
+msgstr ""
+
+#: src/mobyle2/core/templates/auth/auth_edit.pt:3
+msgid "Edit backend settings"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_home.mako:3
@@ -75,62 +79,62 @@ msgstr ""
 msgid "Manage general authentication settings"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:4
+#: src/mobyle2/core/templates/auth/auth_view.pt:13
 msgid "Name :"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:5
+#: src/mobyle2/core/templates/auth/auth_view.pt:15
 msgid "Description :"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:6
+#: src/mobyle2/core/templates/auth/auth_view.pt:16
 msgid "Enabled :"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:9
-#: src/mobyle2/core/templates/auth/auth_view.pt:16
+#: src/mobyle2/core/templates/auth/auth_view.pt:19
+#: src/mobyle2/core/templates/auth/auth_view.pt:27
 msgid "Host :"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:10
-#: src/mobyle2/core/templates/auth/auth_view.pt:17
+#: src/mobyle2/core/templates/auth/auth_view.pt:20
+#: src/mobyle2/core/templates/auth/auth_view.pt:28
 msgid "Port :"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:11
-msgid "lDAP Dn:"
-msgstr ""
-
-#: src/mobyle2/core/templates/auth/auth_view.pt:12
-msgid "LDAP Users filter :"
-msgstr ""
-
-#: src/mobyle2/core/templates/auth/auth_view.pt:13
-msgid "LDAP Groups filter:"
-msgstr ""
-
-#: src/mobyle2/core/templates/auth/auth_view.pt:18
-msgid "Username :"
-msgstr ""
-
-#: src/mobyle2/core/templates/auth/auth_view.pt:19
-msgid "Database :"
+#: src/mobyle2/core/templates/auth/auth_view.pt:21
+msgid "SSL :"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_view.pt:22
-msgid "File"
+msgid "lDAP Dn:"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:25
-msgid "API Key :"
+#: src/mobyle2/core/templates/auth/auth_view.pt:23
+msgid "LDAP Users filter :"
 msgstr ""
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:26
-msgid "API Secret :"
+#: src/mobyle2/core/templates/auth/auth_view.pt:24
+msgid "LDAP Groups filter:"
 msgstr ""
 
 #: src/mobyle2/core/templates/auth/auth_view.pt:29
-msgid "Backend url :"
+msgid "Username :"
+msgstr ""
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:30
+msgid "Database :"
+msgstr ""
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:33
+msgid "File"
+msgstr ""
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:36
+msgid "API Key :"
+msgstr ""
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:37
+msgid "API Secret :"
 msgstr ""
 
 #: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
@@ -142,11 +146,11 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: src/mobyle2/core/templates/includes/login.pt:15
+#: src/mobyle2/core/templates/includes/login.pt:16
 msgid "Welcome"
 msgstr ""
 
-#: src/mobyle2/core/templates/includes/login.pt:18
+#: src/mobyle2/core/templates/includes/login.pt:19
 msgid "Logout"
 msgstr ""
 
@@ -166,91 +170,112 @@ msgstr ""
 msgid "Add a project"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:196
-#: src/mobyle2/core/views/project.py:37
+#: src/mobyle2/core/templates/root/reload.pt:3
+msgid "Are you sure you want to reload the webserver ?"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:63 src/mobyle2/core/views/auth.py:246
+#: src/mobyle2/core/views/auth.py:383 src/mobyle2/core/views/project.py:37
 msgid "Send"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:78 src/mobyle2/core/views/project.py:23
+#: src/mobyle2/core/views/auth.py:102 src/mobyle2/core/views/project.py:23
 msgid "Name"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:79 src/mobyle2/core/views/project.py:24
+#: src/mobyle2/core/views/auth.py:103 src/mobyle2/core/views/project.py:24
 msgid "Backend description"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:80
+#: src/mobyle2/core/views/auth.py:104
 msgid "Enabled"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:80
+#: src/mobyle2/core/views/auth.py:104
 msgid "Is this backend enabled ?"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:86
+#: src/mobyle2/core/views/auth.py:110
 msgid "Authentication backend"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:90 src/mobyle2/core/views/auth.py:97
+#: src/mobyle2/core/views/auth.py:115 src/mobyle2/core/views/auth.py:122
 msgid "Host"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:91 src/mobyle2/core/views/auth.py:98
+#: src/mobyle2/core/views/auth.py:116 src/mobyle2/core/views/auth.py:123
 msgid "Port"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:92 src/mobyle2/core/views/auth.py:99
+#: src/mobyle2/core/views/auth.py:117 src/mobyle2/core/views/auth.py:125
 msgid "Password"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:93
+#: src/mobyle2/core/views/auth.py:118
 msgid "User"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:94
+#: src/mobyle2/core/views/auth.py:119
 msgid "Database"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:101
+#: src/mobyle2/core/views/auth.py:124
+msgid "Use SSL?"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:127
 msgid ""
 "Base dn mask to connect as in the form \"cn=USERID,ou=people\", ex: "
 "\"cn=USERID,o=paster,dc=paris,dc=net. USERID is the placeholder for the login"
 " string the user will input."
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:110
+#: src/mobyle2/core/views/auth.py:136
 msgid "API consumer"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:111
+#: src/mobyle2/core/views/auth.py:137
 msgid "API consumer secret"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:114
-msgid "Service url"
+#: src/mobyle2/core/views/auth.py:140
+msgid "Openid Realm"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:117
+#: src/mobyle2/core/views/auth.py:143
+msgid "API Scope"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:146
+msgid "Service Realm"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:149
 msgid "Full path to the file"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:168 src/mobyle2/core/views/auth.py:175
+#: src/mobyle2/core/views/auth.py:215 src/mobyle2/core/views/auth.py:222
 msgid "Authentication backend details"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:227
+#: src/mobyle2/core/views/auth.py:278
 msgid "A new authentication backend has been created"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:233 src/mobyle2/core/views/auth.py:296
-#: src/mobyle2/core/views/project.py:70 src/mobyle2/core/views/project.py:118
+#: src/mobyle2/core/views/auth.py:285 src/mobyle2/core/views/auth.py:350
+#: src/mobyle2/core/views/auth.py:396 src/mobyle2/core/views/project.py:70
+#: src/mobyle2/core/views/project.py:118
 msgid ""
 "You can try to change some settings because an exception occured while adding"
 " your new authbackend : ${msg}"
 msgstr ""
 
-#: src/mobyle2/core/views/auth.py:290
+#: src/mobyle2/core/views/auth.py:343
 msgid "Backend has been updated"
+msgstr ""
+
+#: src/mobyle2/core/views/auth.py:379
+msgid "delete me"
 msgstr ""
 
 #: src/mobyle2/core/views/project.py:64

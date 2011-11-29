@@ -28,7 +28,7 @@ import mobyle2
 True
 >>> w.project == p
 True
- 
+
 """
 
 class Project(Base):
@@ -73,4 +73,10 @@ class Projects:
 
     def __getitem__(self, item):
         return self.items.get(item, None)
+
+class ProjectAcl(Base):
+    __tablename__ = 'acl_projects'
+    rid =  Column(Integer, ForeignKey("projects.id", name='fk_projectacl_project', use_alter=True), primary_key=True)
+    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_projectacl_role", use_alter=True), primary_key=True)
+    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_projectacl_permission", use_alter=True), primary_key=True)
 

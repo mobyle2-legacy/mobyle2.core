@@ -10,7 +10,7 @@
         tal:attributes="href python:u(request.root)+'@@reload?confirm=1'">
         Restart the server to appply configuration
       </a>
-      </li>    
+      </li>
     </ul>
   </metal>
 </metal>

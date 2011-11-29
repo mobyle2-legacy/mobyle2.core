@@ -3,8 +3,10 @@ from mobyle2.core.models.registry import get_registry_key
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import Boolean
+from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 
+from sqlalchemy.orm import relationship
 from ordereddict import OrderedDict
 from mobyle2.core.utils import _
 
@@ -23,6 +25,7 @@ AUTH_BACKENDS =OrderedDict([
 
 ONLY_ONE_OF = ['twitter', 'github', 'yahoo',
                'live', 'google', 'openid',]
+
 
 
 class AuthenticationBackend(Base):
@@ -108,5 +111,42 @@ class AuthenticationBackends:
 
 def self_registration():
     return get_registry_key('auth.self_registration')
+
+
+"""
+For each of your business objects, define an ACL container to use in the portal
+The form is something like:
+class Acl(Base):
+     __tablename__ = 'authentication_acl'
+     rid =    Column(Integer, ForeignKey("bussiness.id", name="fk_...", use_alter=True), primary_key=True)
+     role =   Column(Integer, ForeignKey("authentication_role.id", name="fk_acl_role", use_alter=True), primary_key=True)
+     permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_acl_permission", use_alter=True), primary_key=True)
+"""
+
+
+
+class Permisssion(Base):
+    __tablename__ = 'authentication_permission'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(50), unique=True)
+    description = Column(Unicode(50), nullable=True)
+
+class UserRole(Base):
+    __tablename__ = 'authentication_userrole'
+    user_id = Column(Integer, ForeignKey("auth_users.id", name="fk_userrole_user", use_alter=True), primary_key=True)
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True), primary_key=True)
+
+class GroupRole(Base):
+    __tablename__ = 'authentication_grouprole'
+    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True), primary_key=True)
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True),  primary_key=True)
+
+class Role(Base):
+    __tablename__ = 'authentication_role'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(50), unique=True)
+    description = Column(Unicode(50), unique=True)
+    users = relationship("User", backref="roles", uselist=True, 
+                         secondary="authentication_userrole", secondaryjoin="UserRole.role_id==Role.id") 
 
 

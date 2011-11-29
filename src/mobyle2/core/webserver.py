@@ -19,6 +19,7 @@ from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolic
 from mobyle2.core.interfaces import IMobyle2View
 
 from mobyle2.core.events import RegenerateVelruseConfigEvent
+from pyramid_mailer.interfaces import IMailer
 
 def locale_negotiator(request):
     """This code is inspired by the plonelanguatetool negociation!"""
@@ -91,6 +92,29 @@ def includeme(config, debug=False):
     config.set_authorization_policy(authorization_policy)
     config.set_authentication_policy(authentication_policy)
     config.set_locale_negotiator(locale_negotiator)
+
+
+    mailer = config.registry.queryUtility(IMailer)
+    if not mailer:
+        config.include('pyramid_mailer')
+        mailer = config.registry.queryUtility(IMailer)
+    if mailer:
+        changed = False
+        if 'mail.username' in settings:
+            username = settings.get('mail.username')
+            if not username:
+                del settings['mail.username']
+                changed = True
+        if 'mail.password' in settings:
+            password = settings.get('mail.password') 
+            if not password:
+                del settings['mail.password']
+            changed = True
+        if changed:
+            config.registry.unregisterUtility(mailer, IMailer)
+            newmailer = mailer.from_settings(settings)
+            config.registry.registerUtility(newmailer, IMailer)
+
     # activate if you want to enable global components
     #  globalreg = getGlobalSiteManager()
     #  config = Configurator(registry=globalreg)

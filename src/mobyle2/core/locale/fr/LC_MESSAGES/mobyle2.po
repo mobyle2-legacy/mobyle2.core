@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
-"POT-Creation-Date: 2011-11-16 12:36+0100\n"
-"PO-Revision-Date: 2011-11-16 12:36+0100\n"
+"POT-Creation-Date: 2011-11-29 15:08+0100\n"
+"PO-Revision-Date: 2011-11-29 15:08+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -22,31 +22,35 @@ msgstr ""
 msgid "You must set a not null string"
 msgstr "Vous devez saisir une chaine non vide"
 
-#: src/mobyle2/core/forms/__init__.py:54
+#: src/mobyle2/core/forms/__init__.py:53
 msgid "Self registration is turned off by the administrator on this portal."
 msgstr "La création de compte est désactivée par l'administrateur de ce portail."
 
-#: src/mobyle2/core/models/auth.py:91
+#: src/mobyle2/core/models/auth.py:105
 #: src/mobyle2/core/templates/auth/auth_list.pt:3
 msgid "Authentication backends"
 msgstr "Méthodes d'identification"
 
-#: src/mobyle2/core/models/project.py:35
+#: src/mobyle2/core/models/project.py:70
 msgid "Projects"
 msgstr "Projets"
 
-#: src/mobyle2/core/models/root.py:17
+#: src/mobyle2/core/models/root.py:23
 msgid "Home"
 msgstr "Acceuil"
 
 #: src/mobyle2/core/templates/auth/auth_add.mako:3
-#: src/mobyle2/core/templates/auth/auth_add.pt:3
 msgid "Backend configuration"
 msgstr "Configuration des méthodes d'identification"
 
-#: src/mobyle2/core/templates/auth/auth_edit.pt:3
+#: src/mobyle2/core/templates/auth/auth_add.pt:3
+#: src/mobyle2/core/templates/auth/auth_delete.pt:3
 msgid "Backend"
 msgstr "Lister les méthodes d'identification"
+
+#: src/mobyle2/core/templates/auth/auth_edit.pt:3
+msgid "Edit backend settings"
+msgstr "Editer les paramêtres d'identification"
 
 #: src/mobyle2/core/templates/auth/auth_home.mako:3
 #: src/mobyle2/core/templates/auth/auth_home.pt:3
@@ -76,63 +80,63 @@ msgstr "Ajouter une nouvelle méthode d'identification"
 msgid "Manage general authentication settings"
 msgstr "Editer les paramêtres généreaux d'identification"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:4
+#: src/mobyle2/core/templates/auth/auth_view.pt:13
 msgid "Name :"
 msgstr "Nom :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:5
+#: src/mobyle2/core/templates/auth/auth_view.pt:15
 msgid "Description :"
 msgstr "Description de la méthode :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:6
+#: src/mobyle2/core/templates/auth/auth_view.pt:16
 msgid "Enabled :"
 msgstr "Activé :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:9
-#: src/mobyle2/core/templates/auth/auth_view.pt:16
+#: src/mobyle2/core/templates/auth/auth_view.pt:19
+#: src/mobyle2/core/templates/auth/auth_view.pt:27
 msgid "Host :"
 msgstr "Host :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:10
-#: src/mobyle2/core/templates/auth/auth_view.pt:17
+#: src/mobyle2/core/templates/auth/auth_view.pt:20
+#: src/mobyle2/core/templates/auth/auth_view.pt:28
 msgid "Port :"
 msgstr "Port :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:11
+#: src/mobyle2/core/templates/auth/auth_view.pt:21
+msgid "SSL :"
+msgstr "SSL :"
+
+#: src/mobyle2/core/templates/auth/auth_view.pt:22
 msgid "lDAP Dn:"
 msgstr "DN LDAP"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:12
+#: src/mobyle2/core/templates/auth/auth_view.pt:23
 msgid "LDAP Users filter :"
 msgstr "Filtre pour rapatrier les utilisateurs LDAP"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:13
+#: src/mobyle2/core/templates/auth/auth_view.pt:24
 msgid "LDAP Groups filter:"
 msgstr "Filtre pour rapatrier les groupes LDAP"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:18
+#: src/mobyle2/core/templates/auth/auth_view.pt:29
 msgid "Username :"
 msgstr "Utilisateur :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:19
+#: src/mobyle2/core/templates/auth/auth_view.pt:30
 msgid "Database :"
 msgstr "Base de données :"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:22
+#: src/mobyle2/core/templates/auth/auth_view.pt:33
 msgid "File"
 msgstr "Fichier"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:25
+#: src/mobyle2/core/templates/auth/auth_view.pt:36
 msgid "API Key :"
 msgstr "Clé d'API"
 
-#: src/mobyle2/core/templates/auth/auth_view.pt:26
+#: src/mobyle2/core/templates/auth/auth_view.pt:37
 msgid "API Secret :"
 msgstr "Mot dx passe de la clé d'API"
-
-#: src/mobyle2/core/templates/auth/auth_view.pt:29
-msgid "Backend url :"
-msgstr "URL du service d'identification"
 
 #: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
 #: src/mobyle2/core/templates/includes/breadcrumbs.pt:3
@@ -143,11 +147,11 @@ msgstr "Vous êtes ici"
 msgid "Login"
 msgstr "Identifiant"
 
-#: src/mobyle2/core/templates/includes/login.pt:15
+#: src/mobyle2/core/templates/includes/login.pt:16
 msgid "Welcome"
 msgstr "Bienvenu"
 
-#: src/mobyle2/core/templates/includes/login.pt:18
+#: src/mobyle2/core/templates/includes/login.pt:19
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -167,84 +171,106 @@ msgstr "Liste des projets"
 msgid "Add a project"
 msgstr "Ajouter un projet"
 
-#: src/mobyle2/core/views/auth.py:50 src/mobyle2/core/views/auth.py:196
-#: src/mobyle2/core/views/project.py:37
+#: src/mobyle2/core/templates/root/reload.pt:3
+msgid "Are you sure you want to reload the webserver ?"
+msgstr "Etes vous sur de vouloir recharger le serveur web ?"
+
+#: src/mobyle2/core/views/auth.py:63 src/mobyle2/core/views/auth.py:246
+#: src/mobyle2/core/views/auth.py:383 src/mobyle2/core/views/project.py:37
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/mobyle2/core/views/auth.py:78 src/mobyle2/core/views/project.py:23
+#: src/mobyle2/core/views/auth.py:102 src/mobyle2/core/views/project.py:23
 msgid "Name"
 msgstr "Nom"
 
-#: src/mobyle2/core/views/auth.py:79 src/mobyle2/core/views/project.py:24
+#: src/mobyle2/core/views/auth.py:103 src/mobyle2/core/views/project.py:24
 msgid "Backend description"
 msgstr "Description de la méthode"
 
-#: src/mobyle2/core/views/auth.py:80
+#: src/mobyle2/core/views/auth.py:104
 msgid "Enabled"
 msgstr "Activé"
 
-#: src/mobyle2/core/views/auth.py:80
+#: src/mobyle2/core/views/auth.py:104
 msgid "Is this backend enabled ?"
 msgstr "Est ce que cette méthode est activée ?"
 
-#: src/mobyle2/core/views/auth.py:86
+#: src/mobyle2/core/views/auth.py:110
 msgid "Authentication backend"
 msgstr "Méthode d'identification"
 
-#: src/mobyle2/core/views/auth.py:90 src/mobyle2/core/views/auth.py:97
+#: src/mobyle2/core/views/auth.py:115 src/mobyle2/core/views/auth.py:122
 msgid "Host"
 msgstr "Hote"
 
-#: src/mobyle2/core/views/auth.py:91 src/mobyle2/core/views/auth.py:98
+#: src/mobyle2/core/views/auth.py:116 src/mobyle2/core/views/auth.py:123
 msgid "Port"
 msgstr "Port"
 
-#: src/mobyle2/core/views/auth.py:92 src/mobyle2/core/views/auth.py:99
+#: src/mobyle2/core/views/auth.py:117 src/mobyle2/core/views/auth.py:125
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/mobyle2/core/views/auth.py:93
+#: src/mobyle2/core/views/auth.py:118
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/mobyle2/core/views/auth.py:94
+#: src/mobyle2/core/views/auth.py:119
 msgid "Database"
 msgstr "Base de données"
 
-#: src/mobyle2/core/views/auth.py:101
+#: src/mobyle2/core/views/auth.py:124
+msgid "Use SSL?"
+msgstr "Utiliser le chiffrage SSL ?"
+
+#: src/mobyle2/core/views/auth.py:127
 msgid ""
 "Base dn mask to connect as in the form \"cn=USERID,ou=people\", ex: "
 "\"cn=USERID,o=paster,dc=paris,dc=net. USERID is the placeholder for the "
 "login string the user will input."
 msgstr ""
+"DN mask de base pour se connecter de la forme suivante: "
+"\"cn=USERID,ou=people\", ex:\"\n"
+"\"\"cn=USERID,o=paster,dc=paris,dc=net. USERID est ce qui sera remplacé "
+"par le login\"\n"
+"\"entré par l'utilisateur."
 
-#: src/mobyle2/core/views/auth.py:110
+#: src/mobyle2/core/views/auth.py:136
 msgid "API consumer"
 msgstr "Clé d'API"
 
-#: src/mobyle2/core/views/auth.py:111
+#: src/mobyle2/core/views/auth.py:137
 msgid "API consumer secret"
 msgstr "password lié à la clé d'API"
 
-#: src/mobyle2/core/views/auth.py:114
-msgid "Service url"
+#: src/mobyle2/core/views/auth.py:140
+msgid "Openid Realm"
+msgstr "OpenID Realm"
+
+#: src/mobyle2/core/views/auth.py:143
+msgid "API Scope"
+msgstr "API Scope"
+
+#: src/mobyle2/core/views/auth.py:146
+msgid "Service Realm"
 msgstr "URL du service"
 
-#: src/mobyle2/core/views/auth.py:117
+#: src/mobyle2/core/views/auth.py:149
 msgid "Full path to the file"
 msgstr "Chemin complet vers le fichier"
 
-#: src/mobyle2/core/views/auth.py:168 src/mobyle2/core/views/auth.py:175
+#: src/mobyle2/core/views/auth.py:215 src/mobyle2/core/views/auth.py:222
 msgid "Authentication backend details"
 msgstr "Détails de la méthode d'identification"
 
-#: src/mobyle2/core/views/auth.py:227
+#: src/mobyle2/core/views/auth.py:278
 msgid "A new authentication backend has been created"
 msgstr "Une nouvelle méthode d'identification a été crée"
 
-#: src/mobyle2/core/views/auth.py:233 src/mobyle2/core/views/auth.py:296
-#: src/mobyle2/core/views/project.py:70 src/mobyle2/core/views/project.py:118
+#: src/mobyle2/core/views/auth.py:285 src/mobyle2/core/views/auth.py:350
+#: src/mobyle2/core/views/auth.py:396 src/mobyle2/core/views/project.py:70
+#: src/mobyle2/core/views/project.py:118
 msgid ""
 "You can try to change some settings because an exception occured while "
 "adding your new authbackend : ${msg}"
@@ -253,9 +279,13 @@ msgstr ""
 "s'est produite pendant l'enregistrement de votre nouvelle méthode "
 "d'identification : ${msg}"
 
-#: src/mobyle2/core/views/auth.py:290
+#: src/mobyle2/core/views/auth.py:343
 msgid "Backend has been updated"
 msgstr "La méthode d'identification a été mise à jour"
+
+#: src/mobyle2/core/views/auth.py:379
+msgid "delete me"
+msgstr "Supprimer moi"
 
 #: src/mobyle2/core/views/project.py:64
 msgid "A new project has been created"
@@ -264,13 +294,4 @@ msgstr "Un nouveau projet a été créé"
 #: src/mobyle2/core/views/project.py:112
 msgid "Project has been updated"
 msgstr "Le projet a été mis à jour"
-
-#~ msgid "Base dn to connect as"
-#~ msgstr "DN LDAP pour se connecter"
-
-#~ msgid "LDAP filter to grab users"
-#~ msgstr "Filtre LDAP pour chercher les utilisateurs"
-
-#~ msgid "LDAP filter to grab groups"
-#~ msgstr "Filtre LDAP pour chercher les groupes"
 
