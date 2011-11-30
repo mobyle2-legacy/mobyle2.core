@@ -124,12 +124,11 @@ class Acl(Base):
 """
 
 
-
 class Permisssion(Base):
     __tablename__ = 'authentication_permission'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
-    description = Column(Unicode(50), nullable=True)
+    description = Column(Unicode(2500))
 
 class UserRole(Base):
     __tablename__ = 'authentication_userrole'
@@ -145,8 +144,9 @@ class Role(Base):
     __tablename__ = 'authentication_role'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
-    description = Column(Unicode(50), unique=True)
-    users = relationship("User", backref="roles", uselist=True, 
-                         secondary="authentication_userrole", secondaryjoin="UserRole.role_id==Role.id") 
-
+    description = Column(Unicode(2500))
+    users = relationship("User", backref="roles", uselist=True,
+                         secondary="authentication_userrole", secondaryjoin="UserRole.role_id==Role.id")
+    groups = relationship("AuthGroup", backref="roles", uselist=True,
+                         secondary="authentication_grouprole", secondaryjoin="GroupRole.role_id==Role.id")
 

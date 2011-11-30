@@ -21,6 +21,10 @@ class AuthUser(Base, models.AuthUser):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
         models.AuthUser.__init__(self, *args, **kwargs)
+class AuthGroup(Base, models.AuthGroup):
+    def __init__(self, *args, **kwargs):
+        Base.__init__(self, *args, **kwargs)
+        models.AuthUser.__init__(self, *args, **kwargs) 
 
 class User(Base):
     __tablename__ = 'users'
@@ -59,9 +63,8 @@ class Users:
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-class UserAcl(Base):
+class GlobalAcl(Base):
     __tablename__ = 'acl_users'
-    rid =  Column(Integer, ForeignKey("users.id", name='fk_useracl_user', use_alter=True), primary_key=True)
     role = Column(Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True), primary_key=True)
-    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_useracl_permission", use_alter=True), primary_key=True)
- 
+    permission = Column(Unicode)
+

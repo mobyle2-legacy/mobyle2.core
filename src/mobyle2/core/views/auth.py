@@ -302,7 +302,6 @@ class Add(AuthView):
                         url = request.resource_url(item)
                         return HTTPFound(location=url)
                     except Exception, e:
-                        raise
                         message = _(u'You can try to change some '
                                     'settings because an exception occured '
                                     'while adding your new authbackend '

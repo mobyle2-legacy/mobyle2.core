@@ -1,8 +1,13 @@
 <metal metal:use-macro="main.macros['main']">
   <metal metal:fill-slot="content_body">
-    <p i18n:translate="">Authentication backends configuration</p>
+    <p i18n:translate="">Users and groups access managment</p>
     <ul>
       <li><a i18n:translate="" href="${request.route_url('apex_useradd')}">Add an user</a></li>
+      <li><a i18n:translate="" href="">Add a group</a></li>
+      <li><a i18n:translate="" href="">Delete an user</a></li>
+      <li><a i18n:translate="" href="">Delete a group</a></li>
+      <li><a i18n:translate="" href="${u(c)}@@acl">Manage global access</a></li>
+      <li><a i18n:translate="" href="${u(c)}@@role">Manage global roles</a></li>
     </ul>
   </metal>
 </metal>

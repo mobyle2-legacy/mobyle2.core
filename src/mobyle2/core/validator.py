@@ -11,3 +11,9 @@ def not_empty_string(node, value):
         raise Invalid(node, _('You must set a not null string'))
 
 
+def fail(node, value):
+    raise Invalid(node, _('Fail'))
+
+
+
+

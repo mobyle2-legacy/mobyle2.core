@@ -1,0 +1,32 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    <p i18n:translate="">Role managment</p>
+    <div class="add" tal:condition="add_form|nothing">
+      <h1 class="add">Add a role</h1>
+      <p tal:content="structure add_form"/>
+    </div>
+    <div class="listing roles"
+      tal:condition="roles">
+      <form action="${request.url}" method="post">
+      <table>
+        <th>
+          <td>Name</td>
+          <td>Description</td>
+        </th>
+        <tal:r tal:repeat="role roles">
+          <tr>
+            <td>
+              <input type="checkbox" 
+                value="${role.id}" name="delete">
+            </td>
+            <td>${role['name']}</td>
+            <td>${role['description']}</td>
+          </tr>
+        </tal:r>
+      </table>
+      <input type="hidden" name="role_action" value="delete"/>
+      <input type="submit" name="Send" value="Send"/>
+    </form>
+    </div>
+  </metal>
+</metal>
