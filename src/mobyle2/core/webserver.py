@@ -144,6 +144,7 @@ def includeme(config, debug=False):
     # translation directories
     config.add_translation_dirs('%s:locale/'%dn)
     #config.add_translation_dirs('deform:locale/')
+    config.add_subscriber('%s.subscribers.user_created'%dn, 'apex.events.UserCreatedEvent')
     config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
     config.add_subscriber('%s.subscribers.regenerate_velruse_config'%dn, '%s.events.RegenerateVelruseConfigEvent' % dn)
     # static files

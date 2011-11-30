@@ -59,19 +59,7 @@ class RegisterForm(forms.RegisterForm):
         """
         Create a default project.
         """
-        from mobyle2.core.models import DBSession as session
-        from mobyle2.core.models.user import User
-        if not session.query(User).filter_by(id=user.id).all():
-            from mobyle2.core.models.project import Project
-            newuser = User(user.id, 'a')
-            session.add(newuser)
-            session.commit()
-            default_project = Project('Default project of %s' % user.username,
-                                      'Default project created on sign in', newuser)
-            session.add(default_project)
-            session.commit()
-        else:
-            self.message = _(u'a user with this id %d already exists' % user.id)
+        pass
 
 
 
