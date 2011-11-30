@@ -6,6 +6,7 @@ from mobyle2.core.models import DBSession
 from mobyle2.core.models import project
 from project import Projects
 from auth import AuthenticationBackends
+from user import Users
 
 from ordereddict import OrderedDict
 from mobyle2.core.utils import _
@@ -29,6 +30,7 @@ class Root(object):
         is_admin = True # todo : implement
         if is_admin:
             maps['auths'] = AuthenticationBackends
+            maps['users'] = Users
         for item in maps:
             self.items[item] = maps[item](item, self)
 

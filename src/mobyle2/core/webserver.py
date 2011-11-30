@@ -15,6 +15,7 @@ from sqlalchemy import engine_from_config
 from mobyle2.core.models import initialize_sql, DBSession
 from mobyle2.core.config import dn
 from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolicy
+from mobyle2.core.models.registry import get_registry_key
 
 from mobyle2.core.interfaces import IMobyle2View
 
@@ -77,17 +78,32 @@ def locale_negotiator(request):
     return locale_name
 
 def includeme(config, debug=False):
+    settings = config.registry.settings
+    if len([k.startswith('sqlalchemy.') for k in settings]):
+        engine = engine_from_config(settings, 'sqlalchemy.')
+        initialize_sql(engine)
+    # verify captcha settings
+    captcha = get_registry_key('auth.use_captcha', False)
+    if captcha:
+        settings['apex.use_recaptcha_on_login'] = True
+        settings['apex.use_recaptcha_on_forgot'] = True
+        settings['apex.use_recaptcha_on_register'] = True
+        settings['apex.use_recaptcha_on_reset'] = True
+        rpubk = get_registry_key('auth.recaptcha_public_key', '')
+        rprivk =  get_registry_key('auth.recaptcha_private_key', '')
+        if rpubk:
+            settings['apex.recaptcha_public_key'] = rpubk
+        if rprivk:
+            settings['apex.recaptcha_private_key'] = rprivk
+
     config.include('apex', route_prefix='/auth')
     #
-    settings = config.registry.settings
     authentication_policy = AuthTktAuthenticationPolicy(dn)
     authorization_policy = ACLAuthorizationPolicy()
     if len([k.startswith('session..') for k in settings]):
         session_factory = session_factory_from_settings(settings)
         config.set_session_factory(session_factory)
-    if len([k.startswith('sqlalchemy.') for k in settings]):
-        engine = engine_from_config(settings, 'sqlalchemy.')
-        initialize_sql(engine)
+
     config.set_root_factory('%s.models.root.root_factory'%dn)
     config.set_authorization_policy(authorization_policy)
     config.set_authentication_policy(authentication_policy)
@@ -106,7 +122,7 @@ def includeme(config, debug=False):
                 del settings['mail.username']
                 changed = True
         if 'mail.password' in settings:
-            password = settings.get('mail.password') 
+            password = settings.get('mail.password')
             if not password:
                 del settings['mail.password']
             changed = True
@@ -148,8 +164,10 @@ def includeme(config, debug=False):
     config.add_view('%s.views.project.Home' % dn, name='', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.List' % dn, name='list', context='%s.models.project.Projects' % dn)
     config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
-    config.add_view('%s.views.project.Add' % dn, name='add', context='%s.models.project.Projects' % dn)
-    config.add_view('%s.views.project.View' % dn, name='',     context='%s.models.project.ProjectRessource' % dn)
+    config.add_view('%s.views.project.Add' % dn,  name='add', context='%s.models.project.Projects' % dn)
+    config.add_view('%s.views.project.View' % dn, name='',   context='%s.models.project.ProjectRessource' % dn)
+    # users managment
+    config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn)
     # redirect after login
     config.add_route('redirect_after_login', '/redirect_after_login')
     config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login')
@@ -157,6 +175,10 @@ def includeme(config, debug=False):
     render_template = 'mobyle2.core:templates/apex_template.pt'
     config.add_view('mobyle2.core.views.apexviews.login', route_name='apex_login', renderer=render_template)
     config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.forgot', route_name='apex_forgot', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.reset', route_name='apex_reset', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.activate', route_name='apex_activate', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.useradd', route_name='apex_useradd', renderer=render_template)
     config.end()
     config.commit()
     from mobyle2.core.models.registry import set_registry_key

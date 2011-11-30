@@ -1,7 +1,15 @@
 <metal metal:use-macro="main.macros['main']">
-<metal metal:fill-slot="content_body">
-<h1 i18n:translate="">Manage general authentication settings</h1>
-<div id="manage_auth_global_settings_holder" tal:content="structure f" > 
-</div>
-</metal>
+  <metal metal:fill-slot="content_body">
+    <h1 i18n:translate="">Manage general authentication settings</h1>
+    <ul>
+      <li
+      tal:condition="need_restart|nothing" ><a class="restart"
+        tal:attributes="href python:u(request.root)+'@@reload?confirm=1'">
+        Restart the server to appply configuration
+      </a>
+      </li>
+    </ul>
+    <div id="manage_auth_global_settings_holder" tal:content="structure f" >
+    </div>
+  </metal>
 </metal>

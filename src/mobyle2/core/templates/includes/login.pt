@@ -1,15 +1,17 @@
 <metal metal:define-macro="main">
   <tal:if tal:condition="not: nologin|nothing">
-    <div id="login-box" class="login-box" tal:condition="not:request.user"
-      tal:define="form login_params['form'];
-      velruse_forms login_params['velruse_forms'];
-      self_register login_params['self_register'];
-      include_came_from login_params['include_came_from'];
-      action request.route_url('apex_login');
-      ">
-      <h1 i18n:domain="Apex"  i18n:translate="">Login</h1>
-      <metal metal:use-macro="login_form.macros['main']"/>
-    </div>
+    <tal:d tal:condition="not:request.user">
+      <div id="login-box" class="login-box" 
+        tal:define="form login_params['form'];
+        velruse_forms login_params['velruse_forms'];
+        self_register login_params['self_register'];
+        include_came_from login_params['include_came_from'];
+        action request.route_url('apex_login');
+        ">
+        <h1 i18n:domain="Apex"  i18n:translate="">Login</h1>
+        <metal metal:use-macro="login_form.macros['main']"/>
+      </div>
+    </tal:d>
   </tal:if>
   <div id="user_box" tal:condition="request.user"
     tal:define="uid request.user.email|request.user.username|nothing">

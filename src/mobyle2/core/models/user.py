@@ -1,3 +1,4 @@
+from ordereddict import OrderedDict
 from mobyle2.core.models import DBSession, Base
 from sqlalchemy import Column
 from sqlalchemy import Unicode
@@ -6,6 +7,7 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 import apex
 
+from mobyle2.core.utils import _
 from apex import models
 import mobyle2
 
@@ -34,11 +36,32 @@ class User(Base):
     def get_status(self):
         user_statuses.get(self.status, None)
 
-def check_login(login, password):
-    session = DBSession()
-    user = session.query(User).filter_by(userid=login).first()
-    if user is not None:
-        hashed_password = user.password
-        if crypt.check(hashed_password, password):
-            return True
-    return False
+class UserRessource(object):
+    def __init__(self, p, parent):
+        self.user = p
+        self.__name__ = "%s"%p.id
+        self.__parent__ = parent
+
+class Users:
+    @property
+    def items(self):
+        self._items = OrderedDict([("%s"%a.id, UserRessource(a, self))
+                                   for a in self.session.query(User).all()])
+        return self._items
+
+    def __init__(self, name, parent):
+        self.__name__ = name
+        self.__parent__ = parent
+        self.__description__ = _("Users")
+        self.request = parent.request
+        self.session = parent.session
+
+    def __getitem__(self, item):
+        return self.items.get(item, None)
+
+class UserAcl(Base):
+    __tablename__ = 'acl_users'
+    rid =  Column(Integer, ForeignKey("users.id", name='fk_useracl_user', use_alter=True), primary_key=True)
+    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True), primary_key=True)
+    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_useracl_permission", use_alter=True), primary_key=True)
+ 

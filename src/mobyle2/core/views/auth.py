@@ -34,23 +34,31 @@ bool_values = {
 }
 
 class Base(bBase):
-    def __call__(self):
+    def get_base_params(self):
         params = {'view': self}
         params.update(get_base_params(self))
         params['need_restart'] = get_registry_key('mobyle2.needrestart')
-        return render_to_response(self.template, params, self.request) 
+        return params
+
+    def __call__(self):
+        params = self.get_base_params()
+        return render_to_response(self.template, params, self.request)
 
 class ManageSettings(Base):
     template ='../templates/auth/auth_manage_settings.pt'
 
     def __call__(self):
+
         global_auth_settings = [u'auth.allow_anonymous',
                                 u'auth.self_registration',
                                 u'auth.use_captcha']
 
+        global_auth_text_settings = [u'auth.recaptcha_public_key',
+                                     u'auth.recaptcha_private_key']
         request = self.request
         controls = self.request.POST.items()
         keys = session.query(r.Registry).filter(r.Registry.name.in_(global_auth_settings)).all()
+        tkeys = session.query(r.Registry).filter(r.Registry.name.in_(global_auth_text_settings)).all()
         items = OrderedDict()
         authbackend_schema = colander.SchemaNode(colander.Mapping())
         struct = {}
@@ -58,20 +66,34 @@ class ManageSettings(Base):
             authbackend_schema.add(
                 colander.SchemaNode(colander.Boolean(),
                                     name = i.name.replace('auth.', ''),
-                                    default=bool_values.get(i.value.lower(), False)
+                                    default=bool_values.get(i.value.lower(), False),
+                                    missing=None
+                                   ))
+        for i in tkeys:
+            authbackend_schema.add(
+                colander.SchemaNode(colander.String(),
+                                    name = i.name.replace('auth.', ''),
+                                    default=i.value and i.value or '',
+                                    missing=None
                                    ))
         form = deform.Form(authbackend_schema, buttons=(_('Send'),), use_ajax=True)
         if request.method == 'POST':
             try:
                 struct = form.validate(controls)
-                for obj in keys:
+                restart = True
+                for obj in keys+tkeys:
                     ki =  obj.name.replace('auth.', '')
                     # store settings in database
-                    obj.value = struct.get(ki, False)
-                session.commit()
+                    value = struct.get(ki, False)
+                    if obj.value != value:
+                        obj.value = value
+                        session.commit()
+                        restart = True
+                if restart:
+                    self.request.registry.notify(RegenerateVelruseConfigEvent(self.request))
             except  ValidationFailure, e:
                 pass
-        params = get_base_params(self)
+        params = self.get_base_params()
         params['f'] = form.render(struct)
         return render_to_response(self.template, params, self.request)
 
@@ -80,7 +102,6 @@ class List(Base):
 
 class Home(Base):
     template ='../templates/auth/auth_home.pt'
-
 
 class AuthView(Base):
     def __init__(self, request):

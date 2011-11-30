@@ -25,3 +25,15 @@ def login(request):
 def register(request):
     return wrap_view(av.register, request)
 
+def activate(request):
+    return wrap_view(av.activate, request) 
+
+def reset(request):
+    return wrap_view(av.reset, request)  
+
+def useradd(request):
+    return wrap_view(av.useradd, request)  
+ 
+def forgot(request):
+    return wrap_view(av.forgot_password, request) 
+

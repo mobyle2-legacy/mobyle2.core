@@ -5,6 +5,7 @@ __docformat__ = 'restructuredtext en'
 from sqlalchemy import engine_from_config
 from mobyle2.core.models import initialize_sql
 from mobyle2.core.models.auth import AuthenticationBackend
+from mobyle2.core.models.registry import get_registry_key
 from mobyle2.core.models import DBSession  as session
 from openid.store import sqlstore
 
@@ -54,6 +55,7 @@ def get_sqlstore(settings):
 
 def velruse_config(config):
     settings = config.registry.settings
+
     settings['velruse.openid.store'] = 'mobyle2.core.velruse.get_sqlstore'
     #settings['velruse.openid.realm'] = settings.get('velruse.openid.realm', 'realm')
     key = 'velruse.store.'
@@ -91,5 +93,7 @@ def velruse_config(config):
                 if ab.backend_type in ['github']:
                     settings['velruse.%s.scope' %(t)] = ab.authorize
     settings['velruse.providers'] = providers
+
+ 
 
 # vim:set et sts=4 ts=4 tw=80:

@@ -22,6 +22,8 @@ def register_default_keys(session):
         'auth.allow_anonymous': 'false',
         'auth.use_captcha': 'false',
         'auth.self_registration': 'false',
+        'auth.recaptcha_private_key': None,
+        'auth.recaptcha_public_key': None,
     }
     for k in default_keys:
         try:
