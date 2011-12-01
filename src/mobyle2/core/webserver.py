@@ -138,8 +138,8 @@ def includeme(config, debug=False):
     #  config.include('pyramid_zcml')
     config.begin()
     config.hook_zca()
-    if settings.get('application.debug', False):
-        config.add_view('%s.views.root.Reload' % dn,     name='reload', context='%s.models.root.Root' % dn)
+    #if settings.get('application.debug', False):
+    config.add_view('%s.views.root.Reload' % dn,     name='reload', context='%s.models.root.Root' % dn)
     #config.scan('%s.models'%dn)
     # translation directories
     config.add_translation_dirs('%s:locale/'%dn)
