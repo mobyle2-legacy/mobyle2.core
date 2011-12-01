@@ -22,6 +22,8 @@ from mobyle2.core.interfaces import IMobyle2View
 from mobyle2.core.events import RegenerateVelruseConfigEvent
 from pyramid_mailer.interfaces import IMailer
 
+from weberror.evalexception import make_eval_exception
+
 def locale_negotiator(request):
     """This code is inspired by the plonelanguatetool negociation!"""
     settings = get_current_registry().settings
@@ -182,6 +184,7 @@ def includeme(config, debug=False):
     config.add_view('mobyle2.core.views.apexviews.reset', route_name='apex_reset', renderer=render_template)
     config.add_view('mobyle2.core.views.apexviews.activate', route_name='apex_activate', renderer=render_template)
     config.add_view('mobyle2.core.views.apexviews.useradd', route_name='apex_useradd', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.managegroups', route_name='apex_managegroups', renderer=render_template)
     config.end()
     config.commit()
     from mobyle2.core.models.registry import set_registry_key
@@ -212,6 +215,15 @@ def wsgi_app_factory(global_config, **local_config):
             else:
                 raise
     return webbuilder_app
+
+def weberror_wrapper(app, global_config, **local_config):
+    keys = ['error_email', 'from_address', 'show_exceptions',
+            'smtp_server', 'smtp_use_tls', 'smtp_username ',
+            'smtp_password ', 'error_subject_prefix',]
+    for k in keys:
+        if k in local_config:
+            del local_config[k]
+    return make_eval_exception(app, global_config, **local_config)
 
 def main():
     return 'implement me'

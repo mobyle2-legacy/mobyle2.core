@@ -93,6 +93,9 @@ setup(
         'paste.app_factory':  [
             'main=mobyle2.core.webserver:wsgi_app_factory' ,
         ],
+        'paste.filter_app_factory':  [
+            'weberror=mobyle2.core.webserver:weberror_wrapper' ,
+        ],
         'console_scripts': [
             '%s=mobyle2.core.webserver:main' % name ,
         ],
