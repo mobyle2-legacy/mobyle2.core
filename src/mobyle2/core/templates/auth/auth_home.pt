@@ -6,9 +6,9 @@
       <li><a i18n:translate="" href="${request.resource_url(context)}@@list">List backends</a></li>
       <li><a i18n:translate="" href="${request.resource_url(context)}@@add">Add a backend</a></li>
       <li
-      tal:condition="need_restart|nothing" ><a class="restart"
+      tal:condition="need_restart|nothing" ><a class="restart" i18n:translate=""
         tal:attributes="href python:u(request.root)+'@@reload?confirm=1'">
-        Restart the server to appply configuration
+        Restart the server to apply configuration
       </a>
       </li>
     </ul>

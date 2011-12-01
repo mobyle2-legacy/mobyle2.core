@@ -4,9 +4,9 @@
       <li><a class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a></li>
       <li><a class="edit" tal:attributes="href python:u(c)+'@@delete'">Delete</a></li>
       <li
-      tal:condition="need_restart|nothing" ><a class="restart"
+      tal:condition="need_restart|nothing" ><a class="restart" i18n:translate=""
         tal:attributes="href python:u(request.root)+'@@reload?confirm=1'">
-        Restart the server to appply configuration
+        Restart the server to apply configuration
       </a>
       </li>
     </ul>
@@ -17,9 +17,9 @@
     <div class="authentication_details">
       <tal:b tal:condition="ab.backend_type=='ldap'">
         <p><strong i18n:translate="">Host : </strong> ${ab.hostname}</p>
-        <p><strong i18n:translate="">Port : </strong> ${ab.password}</p>
+        <p><strong i18n:translate="">Port : </strong> ${ab.port}</p>
         <p><strong i18n:translate="">SSL : </strong> ${ab.use_ssl}</p>
-        <p><strong i18n:translate="">lDAP Dn: </strong>${ab.ldap_dn}</p>
+        <p><strong i18n:translate="">lDAP Dn : </strong>${ab.ldap_dn}</p>
         <p tal:condition="python:ab.ldap_users_filter"><strong i18n:translate="">LDAP Users filter : </strong> ${ab.ldap_users_filter}</p>
         <p tal:condition="python:ab.ldap_groups_filter"><strong i18n:translate="">LDAP Groups filter: </strong> ${ab.ldap_groups_filter}</p>
       </tal:b>

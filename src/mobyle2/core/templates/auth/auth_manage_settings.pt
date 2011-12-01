@@ -3,9 +3,9 @@
     <h1 i18n:translate="">Manage general authentication settings</h1>
     <ul>
       <li
-      tal:condition="need_restart|nothing" ><a class="restart"
+      tal:condition="need_restart|nothing" ><a class="restart" i18n:translate=""
         tal:attributes="href python:u(request.root)+'@@reload?confirm=1'">
-        Restart the server to appply configuration
+        Restart the server to apply configuration
       </a>
       </li>
     </ul>

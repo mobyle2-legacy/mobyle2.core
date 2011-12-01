@@ -143,7 +143,7 @@ class AuthView(Base):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
             port = colander.SchemaNode(colander.String(), description=_('Port'))
             use_ssl = colander.SchemaNode(colander.Boolean(), description=_('Use SSL?'))
-            password = colander.SchemaNode(colander.String(), description=_('Password'))
+            #password = colander.SchemaNode(colander.String(), description=_('Password'))
             dn = colander.SchemaNode(colander.String(),
                                      description=_('Base dn mask to connect as in the '
                                                    'form "cn=USERID,ou=people", '
@@ -253,7 +253,9 @@ class AuthView(Base):
                     dkeys.update({'realm':'realm',})
                 if ab.backend_type in ['ldap']:
                     dkeys.update({'ldap_groups_filter':'groups', 'ldap_users_filter':'users',
-                                  'ldap_dn':'dn', 'hostname':'host', 'port':'port','password':'password', 'use_ssl':'use_ssl'})
+                                  'ldap_dn':'dn', 'hostname':'host', 'port':'port'
+                                  #,'password':'password'
+                                  , 'use_ssl':'use_ssl'})
                 if ab.backend_type in ['db']:
                     dkeys.update({'hostname':'host', 'database':'db','password':'password','port':'port',
                                   'username':'user','password':'password'})
@@ -272,7 +274,7 @@ class Add(AuthView):
         #_ = self.translate
         request = self.request
         struct = {}
-        params = get_base_params(self)
+        params = self.get_base_params()
         form = self.form
         if request.method == 'POST':
             controls = request.POST.items()
@@ -324,7 +326,7 @@ class Add(AuthView):
 class View(AuthView):
     template ='../templates/auth/auth_view.pt'
     def __call__(self):
-        params = get_base_params(self)
+        params = self.get_base_params()
         params['ab'] = self.request.context.ab
         if not 'f_content' in params:
             params['f_content'] = self.form.render(readonly=True)
@@ -333,7 +335,7 @@ class View(AuthView):
 class Edit(AuthView):
     template ='../templates/auth/auth_edit.pt'
     def __call__(self):
-        params = get_base_params(self)
+        params = self.get_base_params()
         request = self.request
         params['ab'] = ab = self.request.context.ab
         form = self.form
@@ -397,7 +399,7 @@ class Delete(AuthView):
                 default='true',
                 validator = colander.OneOf(['true']),
                 title= _('delete me'))
-        params = get_base_params(self)
+        params = self.get_base_params()
         request = self.request
         params['ab'] = ab = self.request.context.ab
         form = deform.Form(authbackend_delete_schema(), buttons=(_('Send'),), use_ajax=True)
