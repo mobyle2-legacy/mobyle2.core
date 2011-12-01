@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 
 from mobyle2.core.utils import _
 from mobyle2.core.models import Base
-import mobyle2
+#import mobyle2
 
 """
 >>> from mobyle2.core.models import user,project,job,workflow
@@ -31,15 +31,16 @@ True
 
 """
 
+
 class Project(Base):
     __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
-    user_id = Column(Integer, ForeignKey("users.id", "fk_project_user", use_alter=True))
+    user_id = Column(Integer, ForeignKey("users.id", "fk_project_user",
+                                         use_alter=True))
     workflows = relationship("Workflow", backref="project", uselist=True)
     jobs = relationship("Job", backref="project", uselist=True)
-
 
     def __init__(self, name, description, user, workflows=None, jobs=None):
         self.name = name
@@ -50,17 +51,18 @@ class Project(Base):
         if workflows is not None:
             self.workflows.extend(workflows)
 
+
 class ProjectRessource(object):
     def __init__(self, p, parent):
         self.project = p
-        self.__name__ = "%s"%p.id
+        self.__name__ = "%s" % p.id
         self.__parent__ = parent
 
 
 class Projects:
     @property
     def items(self):
-        self._items = OrderedDict([("%s"%a.id, ProjectRessource(a, self))
+        self._items = OrderedDict([("%s" % a.id, ProjectRessource(a, self))
                                    for a in self.session.query(Project).all()])
         return self._items
 
@@ -74,9 +76,21 @@ class Projects:
     def __getitem__(self, item):
         return self.items.get(item, None)
 
+
 class ProjectAcl(Base):
     __tablename__ = 'acl_projects'
-    rid =  Column(Integer, ForeignKey("projects.id", name='fk_projectacl_project', use_alter=True), primary_key=True)
-    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_projectacl_role", use_alter=True), primary_key=True)
-    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_projectacl_permission", use_alter=True), primary_key=True)
-
+    rid = Column(Integer,
+                 ForeignKey("projects.id",
+                             name='fk_projectacl_project',
+                             use_alter=True),
+                 primary_key=True)
+    role = Column(Integer,
+                  ForeignKey("authentication_role.id",
+                             name="fk_projectacl_role",
+                             use_alter=True),
+                  primary_key=True)
+    permission = Column(Integer,
+                        ForeignKey("authentication_permission.id",
+                                    name="fk_projectacl_permission",
+                                    use_alter=True),
+                        primary_key=True)
