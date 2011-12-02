@@ -52,17 +52,19 @@ def upgrade(migrate_engine):
     ucreate = False
     if not ('permission' in real_meta.tables["acl_users"].c): 
         ucreate = True
-    if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
-        real_meta.tables["acl_users"].c["permission"].drop() 
-        ucreate = True
+    if 'permission' in real_meta.tables["acl_projects"].c:
+        if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
+            real_meta.tables["acl_users"].c["permission"].drop() 
+            ucreate = True
     if ucreate:
         aclusers.c["permission"].create() 
     ucreate = False
     if not ('permission' in real_meta.tables["acl_projects"].c): 
         ucreate = True
-    if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
-        real_meta.tables["acl_projects"].c["permission"].drop() 
-        ucreate = True
+    if 'permission' in real_meta.tables["acl_projects"].c:
+        if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
+            real_meta.tables["acl_projects"].c["permission"].drop() 
+            ucreate = True
     if ucreate: 
         aclprojects.c["permission"].create()  
     # migrate foreign keys to cascade modifications
@@ -89,6 +91,8 @@ def upgrade(migrate_engine):
             fk.ondelete = ctraint.ondelete
             fk.onupdate = ctraint.onupdate
             fk.create()
+    if 'authentication_permission' in real_meta.tables:
+        real_meta.tables['authentication_permission'].drop()
 
 def downgrade(migrate_engine):
     # Operations to reverse the above upgrade go here.
