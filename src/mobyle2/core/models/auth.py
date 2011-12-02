@@ -132,13 +132,13 @@ class Permisssion(Base):
 
 class UserRole(Base):
     __tablename__ = 'authentication_userrole'
-    user_id = Column(Integer, ForeignKey("auth_users.id", name="fk_userrole_user", use_alter=True), primary_key=True)
-    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True), primary_key=True)
+    user_id = Column(Integer, ForeignKey("auth_users.id", name="fk_userrole_user", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
 class GroupRole(Base):
     __tablename__ = 'authentication_grouprole'
-    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True), primary_key=True)
-    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True),  primary_key=True)
+    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
 
 class Role(Base):
     __tablename__ = 'authentication_role'

@@ -28,7 +28,7 @@ class AuthGroup(Base, models.AuthGroup):
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, ForeignKey(AuthUser.id, "fk_user_authuser", use_alter=True), primary_key=True)
+    id = Column(Integer, ForeignKey(AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     status = Column(Unicode(1))
     base_user = relationship("AuthUser", backref="mobyle_user")
     projects = relationship("Project", uselist=True, backref="user")
@@ -65,6 +65,6 @@ class Users:
 
 class GlobalAcl(Base):
     __tablename__ = 'acl_users'
-    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True), primary_key=True)
+    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     permission = Column(Unicode)
 
