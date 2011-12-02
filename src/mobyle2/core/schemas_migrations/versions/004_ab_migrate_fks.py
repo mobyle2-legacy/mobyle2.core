@@ -57,6 +57,7 @@ def upgrade(migrate_engine):
         ucreate = True
     if ucreate:
         aclusers.c["permission"].create() 
+    ucreate = False
     if not ('permission' in real_meta.tables["acl_projects"].c): 
         ucreate = True
     if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
