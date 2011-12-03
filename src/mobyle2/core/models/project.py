@@ -89,5 +89,5 @@ class ProjectAcl(Base):
                              name="fk_projectacl_role",
                              use_alter=True),
                   primary_key=True)
-    permission = Column(Unicode)
+    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_projectssacl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 

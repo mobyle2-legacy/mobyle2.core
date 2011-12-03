@@ -63,8 +63,8 @@ class Users:
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-class GlobalAcl(Base):
+class UsersAcl(Base):
     __tablename__ = 'acl_users'
     role = Column(Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-    permission = Column(Unicode)
+    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_userssacl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 

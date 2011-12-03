@@ -140,6 +140,8 @@ class GroupRole(Base):
     group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
 
+
+
 class Role(Base):
     __tablename__ = 'authentication_role'
     id = Column(Integer, primary_key=True)
