@@ -24,7 +24,7 @@ class AuthUser(Base, models.AuthUser):
 class AuthGroup(Base, models.AuthGroup):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
-        models.AuthUser.__init__(self, *args, **kwargs) 
+        models.AuthUser.__init__(self, *args, **kwargs)
 
 class User(Base):
     __tablename__ = 'users'
@@ -32,6 +32,10 @@ class User(Base):
     status = Column(Unicode(1))
     base_user = relationship("AuthUser", backref="mobyle_user")
     projects = relationship("Project", uselist=True, backref="user")
+    global_roles = relationship(
+        "Role", backref="global_users", uselist=True,
+        secondary="authentication_userrole",
+        secondaryjoin="UserRole.role_id==Role.id")
 
     def __init__(self, id, status):
         self.id = id
@@ -63,8 +67,10 @@ class Users:
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-class UsersAcl(Base):
-    __tablename__ = 'acl_users'
-    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_userssacl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+
+class Acl(Base):
+    __tablename__ = 'authentication_acl'
+    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_acl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_acl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+
 

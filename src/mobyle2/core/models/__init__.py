@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -23,3 +24,5 @@ def initialize_sql(engine):
     Base.metadata.reflect(engine)
     Base.metadata.create_all(engine)
     registry.register_default_keys(DBSession)
+    auth.register_default_permissions(DBSession)
+    auth.register_default_roles(DBSession)

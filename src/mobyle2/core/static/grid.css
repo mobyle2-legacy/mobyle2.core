@@ -1,0 +1,242 @@
+/*
+	Variable Grid System.
+	Learn more ~ http://www.spry-soft.com/grids/
+	Based on 960 Grid System - http://960.gs/
+
+	Licensed under GPL and MIT.
+*/
+
+/*
+  Forces backgrounds to span full width,
+  even if there is horizontal scrolling.
+  Increase this if your layout is wider.
+
+  Note: IE6 works fine without this fix.
+*/
+
+body {
+  min-width: 960px;
+}
+
+/* Containers
+----------------------------------------------------------------------------------------------------*/
+.container_6 {
+	margin-left: auto;
+	margin-right: auto;
+	width: 960px;
+}
+
+/* Grid >> Global
+----------------------------------------------------------------------------------------------------*/
+
+
+.grid_1,
+.grid_2,
+.grid_3,
+.grid_4,
+.grid_5,
+.grid_6 {
+	display:inline;
+	float: left;
+	position: relative;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+
+
+.push_1, .pull_1,
+.push_2, .pull_2,
+.push_3, .pull_3,
+.push_4, .pull_4,
+.push_5, .pull_5,
+.push_6, .pull_6 {
+	position:relative;
+}
+
+
+/* Grid >> Children (Alpha ~ First, Omega ~ Last)
+----------------------------------------------------------------------------------------------------*/
+
+.alpha {
+	margin-left: 0;
+}
+
+.omega {
+	margin-right: 0;
+}
+
+/* Grid >> 6 Columns
+----------------------------------------------------------------------------------------------------*/
+
+
+.container_6 .grid_1 {
+	width:150px;
+}
+
+.container_6 .grid_2 {
+	width:310px;
+}
+
+.container_6 .grid_3 {
+	width:470px;
+}
+
+.container_6 .grid_4 {
+	width:630px;
+}
+
+.container_6 .grid_5 {
+	width:790px;
+}
+
+.container_6 .grid_6 {
+	width:950px;
+}
+
+
+
+
+/* Prefix Extra Space >> 6 Columns
+----------------------------------------------------------------------------------------------------*/
+
+
+.container_6 .prefix_1 {
+	padding-left:160px;
+}
+
+.container_6 .prefix_2 {
+	padding-left:320px;
+}
+
+.container_6 .prefix_3 {
+	padding-left:480px;
+}
+
+.container_6 .prefix_4 {
+	padding-left:640px;
+}
+
+.container_6 .prefix_5 {
+	padding-left:800px;
+}
+
+
+
+/* Suffix Extra Space >> 6 Columns
+----------------------------------------------------------------------------------------------------*/
+
+
+.container_6 .suffix_1 {
+	padding-right:160px;
+}
+
+.container_6 .suffix_2 {
+	padding-right:320px;
+}
+
+.container_6 .suffix_3 {
+	padding-right:480px;
+}
+
+.container_6 .suffix_4 {
+	padding-right:640px;
+}
+
+.container_6 .suffix_5 {
+	padding-right:800px;
+}
+
+
+
+/* Push Space >> 6 Columns
+----------------------------------------------------------------------------------------------------*/
+
+
+.container_6 .push_1 {
+	left:160px;
+}
+
+.container_6 .push_2 {
+	left:320px;
+}
+
+.container_6 .push_3 {
+	left:480px;
+}
+
+.container_6 .push_4 {
+	left:640px;
+}
+
+.container_6 .push_5 {
+	left:800px;
+}
+
+
+
+/* Pull Space >> 6 Columns
+----------------------------------------------------------------------------------------------------*/
+
+
+.container_6 .pull_1 {
+	left:-160px;
+}
+
+.container_6 .pull_2 {
+	left:-320px;
+}
+
+.container_6 .pull_3 {
+	left:-480px;
+}
+
+.container_6 .pull_4 {
+	left:-640px;
+}
+
+.container_6 .pull_5 {
+	left:-800px;
+}
+
+
+
+
+/* `Clear Floated Elements
+----------------------------------------------------------------------------------------------------*/
+
+/* http://sonspring.com/journal/clearing-floats */
+
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+/* http://www.yuiblog.com/blog/2010/09/27/clearfix-reloaded-overflowhidden-demystified */
+
+.clearfix:before,
+.clearfix:after {
+  content: '\0020';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+/*
+  The following zoom:1 rule is specifically for IE6 + IE7.
+  Move to separate stylesheet if invalid CSS is a problem.
+*/
+
+.clearfix {
+  zoom: 1;
+}

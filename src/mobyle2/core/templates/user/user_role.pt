@@ -9,20 +9,25 @@
       tal:condition="roles">
       <form action="${request.url}" method="post">
       <table>
-        <th>
-          <td>Name</td>
-          <td>Description</td>
-        </th>
-        <tal:r tal:repeat="role roles">
+        <thead>
           <tr>
-            <td>
-              <input type="checkbox" 
-                value="${role.id}" name="delete">
-            </td>
-            <td>${role['name']}</td>
-            <td>${role['description']}</td>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
           </tr>
-        </tal:r>
+        </thead>
+        <tbody>
+          <tal:r tal:repeat="role roles">
+            <tr>
+              <td>
+                <input tal:condition="python:role.get('deletable', False)" 
+                  type="checkbox" value="${role.id}" name="delete"/>
+              </td>
+              <td>${role['name']}</td>
+              <td>${role['description']}</td>
+            </tr>
+          </tal:r>
+        </tbody>
       </table>
       <input type="hidden" name="role_action" value="delete"/>
       <input type="submit" name="Send" value="Send"/>

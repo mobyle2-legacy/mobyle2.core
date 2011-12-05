@@ -1,0 +1,33 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    <p i18n:translate="">Permission managment</p>
+    <div class="add" tal:condition="add_form|nothing">
+      <h1 class="add">Add a permission</h1>
+      <p tal:content="structure add_form"/>
+    </div>
+    <div class="listing permissions"
+      tal:condition="permissions">
+      <form action="${request.url}" method="post">
+        <table>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+          <tal:r tal:repeat="permission permissions">
+            <tr>
+              <td>
+                <input tal:condition="python:permission.get('deletable', False)|nothing"
+                  type="checkbox" value="${permission.id}" name="delete"/>
+              </td>
+              <td i18n:translate="">${permission['name']}</td>
+              <td i18n:translate="">${permission['description']}</td>
+            </tr>
+          </tal:r>
+        </table>
+        <input type="hidden" name="permission_action" value="delete"/>
+        <input type="submit" name="Send" value="Send"/>
+      </form>
+    </div>
+  </metal>
+</metal>
