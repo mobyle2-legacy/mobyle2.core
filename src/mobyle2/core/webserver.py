@@ -173,6 +173,7 @@ def includeme(config, debug=False):
     config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.ManageAcl' % dn, name='acl', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.ManageRole' % dn, name='role', context='%s.models.user.Users' % dn)
+    config.add_view('%s.views.user.ManagePermission' % dn, name='permission', context='%s.models.user.Users' % dn)
     # redirect after login
     config.add_route('redirect_after_login', '/redirect_after_login')
     config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login')
