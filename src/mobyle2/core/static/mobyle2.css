@@ -28,30 +28,35 @@
   width:auto;
 }
 
-div.fa_field {
-  clear:both;
-}
-div.label div.label label{
-  float: left;
-}
-.fa_field div.label select,
-.fa_field div.label div{
-  float: right;
-}
 
-form#add_auth_backend div.fa_field,
-form#manage_auth_global_settings div.fa_field{
-  width: 500px;
-}
 form#add_auth_backend div.label,
 form#add_auth_backend label.field_opt{
   float:left;
   width: 200px;
 }
-form#add_auth_backend div.field_input {
-}
 
 
-#login-box {
-  float:right;
+.deform label.desc{
+    display: block;
 }
+
+.deform ul {
+    margin: auto;
+    padding: auto;
+}
+
+.deform li {
+    clear: none;
+    display: inherit;
+    margin: auto;
+    padding: auto;
+}
+
+.deformSet-item {
+    padding: auto;
+}
+
+.deform ul.inline > li{
+    display:inline-block;
+}
+

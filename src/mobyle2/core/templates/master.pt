@@ -18,13 +18,14 @@
           <script type="text/javascript" src="${dstatic}/scripts/jquery.form.js"></script>
         </metal:define>
         <metal:define metal:define-slot="css_slot">
+          <link rel="stylesheet" type="text/css"  href="${static}/grid.css"/>
           <link rel="stylesheet" type="text/css"  href="${static}/mobyle2.css"/>
           <link rel="stylesheet" type="text/css" href="${dstatic}/css/form.css"/>
         </metal:define>
       </head>
       <metal:define metal:define-macro="body">
         <body>
-          <div id="wrap">
+          <div id="wrap" class="container_6">
             <metal:define metal:define-slot="header">
               <div id="header">
                 <metal:define metal:define-slot="header_body">
@@ -42,19 +43,12 @@
               </metal:define>
               <div id="content">
                 <metal:define metal:define-slot="content">
-                  <metal:define metal:define-slot="right_slot">
-                    <div class="right_slot">
-                      <div class="login-wrap">
-                        <metal:define metal:use-macro="login.macros['main']"/>
-                      </div> 
-                    </div>
-                  </metal:define>
                   <metal:define metal:define-slot="left_slot">
-                    <div class="left_slot">
+                    <div class="left_slot grid_1">
                     </div>
                   </metal:define> 
                   <metal:define metal:define-slot="middle_slot">
-                    <div class="middle_slot">
+                    <div class="middle_slot grid_4 push_1">
                       <div id="above-content">
                         <metal:define metal:define-slot="flash">
                           <ul>
@@ -96,6 +90,13 @@
                 </div>
               </div>
             </metal:define>
+            <metal:define metal:define-slot="right_slot">
+              <div class="right_slot grid_1 push_5">
+                <div class="login-wrap">
+                  <metal:define metal:use-macro="login.macros['main']"/>
+                </div> 
+              </div>
+            </metal:define> 
           </metal:define>
         </div>
         <div id="bottom">

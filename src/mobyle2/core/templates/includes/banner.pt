@@ -1,6 +1,6 @@
 <metal:define metal:define-macro="main">
 <div id="banner">
-  <img src="${static}/logo.jpg" alt="logo"/>
-  <h1 id="title">Mobyle2, get the job done.</h1>
+  <img src="${static}/logo.jpg" alt="logo" class="grid_1"/>
+  <h1 class="grid_5 push_1" id="title">Mobyle2, get the job done.</h1>
 </div>
 </metal:define>
