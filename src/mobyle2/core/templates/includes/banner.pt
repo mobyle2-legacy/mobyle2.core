@@ -1,6 +1,8 @@
 <metal:define metal:define-macro="main">
-<div id="banner">
-  <img src="${static}/logo.jpg" alt="logo" class="grid_1"/>
-  <h1 class="grid_5 push_1" id="title">Mobyle2, get the job done.</h1>
-</div>
+  <div id="banner">
+    <a href="${request.resource_url(request.root)}">
+      <img src="${static}/logo.jpg" alt="logo" class="grid_1"/>
+    </a>
+    <h1 class="grid_5 push_1" id="title">Mobyle2, get the job done.</h1>
+  </div>
 </metal:define>
