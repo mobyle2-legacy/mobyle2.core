@@ -3,12 +3,12 @@
     <p i18n:translate="">Users and groups access managment</p>
     <ul>
       <li><a i18n:translate="" href="${request.route_url('apex_useradd')}">Add an user</a></li>
+      <li><a i18n:translate="" href="">Delete an user</a></li>
       <li><a i18n:translate="" href="${request.route_url('apex_managegroups')}">Manage groups</a></li>
       <li><a i18n:translate="" href="${u(c)}@@role">Manage global roles</a></li>
-      <li><a i18n:translate="" href="">Delete an user</a></li>
-      <li><a i18n:translate="" href="${u(c)}@@acl">Assign roles to user or group</a></li>
       <li><a i18n:translate="" href="${u(c)}@@permission">Manage permissions</a></li>
       <li><a i18n:translate="" href="${u(c)}@@acl">Assign permission to roles</a></li>
+      <li><a i18n:translate="" href="${u(c)}@@give_roles">Assign roles to user or group</a></li>
     </ul>
   </metal>
 </metal>

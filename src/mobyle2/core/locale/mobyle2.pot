@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-12-05 09:01+0100\n"
+"POT-Creation-Date: 2011-12-06 11:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Edit an user"
 msgstr ""
 
-#: src/mobyle2/core/permission.py:59 src/mobyle2/core/templates/user/user_home.pt:8
+#: src/mobyle2/core/permission.py:59 src/mobyle2/core/templates/user/user_home.pt:6
 msgid "Delete an user"
 msgstr ""
 
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Delete a group"
 msgstr ""
 
-#: src/mobyle2/core/permission.py:65 src/mobyle2/core/templates/user/user_home.pt:6
+#: src/mobyle2/core/permission.py:65 src/mobyle2/core/templates/user/user_home.pt:7
 msgid "Manage groups"
 msgstr ""
 
@@ -154,11 +154,11 @@ msgstr ""
 msgid "You must set a not null string"
 msgstr ""
 
-#: src/mobyle2/core/validator.py:23
+#: src/mobyle2/core/validator.py:23 src/mobyle2/core/validator.py:28
 msgid "This role already exists"
 msgstr ""
 
-#: src/mobyle2/core/validator.py:26
+#: src/mobyle2/core/validator.py:31
 msgid "Fail"
 msgstr ""
 
@@ -315,7 +315,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: src/mobyle2/core/models/user.py:59
+#: src/mobyle2/core/models/user.py:63 src/mobyle2/core/views/user.py:294
 msgid "Users"
 msgstr ""
 
@@ -424,6 +424,10 @@ msgstr ""
 msgid "API Secret :"
 msgstr ""
 
+#: src/mobyle2/core/templates/deform/tmapping.pt:5
+msgid "There was a problem with this section"
+msgstr ""
+
 #: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
 #: src/mobyle2/core/templates/includes/breadcrumbs.pt:3
 msgid "You are here"
@@ -458,28 +462,31 @@ msgid "Are you sure you want to reload the webserver ?"
 msgstr ""
 
 #: src/mobyle2/core/templates/user/user_acl.pt:3
-#: src/mobyle2/core/templates/user/user_permission.pt:3
-msgid "Permission managment"
+msgid "Access managment"
 msgstr ""
 
 #: src/mobyle2/core/templates/user/user_home.pt:3
 msgid "Users and groups access managment"
 msgstr ""
 
-#: src/mobyle2/core/templates/user/user_home.pt:7
+#: src/mobyle2/core/templates/user/user_home.pt:8
 msgid "Manage global roles"
 msgstr ""
 
 #: src/mobyle2/core/templates/user/user_home.pt:9
-msgid "Assign roles to user or group"
-msgstr ""
-
-#: src/mobyle2/core/templates/user/user_home.pt:10
 msgid "Manage permissions"
 msgstr ""
 
-#: src/mobyle2/core/templates/user/user_home.pt:11
+#: src/mobyle2/core/templates/user/user_home.pt:10
 msgid "Assign permission to roles"
+msgstr ""
+
+#: src/mobyle2/core/templates/user/user_home.pt:11
+msgid "Assign roles to user or group"
+msgstr ""
+
+#: src/mobyle2/core/templates/user/user_permission.pt:3
+msgid "Permission managment"
 msgstr ""
 
 #: src/mobyle2/core/templates/user/user_role.pt:3
@@ -488,7 +495,8 @@ msgstr ""
 
 #: src/mobyle2/core/views/auth.py:79 src/mobyle2/core/views/auth.py:269
 #: src/mobyle2/core/views/auth.py:405 src/mobyle2/core/views/project.py:37
-#: src/mobyle2/core/views/user.py:84 src/mobyle2/core/views/user.py:150
+#: src/mobyle2/core/views/user.py:79 src/mobyle2/core/views/user.py:173
+#: src/mobyle2/core/views/user.py:239 src/mobyle2/core/views/user.py:328
 msgid "Send"
 msgstr ""
 
@@ -599,23 +607,48 @@ msgstr ""
 msgid "Project has been updated"
 msgstr ""
 
-#: src/mobyle2/core/views/user.py:78
+#: src/mobyle2/core/views/user.py:138
+#, python-format
+msgid "Something goes wrong while saving access parameters: %s"
+msgstr ""
+
+#: src/mobyle2/core/views/user.py:147
+msgid "Access parameters have been saved"
+msgstr ""
+
+#: src/mobyle2/core/views/user.py:167
 msgid "Role name"
 msgstr ""
 
-#: src/mobyle2/core/views/user.py:83
+#: src/mobyle2/core/views/user.py:172
 msgid "Role description"
 msgstr ""
 
-#: src/mobyle2/core/views/user.py:98 src/mobyle2/core/views/user.py:165
+#: src/mobyle2/core/views/user.py:187 src/mobyle2/core/views/user.py:254
 msgid "Items have been deleted"
 msgstr ""
 
-#: src/mobyle2/core/views/user.py:144
+#: src/mobyle2/core/views/user.py:233
 msgid "Permission name"
 msgstr ""
 
-#: src/mobyle2/core/views/user.py:149
+#: src/mobyle2/core/views/user.py:238
 msgid "Permission description"
+msgstr ""
+
+#: src/mobyle2/core/views/user.py:295
+msgid "Groups"
+msgstr ""
+
+#: src/mobyle2/core/views/user.py:302
+msgid "Ressources"
+msgstr ""
+
+#: src/mobyle2/core/views/user.py:311 src/mobyle2/core/views/user.py:318
+msgid "Ressource type"
+msgstr ""
+
+#: src/mobyle2/core/views/user.py:327
+msgid "Attribute roles"
 msgstr ""
 
