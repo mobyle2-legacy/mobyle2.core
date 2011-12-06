@@ -24,7 +24,7 @@ from mobyle2.core.models import Base
 >>> w = workflow.Workflow("bbb", "bbb", p, [j])
 >>> session.add(w)
 >>> session.commit()
->>> w.jobs[0] == j
+>>> w.programs[0] == j
 True
 >>> w.project == p
 True
@@ -40,14 +40,15 @@ class Project(Base):
     user_id = Column(Integer, ForeignKey("users.id", "fk_project_user",
                                          use_alter=True))
     workflows = relationship("Workflow", backref="project", uselist=True)
-    jobs = relationship("Job", backref="project", uselist=True)
+#    jobs = relationship("Job", backref="project", uselist=True)
+    programs = relationship("Program", backref="project", uselist=True)
 
-    def __init__(self, name, description, user, workflows=None, jobs=None):
+    def __init__(self, name, description, user, workflows=None, programs=None):
         self.name = name
         self.description = description
         self.user = user
-        if jobs is not None:
-            self.jobs.extend(jobs)
+        if programs is not None:
+            self.programs.extend(programs)
         if workflows is not None:
             self.workflows.extend(workflows)
 
@@ -89,5 +90,10 @@ class ProjectAcl(Base):
                              name="fk_projectacl_role",
                              use_alter=True),
                   primary_key=True)
-    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_projectssacl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-
+    permission = Column(Integer,
+                        ForeignKey("authentication_permission.id",
+                                    name="fk_projectacl_permission",
+                                    use_alter=True,
+                                    ondelete="CASCADE",
+                                    onupdate="CASCADE"),
+                        primary_key=True)
