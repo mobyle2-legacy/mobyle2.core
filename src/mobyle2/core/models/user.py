@@ -21,6 +21,7 @@ class AuthUser(Base, models.AuthUser):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
         models.AuthUser.__init__(self, *args, **kwargs)
+
 class AuthGroup(Base, models.AuthGroup):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
@@ -30,15 +31,20 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, ForeignKey(AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     status = Column(Unicode(1))
-    base_user = relationship("AuthUser", backref="mobyle_user")
+    base_user = relationship("AuthUser")
     projects = relationship("Project", uselist=True, backref="user")
     global_roles = relationship(
         "Role", backref="global_users", uselist=True,
         secondary="authentication_userrole",
         secondaryjoin="UserRole.role_id==Role.id")
 
-    def __init__(self, id, status):
-        self.id = id
+    def __init__(self, user=None, id=None, status=None):
+        if (user is None) and (id is None):
+            raise Exception('must supply id or user')
+        if id:
+            self.id = id
+        if user:
+            self.base_user = user
         self.status = status
 
     def get_status(self):
