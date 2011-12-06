@@ -10,12 +10,24 @@ user = Table(
 )
 aclusers = Table(
     'acl_users', meta,
-    Column('role', Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True),
-    Column('permission', Unicode)
+   Column('role', Integer, ForeignKey("authentication_role.id", name="fk_acl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True),
+    Column('permission', Integer, ForeignKey("authentication_permission.id", name="fk_acl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 )
+
 aclprojects = Table(
     'acl_projects', meta,
-    Column('permission', Unicode)
+    Column('rid', Integer,
+                 ForeignKey("projects.id",
+                             name='fk_projectacl_project',
+                             use_alter=True),
+                 primary_key=True),
+    Column('role', Integer,
+                  ForeignKey("authentication_role.id",
+                             name="fk_projectacl_role",
+                             use_alter=True),
+                  primary_key=True),
+    Column('permission', Integer, ForeignKey("authentication_permission.id", name="fk_projectssacl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True),
+
 )
 
 userrole = Table('authentication_userrole', meta,
@@ -44,10 +56,14 @@ def upgrade(migrate_engine):
         if 'permission' in real_meta.tables["acl_users"].c:
             if len(real_meta.tables["acl_users"].c["permission"].foreign_keys) > 0:
                 real_meta.tables["acl_users"].c["permission"].drop()
+    else:
+        aclusers.create()
     if 'acl_projects' in real_meta.tables:
         if 'permission' in real_meta.tables["acl_projects"].c:
             if len(real_meta.tables["acl_projects"].c["permission"].foreign_keys) > 0:
                 real_meta.tables["acl_projects"].c["permission"].drop()
+    else:
+        aclprojects.create()
     if 'authentication_permission' in real_meta.tables:
         t = real_meta.tables["authentication_permission"]
         rt = real_meta.tables["authentication_acl"]
