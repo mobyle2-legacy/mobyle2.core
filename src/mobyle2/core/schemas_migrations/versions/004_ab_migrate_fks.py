@@ -56,13 +56,17 @@ def upgrade(migrate_engine):
         if 'permission' in real_meta.tables["acl_users"].c:
             if len(real_meta.tables["acl_users"].c["permission"].foreign_keys) > 0:
                 real_meta.tables["acl_users"].c["permission"].drop()
-    else:
+        else:
+            aclusers.drop()
+    if 'acl_users' not in real_meta.tables:
         aclusers.create()
     if 'acl_projects' in real_meta.tables:
         if 'permission' in real_meta.tables["acl_projects"].c:
             if len(real_meta.tables["acl_projects"].c["permission"].foreign_keys) > 0:
                 real_meta.tables["acl_projects"].c["permission"].drop()
-    else:
+        else:
+            aclprojects.drop()
+    if 'acl_projects' not in real_meta.tables:
         aclprojects.create()
     if 'authentication_permission' in real_meta.tables:
         t = real_meta.tables["authentication_permission"]
