@@ -40,12 +40,14 @@ def upgrade(migrate_engine):
     real_meta.bind = migrate_engine
     real_meta.reflect()
     # remove permission table and underlying fks
-    if 'permission' in real_meta.tables["acl_users"].c:
-        if len(real_meta.tables["acl_users"].c["permission"].foreign_keys) > 0:
-            real_meta.tables["acl_users"].c["permission"].drop()
-    if 'permission' in real_meta.tables["acl_projects"].c:
-        if len(real_meta.tables["acl_projects"].c["permission"].foreign_keys) > 0:
-            real_meta.tables["acl_projects"].c["permission"].drop()
+    if 'acl_users' in real_meta.tables:
+        if 'permission' in real_meta.tables["acl_users"].c:
+            if len(real_meta.tables["acl_users"].c["permission"].foreign_keys) > 0:
+                real_meta.tables["acl_users"].c["permission"].drop()
+    if 'acl_projects' in real_meta.tables:
+        if 'permission' in real_meta.tables["acl_projects"].c:
+            if len(real_meta.tables["acl_projects"].c["permission"].foreign_keys) > 0:
+                real_meta.tables["acl_projects"].c["permission"].drop()
     if 'authentication_permission' in real_meta.tables:
         t = real_meta.tables["authentication_permission"]
         rt = real_meta.tables["authentication_acl"]
