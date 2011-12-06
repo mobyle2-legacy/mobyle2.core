@@ -7,7 +7,7 @@ meta = MetaData()
 user = Table(
     'users', meta,
     Column('id', Integer, ForeignKey("auth_users.id", "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-) 
+)
 aclusers = Table(
     'acl_users', meta,
     Column('role', Integer, ForeignKey("authentication_role.id", name="fk_useracl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True),
@@ -16,7 +16,7 @@ aclusers = Table(
 aclprojects = Table(
     'acl_projects', meta,
     Column('permission', Unicode)
-)                  
+)
 
 userrole = Table('authentication_userrole', meta,
                  Column('user_id',Integer, ForeignKey("users.id", name="fk_userrole_user", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True),
@@ -38,35 +38,45 @@ def upgrade(migrate_engine):
     # migrate_engine.echo=True
     real_meta = MetaData()
     real_meta.bind = migrate_engine
-    real_meta.reflect() 
+    real_meta.reflect()
     # remove permission table and underlying fks
-    if 'permission' in real_meta.tables["acl_users"].c: 
+    if 'permission' in real_meta.tables["acl_users"].c:
         if len(real_meta.tables["acl_users"].c["permission"].foreign_keys) > 0:
             real_meta.tables["acl_users"].c["permission"].drop()
-    if 'permission' in real_meta.tables["acl_projects"].c: 
+    if 'permission' in real_meta.tables["acl_projects"].c:
         if len(real_meta.tables["acl_projects"].c["permission"].foreign_keys) > 0:
-            real_meta.tables["acl_projects"].c["permission"].drop() 
+            real_meta.tables["acl_projects"].c["permission"].drop()
     if 'authentication_permission' in real_meta.tables:
-        real_meta.tables["authentication_permission"].drop()
+        t = real_meta.tables["authentication_permission"]
+        rt = real_meta.tables["authentication_acl"]
+        for rctraint in deepcopy(rt.foreign_keys):
+            if rctraint.name == 'fk_acl_permission':
+                column = rctraint.column
+                parent = rctraint.parent
+                fk = ForeignKeyConstraint([parent], [column], **{'table': rt})
+                fk.name = rctraint.name
+                fk.drop()
+        if 'authentication_permission' in real_meta.tables:
+            t.drop()
     # add permission columns as plain strings
     ucreate = False
-    if not ('permission' in real_meta.tables["acl_users"].c): 
+    if not ('permission' in real_meta.tables["acl_users"].c):
         ucreate = True
     if 'permission' in real_meta.tables["acl_projects"].c:
         if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
-            real_meta.tables["acl_users"].c["permission"].drop() 
+            real_meta.tables["acl_users"].c["permission"].drop()
             ucreate = True
     if ucreate:
-        aclusers.c["permission"].create() 
+        aclusers.c["permission"].create()
     ucreate = False
-    if not ('permission' in real_meta.tables["acl_projects"].c): 
+    if not ('permission' in real_meta.tables["acl_projects"].c):
         ucreate = True
     if 'permission' in real_meta.tables["acl_projects"].c:
         if 'INTEGER' in real_meta.tables["acl_projects"].c['permission'].type.__class__.__name__:
-            real_meta.tables["acl_projects"].c["permission"].drop() 
+            real_meta.tables["acl_projects"].c["permission"].drop()
             ucreate = True
-    if ucreate: 
-        aclprojects.c["permission"].create()  
+    if ucreate:
+        aclprojects.c["permission"].create()
     # migrate foreign keys to cascade modifications
     for t in tables:
         rt = real_meta.tables[t.name]
@@ -82,7 +92,7 @@ def upgrade(migrate_engine):
     for t in tables:
         rt = real_meta.tables[t.name]
         for ctraint in deepcopy(t.foreign_keys):
-            table, c =  ctraint.target_fullname.split('.') 
+            table, c =  ctraint.target_fullname.split('.')
             drc = real_meta.tables[table].c[c]
             parent = ctraint.parent
             fk = ForeignKeyConstraint([parent], [drc], **{'table': rt})
