@@ -40,8 +40,13 @@ grouprole =  Table('authentication_grouprole', meta,
                    Column('role_id',Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True),
                   )
 
+perm = permission = Table('authentication_permission', meta,
+                Column('id', Integer, primary_key=True),
+                Column('name', Unicode(50), unique=True),
+                Column('description', Unicode(2500)),
+               )
 tables = [user, aclusers, userrole,grouprole,]
-from migrate.changeset.constraint import ForeignKeyConstraint
+ctables = [perm, aclusers,aclprojects, userrole,grouprole,]
 
 def upgrade(migrate_engine):
     # Upgrade operations go here. Don't create your own engine; bind
@@ -52,40 +57,11 @@ def upgrade(migrate_engine):
     real_meta.bind = migrate_engine
     real_meta.reflect()
     # remove permission table and underlying fks
-    if 'acl_users' in real_meta.tables:
-        aclusers.drop()
-    if 'acl_users' not in real_meta.tables:
-        aclusers.create()
-    if 'acl_projects' in real_meta.tables:
-        aclprojects.drop()
-    if 'acl_projects' not in real_meta.tables:
-        aclprojects.create()
-    # migrate foreign keys to cascade modifications
-    for t in tables:
-        rt = real_meta.tables[t.name]
-        for ctraint in t.foreign_keys:
-            for rctraint in deepcopy(rt.foreign_keys):
-                if ((rctraint.name == ctraint.name)
-                    or (rctraint.target_fullname == ctraint.target_fullname)):
-                    column = rctraint.column
-                    parent = rctraint.parent
-                    fk = ForeignKeyConstraint([parent], [column], **{'table': rt})
-                    fk.name = rctraint.name
-                    fk.drop()
-    for t in tables:
-        rt = real_meta.tables[t.name]
-        for ctraint in deepcopy(t.foreign_keys):
-            table, c =  ctraint.target_fullname.split('.')
-            drc = real_meta.tables[table].c[c]
-            parent = ctraint.parent
-            fk = ForeignKeyConstraint([parent], [drc], **{'table': rt})
-            fk.name = ctraint.name
-            fk.use_alter = ctraint.use_alter
-            fk.ondelete = ctraint.ondelete
-            fk.onupdate = ctraint.onupdate
-            fk.create()
-    if 'authentication_permission' in real_meta.tables:
-        real_meta.tables['authentication_permission'].drop()
+    for t in ctables:
+        if t.name in real_meta.tables:
+            real_meta.tables[t.name].drop()
+        t.create()
+
 
 def downgrade(migrate_engine):
     # Operations to reverse the above upgrade go here.
