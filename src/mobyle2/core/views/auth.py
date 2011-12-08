@@ -289,12 +289,7 @@ class AuthView(Base):
                 value = getattr(ab, k)
                 if value:
                     self.sh['auth_backend_infos'][dkeys[k]].default = value
-<<<<<<< HEAD
         self.form = w.Form(request, self.sh, buttons=(_('Send'),), formid = 'add_auth_backend')
-=======
-        self.form = deform.Form(self.sh, buttons=(_('Send'),), formid='add_auth_backend')
-
->>>>>>> 1bd45800db03f8c0ff35f8327390699b276ec06a
 
 class Add(AuthView):
     template = '../templates/auth/auth_add.pt'
