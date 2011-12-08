@@ -24,6 +24,8 @@ from mobyle2.core.events import RegenerateVelruseConfigEvent
 
 from mobyle2.core.models.registry import get_registry_key
 
+from mobyle2.core import widget as w
+
 bool_values = {
     '1': True,
     '0': False,
@@ -76,7 +78,7 @@ class ManageSettings(Base):
                                     default=i.value and i.value or '',
                                     missing=None
                                    ))
-        form = deform.Form(authbackend_schema, buttons=(_('Send'),), use_ajax=True)
+        form = w.Form(request, authbackend_schema, buttons=(_('Send'),), use_ajax=True)
         if request.method == 'POST':
             try:
                 struct = form.validate(controls)
@@ -232,15 +234,13 @@ class AuthView(Base):
                 at = request.POST.get('auth_backend')
             if at in auth.AUTH_BACKENDS:
                 details_added = True
-                ash = self.sh_map[at](name="auth_backend_infos",
-                                      description=_('Authentication backend details'))
+                ash = self.sh_map[at](name="auth_backend_infos", title=_('Authentication backend details'))
                 self.sh.add(ash)
         # if we are in the context of an auth backend, filling edit properties
         if isinstance(ctx, auth.AuthenticationBackendRessource):
             ab = ctx.ab
             if not details_added:
-                ash = self.sh_map[ab.backend_type](name="auth_backend_infos",
-                                      description=_('Authentication backend details'))
+                ash = self.sh_map[ab.backend_type](name="auth_backend_infos", title=_('Authentication backend details'))
                 self.sh.add(ash)
             keys = {'name': 'name', 'description':'description', 'backend_type':'auth_backend', 'enabled':'enabled'}
             dkeys = {}
@@ -266,7 +266,7 @@ class AuthView(Base):
                 value = getattr(ab, k)
                 if value:
                     self.sh['auth_backend_infos'][dkeys[k]].default = value
-        self.form = deform.Form(self.sh, buttons=(_('Send'),), formid = 'add_auth_backend')
+        self.form = w.Form(request, self.sh, buttons=(_('Send'),), formid = 'add_auth_backend')
 
 class Add(AuthView):
     template ='../templates/auth/auth_add.pt'
@@ -402,7 +402,7 @@ class Delete(AuthView):
         params = self.get_base_params()
         request = self.request
         params['ab'] = ab = self.request.context.ab
-        form = deform.Form(authbackend_delete_schema(), buttons=(_('Send'),), use_ajax=True)
+        form = w.Form(request, authbackend_delete_schema(), buttons=(_('Send'),), use_ajax=True)
         params['f_content'] = form.render()
         if request.method == 'POST':
             controls = request.POST.items()

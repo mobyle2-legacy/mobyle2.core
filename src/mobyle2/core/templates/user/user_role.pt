@@ -23,7 +23,7 @@
                 <input tal:condition="python:role.get('deletable', False)" 
                   type="checkbox" value="${role.id}" name="delete"/>
               </td>
-              <td>${role['name']}</td>
+              <td><a href="${request.resource_url(context)}@@edit_role?roleid=${role['id']}">${role['name']}</a></td>
               <td>${role['description']}</td>
             </tr>
           </tal:r>

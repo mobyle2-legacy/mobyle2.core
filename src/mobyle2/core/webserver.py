@@ -145,7 +145,7 @@ def includeme(config, debug=False):
     #config.scan('%s.models'%dn)
     # translation directories
     config.add_translation_dirs('%s:locale/'%dn)
-    #config.add_translation_dirs('deform:locale/')
+    config.add_translation_dirs('deform:locale/')
     config.add_subscriber('%s.subscribers.user_created'%dn, 'apex.events.UserCreatedEvent')
     config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
     config.add_subscriber('%s.subscribers.regenerate_velruse_config'%dn, '%s.events.RegenerateVelruseConfigEvent' % dn)
@@ -171,9 +171,11 @@ def includeme(config, debug=False):
     config.add_view('%s.views.project.View' % dn, name='',   context='%s.models.project.ProjectRessource' % dn)
     # users managment
     config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn)
+    config.add_view('%s.views.user.EditRole' % dn, name='edit_role', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.ManageAcl' % dn, name='acl', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.ManageRole' % dn, name='role', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.ManagePermission' % dn, name='permission', context='%s.models.user.Users' % dn)
+    config.add_view('%s.views.user.AjaxUsersList' % dn, name='ajax_users_list', context='%s.models.user.Users' % dn, renderer='json')
     # redirect after login
     config.add_route('redirect_after_login', '/redirect_after_login')
     config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login')

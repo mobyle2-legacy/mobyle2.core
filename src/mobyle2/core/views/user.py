@@ -58,7 +58,7 @@ def construct_schema_acls(request, permissions=None, roles=None):
     append = True
     for i, pid in enumerate(permissions):
         p = permissions[pid]
-        perm = widget.TrNode(colander.Mapping(), 
+        perm = widget.TrNode(colander.Mapping(),
                              name="%s"%p.id, title=p.description)
         for rlid in roles:
             rl = roles[rlid]
@@ -75,7 +75,7 @@ def construct_schema_acls(request, permissions=None, roles=None):
         append = False
         roles_schema.add(perm)
     form_schema.add(roles_schema)
-    form = deform.Form(form_schema, 
+    form = deform.Form(form_schema,
                        buttons=(_('Send'),),
                        use_ajax=True,
                        renderer=widget.renderer_factory(request))
@@ -88,10 +88,10 @@ class ManageAcl(Base):
     def __call__(self):
         request = self.request
         params = self.get_base_params()
-        roles = OrderedDict([(str(r.id), r) 
+        roles = OrderedDict([(str(r.id), r)
                              for r in session.query(auth.Role
                                       ).order_by(auth.Role.name).all()])
-        permissions = OrderedDict([(str(p.id), p) 
+        permissions = OrderedDict([(str(p.id), p)
                                    for p in session.query(
                                        auth.Permission
                                    ).order_by(auth.Permission.name).all()])
@@ -124,7 +124,7 @@ class ManageAcl(Base):
                                         role.global_permissions.index(
                                             permission
                                         )
-                                    ) 
+                                    )
                                     session.add(role)
                                     session.commit()
                             # maybe activate role
@@ -147,7 +147,7 @@ class ManageAcl(Base):
                         request.session.flash(_('Access parameters have been saved'), 'info')
                     form = construct_schema_acls(request, permissions=permissions, roles=roles)
             except  ValidationFailure, e:
-                params['form'] = e.render() 
+                params['form'] = e.render()
         if not 'form' in params:
             params['form'] = form.render()
         return render_to_response(self.template, params, request)
@@ -285,4 +285,126 @@ class ManagePermission(Base):
             rdata.append(item)
         params['permissions'] = rdata
         return render_to_response(self.template, params, request)
+
+class EditRole(Base):
+    template ='../templates/user/user_editrole.pt'
+
+    def __call__(self):
+        form, request = None, self.request
+        url = "%s@@ajax_users_list" % (
+            self.request.resource_url(self.request.context)
+        ) 
+        is_a_get = request.method == 'GET'
+        is_a_post = request.method == 'POST'
+        params = self.get_base_params()
+        r_types = {'users':_('Users'), 'groups': _('Groups',)}
+        rid = -666
+        try:
+            rid = int(request.params.get('roleid', '-666'))
+        except:
+            pass
+        role = None
+        try:
+            role = session.query(
+                auth.Role).filter(auth.Role.id==int(rid)).first()
+        except:
+            pass
+        params['role'] = role
+        if role is not None:
+            users = [('1', 'aaa'), ('2', '222')]
+            default_user = ['1']
+            class GroupSchema(colander.SequenceSchema):
+                group = colander.SchemaNode(
+                    colander.String(),
+                    validator = v.validate_group,
+                    name = 'group',
+                    title = _('Group'),
+                )
+
+            class UserSchema(colander.Schema):
+                user = colander.SchemaNode(
+                    colander.String(),
+                    widget = widget.ChosenSelectWidget(data_url=url),
+                    validator = v.validate_user,
+                    name = 'user',
+                    title = _('User'),
+                    values=(('bb', 'ee'), ('cc', 'rr'))
+                )
+
+            class Members(colander.MappingSchema):
+                users = UserSchema(default=(('bb', 'ee'), ('cc', 'rr')), values=user)
+                groups = GroupSchema()
+
+            class Schema(colander.Schema):
+                roleid = colander.SchemaNode(
+                    colander.String(),
+                    widget = deform.widget.HiddenWidget(),
+                    validator = v.validate_role,
+                    default = rid,
+                    name = 'roleid',
+                    title = _('Role'),
+                )
+                name = colander.SchemaNode(
+                    colander.String(),
+                    widget = deform.widget.TextInputWidget(size=len('%s'%role.name)),
+                    default = role.name,
+                    name = 'role',
+                    title = _('Role'),
+                )
+                description = colander.SchemaNode(
+                    colander.String(),
+                    widget = deform.widget.TextAreaWidget(),
+                    default = role.description,
+                    name = 'desc',
+                    title = _('Description'),
+                )
+                members = Members()
+
+            form = widget.Form(request, Schema(title=_('Edit role')),
+                buttons=(_('Send'),), formid = 'add_permission')
+            if is_a_get:
+                params['form'] = form.render()
+            if is_a_post:
+                try:
+                    controls = request.POST.items()
+                    data  = form.validate(controls)
+                    params['form'] = form.render()
+                except Exception, e:
+                    params['form'] = e.render()
+        return render_to_response(self.template, params, request)
+
+class AjaxUsersList(Base):
+
+    def __call__(self):
+        term = '%(%)s%(s)s%(%)s' % {
+            's': self.request.params.get('term', '').lower(),
+            '%': '%',
+        }
+        table = user.User
+        bu = user.AuthUser
+        rows = session.query(table).join(table.base_user).filter(
+            se.and_(
+                table.status == 'a',
+                se.or_(bu.username.ilike(term),
+                       bu.email.ilike(term), 
+                       bu.login.ilike(term), 
+                      )
+            )
+        ).order_by(bu.email, bu.username, bu.login).all()
+        data = []
+        for row in rows:
+            u = row.base_user
+            if u.login:
+                label = "%s %s" % (u.login, '%s')
+            else:
+                label = "%s"
+            if (u.login != u.username) or not u.login:
+                label = (label % u.username).strip()
+            if u.email and (u.email not in label):
+                label += '  -- %s' % u.email
+            item = ("%s"%row.id, label)
+            if not item in data:
+                data.append(item)
+        return data
+
 # vim:set et sts=4 ts=4 tw=0:

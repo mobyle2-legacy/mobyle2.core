@@ -1,7 +1,8 @@
 <metal:define metal:define-macro="main">
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
   <html 
-    xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xml:lang="en"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="mobyle2">
     <head>
@@ -10,17 +11,25 @@
           <title>Mobyle 2</title>
         </metal:define>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-        <link rel="shortcut icon"  href="${static}/pylons.ico')"/>
+        <link rel="shortcut icon"  href="${static}/img/pylons.ico')"/>
         <metal:define metal:define-slot="js_slot">
           <script type="text/javascript" src="${static}/js/jquery-1.7.min.js"></script>
-          <script type="text/javascript" src="${dstatic}/scripts/jquery-1.4.2.min.js"></script>
+          <!--<script type="text/javascript" src="${dstatic}/scripts/jquery-1.4.2.min.js"></script>-->
           <script type="text/javascript" src="${dstatic}/scripts/deform.js"></script>
           <script type="text/javascript" src="${dstatic}/scripts/jquery.form.js"></script>
+          <script type="text/javascript" src="${static}/js/chosen.jquery.js"></script>
+          <script type="text/javascript" src="${static}/js/ajax-chosen.js"></script>
+          <script type="text/javascript" src="${static}/js/mobyle2.js"></script>
+          <script type="text/javascript"
+            tal:condition="js|nothing"
+            tal:repeat="j js|nothing" 
+            tal:attributes="src j"/>
         </metal:define>
         <metal:define metal:define-slot="css_slot">
-          <link rel="stylesheet" type="text/css"  href="${static}/grid.css"/>
-          <link rel="stylesheet" type="text/css"  href="${static}/mobyle2.css"/>
           <link rel="stylesheet" type="text/css" href="${dstatic}/css/form.css"/>
+          <link rel="stylesheet" type="text/css" href="${static}/css/chosen.css"/>
+          <link rel="stylesheet" type="text/css"  href="${static}/css/grid.css"/>
+          <link rel="stylesheet" type="text/css"  href="${static}/css/mobyle2.css"/>
         </metal:define>
       </head>
       <metal:define metal:define-macro="body">

@@ -2,10 +2,6 @@
  mobyle2.css
  */
 
-#banner img {
-  float:left;
-}
-
 #banner {
   height:150px;
   line-height:100%;
@@ -16,16 +12,21 @@
   clear:both;
 }
 
+#globaltabs {
+  padding-top:10px;
+}
 #globaltabs li {
+  margin-right:10px;
   list-style-type:none;
   border:1px solid;
-  width:auto;
+  display:inline;
 }
 
 #breadcrumbs li {
+  margin-right:10px;
   list-style-type:none;
   border:1px solid;
-  width:auto;
+  display:inline;
 }
 
 

@@ -1,5 +1,5 @@
 from ordereddict import OrderedDict
-from mobyle2.core.models import DBSession, Base
+from mobyle2.core.models import DBSession, Base, metadata
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import ForeignKey
@@ -16,6 +16,8 @@ user_statuses = {
     'a' : 'Active',
     's' : 'Suspended',
 }
+
+tauth_users = models.AuthUser.metadata.tables[models.AuthUser.__table__.name]
 
 class AuthUser(Base, models.AuthUser):
     def __init__(self, *args, **kwargs):

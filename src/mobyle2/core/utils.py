@@ -5,7 +5,11 @@ _ = TranslationStringFactory("mobyle2")
 
 def auto_translate(request, string):
     localizer = get_localizer(request)
-    return localizer.translate(_(string))
+    untranslated = _(string)
+    if string and isinstance(string, basestring):
+        if hasattr(string, 'domain'):
+            untranslated = string
+    return localizer.translate(untranslated)
 
 __ = auto_translate
 

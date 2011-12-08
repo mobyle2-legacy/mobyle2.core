@@ -22,6 +22,20 @@ def existing_group(node, value):
     if item is not None:
         raise Invalid(node, _('This role already exists'))
 
+def validate_role(node, value):
+    item, value = None, value.strip()
+    if item is not None:
+        raise Invalid(node, _('This role already exists'))  
+
+def validate_group(node, value):
+    item, value = None, value.strip()
+    if item is not None:
+        raise Invalid(node, _('This role already exists')) 
+def validate_user(node, value):
+    item, value = None, value.strip()
+    if item is not None:
+        raise Invalid(node, _('This role already exists'))
+
 def fail(node, value):
     raise Invalid(node, _('Fail'))
 

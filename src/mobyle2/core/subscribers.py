@@ -1,6 +1,5 @@
 import logging
 from pyramid.i18n import get_localizer
-from mobyle2.core.utils import __
 
 from mobyle2.core.views import get_base_params
 
@@ -10,6 +9,7 @@ from mobyle2.core.models.registry import set_registry_key
 from mobyle2.core.models.user import User
 
 from mobyle2.core.utils import _
+from mobyle2.core.utils import __
 from sqlalchemy import exc
 
 def add_renderer_globals(event):
@@ -40,7 +40,7 @@ def user_created(event):
         session.add(newuser)
         session.commit()
         # try to create a default project
-        will, tries, project = 1, 10 , None 
+        will, tries, project = -1, 10 , None 
         while tries:
             tries -= 1
             will += 1
@@ -51,6 +51,7 @@ def user_created(event):
                 project = Project(pname, _('Default project created on sign in'), newuser)
                 session.add(project)
                 session.commit() 
+                break
             except Exception, e:
                 try:
                     session.rollback()
