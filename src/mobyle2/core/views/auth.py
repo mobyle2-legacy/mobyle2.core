@@ -11,7 +11,8 @@ from pyramid.response import Response
 from mobyle2.core.models import auth
 from mobyle2.core.models import DBSession as session
 from mobyle2.core.models import registry as r
-from mobyle2.core.views import Base as bBase, get_base_params as get_base_params
+from mobyle2.core.views import (Base as bBase,
+                                get_base_params as get_base_params)
 from mobyle2.core import validator as v
 from mobyle2.core.utils import _
 
@@ -35,6 +36,7 @@ bool_values = {
     'false': False,
 }
 
+
 class Base(bBase):
     def get_base_params(self):
         params = {'view': self}
@@ -46,8 +48,9 @@ class Base(bBase):
         params = self.get_base_params()
         return render_to_response(self.template, params, self.request)
 
+
 class ManageSettings(Base):
-    template ='../templates/auth/auth_manage_settings.pt'
+    template = '../templates/auth/auth_manage_settings.pt'
 
     def __call__(self):
 
@@ -59,32 +62,38 @@ class ManageSettings(Base):
                                      u'auth.recaptcha_private_key']
         request = self.request
         controls = self.request.POST.items()
-        keys = session.query(r.Registry).filter(r.Registry.name.in_(global_auth_settings)).all()
-        tkeys = session.query(r.Registry).filter(r.Registry.name.in_(global_auth_text_settings)).all()
+        keys = session.query(r.Registry).filter(r.Registry.name.in_(
+                                                   global_auth_settings)
+                                                ).all()
+        tkeys = session.query(r.Registry).filter(r.Registry.name.in_(
+                                                 global_auth_text_settings)
+                                                 ).all()
         items = OrderedDict()
         authbackend_schema = colander.SchemaNode(colander.Mapping())
         struct = {}
         for i in keys:
             authbackend_schema.add(
                 colander.SchemaNode(colander.Boolean(),
-                                    name = i.name.replace('auth.', ''),
-                                    default=bool_values.get(i.value.lower(), False),
+                                    name=i.name.replace('auth.', ''),
+                                    default=bool_values.get(i.value.lower(),
+                                                            False),
                                     missing=None
                                    ))
         for i in tkeys:
             authbackend_schema.add(
                 colander.SchemaNode(colander.String(),
-                                    name = i.name.replace('auth.', ''),
+                                    name=i.name.replace('auth.', ''),
                                     default=i.value and i.value or '',
                                     missing=None
                                    ))
         form = w.Form(request, authbackend_schema, buttons=(_('Send'),), use_ajax=True)
+
         if request.method == 'POST':
             try:
                 struct = form.validate(controls)
                 restart = True
-                for obj in keys+tkeys:
-                    ki =  obj.name.replace('auth.', '')
+                for obj in keys + tkeys:
+                    ki = obj.name.replace('auth.', '')
                     # store settings in database
                     value = struct.get(ki, False)
                     if obj.value != value:
@@ -92,18 +101,23 @@ class ManageSettings(Base):
                         session.commit()
                         restart = True
                 if restart:
-                    self.request.registry.notify(RegenerateVelruseConfigEvent(self.request))
+                    self.request.registry.notify(RegenerateVelruseConfigEvent(
+                                                    self.request)
+                                                 )
             except  ValidationFailure, e:
                 pass
         params = self.get_base_params()
         params['f'] = form.render(struct)
         return render_to_response(self.template, params, self.request)
 
+
 class List(Base):
-    template ='../templates/auth/auth_list.pt'
+    template = '../templates/auth/auth_list.pt'
+
 
 class Home(Base):
-    template ='../templates/auth/auth_home.pt'
+    template = '../templates/auth/auth_home.pt'
+
 
 class AuthView(Base):
     def __init__(self, request):
@@ -120,19 +134,25 @@ class AuthView(Base):
         for item in copy.deepcopy(at):
             if (item in existing_types) and (item in auth.ONLY_ONE_OF):
                 del at[item]
-        atv = [('', '')]  + at.items()
+        atv = [('', '')] + at.items()
+
         class AuthentSchema(colander.MappingSchema):
-            name = colander.SchemaNode(colander.String(), title=_('Name'), validator = v.not_empty_string)
-            description = colander.SchemaNode(colander.String(), title=_('Backend description'),)
-            enabled = colander.SchemaNode(colander.Boolean(), default = True, title=_('Enabled'), description = _('Is this backend enabled ?'))
+            name = colander.SchemaNode(colander.String(),
+                                       title=_('Name'),
+                                       validator=v.not_empty_string)
+            description = colander.SchemaNode(colander.String(),
+                                              title=_('Backend description'),)
+            enabled = colander.SchemaNode(colander.Boolean(),
+                                          default=True,
+                                          title=_('Enabled'),
+                                          description=_('Is this backend enabled ?'))
             auth_backend = colander.SchemaNode(colander.String(),
                                                widget=deform.widget.SelectWidget(
                                                    **{'values': atv}
                                                ),
-                                               validator = colander.OneOf(at.keys()),
-                                               title= _('Authentication backend')
+                                               validator=colander.OneOf(at.keys()),
+                                               title=_('Authentication backend')
                                               )
-
 
         class DBSchema(colander.MappingSchema):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
@@ -144,7 +164,8 @@ class AuthView(Base):
         class LDAPSchema(colander.MappingSchema):
             host = colander.SchemaNode(colander.String(), description=_('Host'))
             port = colander.SchemaNode(colander.String(), description=_('Port'))
-            use_ssl = colander.SchemaNode(colander.Boolean(), description=_('Use SSL?'))
+            use_ssl = colander.SchemaNode(colander.Boolean(),
+                                          description=_('Use SSL?'))
             #password = colander.SchemaNode(colander.String(), description=_('Password'))
             dn = colander.SchemaNode(colander.String(),
                                      description=_('Base dn mask to connect as in the '
@@ -166,7 +187,7 @@ class AuthView(Base):
             authorize = colander.SchemaNode(colander.String(), description=_('API Scope'), missing=None)
 
         class FullOauthSchema(SimpleOauthSchema):
-            realm = colander.SchemaNode(colander.String(), description=_('Service Realm'), validator = v.not_empty_string, missing=None)
+            realm = colander.SchemaNode(colander.String(), description=_('Service Realm'), validator=v.not_empty_string, missing=None)
 
         class FileSchema(colander.MappingSchema):
             passwd_file = colander.SchemaNode(colander.String(), description=_('Full path to the file'))
@@ -190,8 +211,8 @@ class AuthView(Base):
             'name': 'name',
             'description': 'description',
             'authorize': 'authorize',
-            'key' : 'username',
-            'secret' : 'password',
+            'key': 'username',
+            'secret': 'password',
             'url': 'realm',
             'realm': 'realm',
             'db': 'database',
@@ -205,15 +226,17 @@ class AuthView(Base):
             'groups': 'ldap_groups_filter',
         }
         request = self.request
+
         def global_auth_backend_validator(form, value):
             pass
             #if not value['title'].startswith(value['name']):
             #    exc = colander.Invalid(form, 'Title must start with name')
             #    exc['title'] = 'Must start with name %s' % value['name']
             #    raise exc
+
         def auth_schema_afterbind(node, kw):
             if kw.get('remove_ab'):
-               del node['auth_backend']
+                del node['auth_backend']
         self.sh = self.sh_map['base'](
             validator=global_auth_backend_validator,
             after_bind=auth_schema_afterbind)
@@ -242,23 +265,23 @@ class AuthView(Base):
             if not details_added:
                 ash = self.sh_map[ab.backend_type](name="auth_backend_infos", title=_('Authentication backend details'))
                 self.sh.add(ash)
-            keys = {'name': 'name', 'description':'description', 'backend_type':'auth_backend', 'enabled':'enabled'}
+            keys = {'name': 'name', 'description': 'description', 'backend_type': 'auth_backend', 'enabled': 'enabled'}
             dkeys = {}
             if (ab.backend_type == at and at != '') or (at == ''):
                 if ab.backend_type in ['facebook', 'live', 'yahoo', 'twitter', 'openid', 'google', 'github']:
-                    dkeys.update({'username': 'key', 'password':'secret', 'authorize': 'authorize'})
+                    dkeys.update({'username': 'key', 'password': 'secret', 'authorize': 'authorize'})
                 if ab.backend_type in ['file']:
-                    dkeys.update({'file':'file'})
+                    dkeys.update({'file': 'file'})
                 if ab.backend_type in ['openid']:
-                    dkeys.update({'realm':'realm',})
+                    dkeys.update({'realm': 'realm'})
                 if ab.backend_type in ['ldap']:
-                    dkeys.update({'ldap_groups_filter':'groups', 'ldap_users_filter':'users',
-                                  'ldap_dn':'dn', 'hostname':'host', 'port':'port'
+                    dkeys.update({'ldap_groups_filter': 'groups', 'ldap_users_filter': 'users',
+                                  'ldap_dn': 'dn', 'hostname': 'host', 'port': 'port',
                                   #,'password':'password'
-                                  , 'use_ssl':'use_ssl'})
+                                   'use_ssl': 'use_ssl'})
                 if ab.backend_type in ['db']:
-                    dkeys.update({'hostname':'host', 'database':'db','password':'password','port':'port',
-                                  'username':'user','password':'password'})
+                    dkeys.update({'hostname': 'host', 'database': 'db', 'password': 'password', 'port': 'port',
+                                  'username': 'user', 'password': 'password'})
             for k in keys:
                 if k in self.sh:
                     self.sh[keys[k]].default = getattr(ab, k)
@@ -266,10 +289,16 @@ class AuthView(Base):
                 value = getattr(ab, k)
                 if value:
                     self.sh['auth_backend_infos'][dkeys[k]].default = value
+<<<<<<< HEAD
         self.form = w.Form(request, self.sh, buttons=(_('Send'),), formid = 'add_auth_backend')
+=======
+        self.form = deform.Form(self.sh, buttons=(_('Send'),), formid='add_auth_backend')
+
+>>>>>>> 1bd45800db03f8c0ff35f8327390699b276ec06a
 
 class Add(AuthView):
-    template ='../templates/auth/auth_add.pt'
+    template = '../templates/auth/auth_add.pt'
+
     def __call__(self):
         #_ = self.translate
         request = self.request
@@ -287,7 +316,7 @@ class Add(AuthView):
                     fmap = self.fmap
                     kwargs = {}
                     cstruct = dict([(a, struct[a])
-                                    for a in struct if not a =='auth_backend_infos']+
+                                    for a in struct if not a == 'auth_backend_infos'] +
                                    [(a, struct.get('auth_backend_infos', {})[a])
                                     for a in struct.get('auth_backend_infos', {})])
                     for k in cstruct:
@@ -300,7 +329,7 @@ class Add(AuthView):
                         self.request.session.flash(
                             _('A new authentication backend has been created'),
                             'info')
-                        item = self.request.root['auths']["%s"%ba.id]
+                        item = self.request.root['auths']["%s" % ba.id]
                         url = request.resource_url(item)
                         return HTTPFound(location=url)
                     except Exception, e:
@@ -308,7 +337,7 @@ class Add(AuthView):
                                     'settings because an exception occured '
                                     'while adding your new authbackend '
                                     ': ${msg}',
-                                    mapping={'msg': u'%s'%e})
+                                    mapping={'msg': u'%s' % e})
                         self.request.session.flash(message, 'error')
                         session.rollback()
                     # we are set, create the request
@@ -323,8 +352,10 @@ class Add(AuthView):
             response = render_to_response(self.template, params, self.request)
         return response
 
+
 class View(AuthView):
-    template ='../templates/auth/auth_view.pt'
+    template = '../templates/auth/auth_view.pt'
+
     def __call__(self):
         params = self.get_base_params()
         params['ab'] = self.request.context.ab
@@ -332,8 +363,10 @@ class View(AuthView):
             params['f_content'] = self.form.render(readonly=True)
         return render_to_response(self.template, params, self.request)
 
+
 class Edit(AuthView):
-    template ='../templates/auth/auth_edit.pt'
+    template = '../templates/auth/auth_edit.pt'
+
     def __call__(self):
         params = self.get_base_params()
         request = self.request
@@ -351,7 +384,7 @@ class Edit(AuthView):
                         fmap = self.fmap
                         kwargs = {}
                         cstruct = dict([(a, struct[a])
-                                        for a in struct if not a =='auth_backend_infos']+
+                                        for a in struct if not a == 'auth_backend_infos'] +
                                        [(a, struct.get('auth_backend_infos', {})[a])
                                         for a in struct.get('auth_backend_infos', {})])
                         for k in cstruct:
@@ -364,7 +397,7 @@ class Edit(AuthView):
                         self.request.session.flash(
                             _('Backend has been updated'),
                             'info')
-                        item = self.request.root['auths']["%s"%ab.id]
+                        item = self.request.root['auths']["%s" % ab.id]
                         url = request.resource_url(item)
                         return HTTPFound(location=url)
                     except Exception, e:
@@ -373,7 +406,7 @@ class Edit(AuthView):
                                     'settings because an exception occured '
                                     'while adding your new authbackend '
                                     ': ${msg}',
-                                    mapping={'msg': u'%s'%e})
+                                    mapping={'msg': u'%s' % e})
                         self.request.session.flash(message, 'error')
                         session.rollback()
                 except  ValidationFailure, e:
@@ -386,19 +419,22 @@ class Edit(AuthView):
             response = render_to_response(self.template, params, self.request)
         return response
 
+
 class Delete(AuthView):
-    template ='../templates/auth/auth_delete.pt'
+    template = '../templates/auth/auth_delete.pt'
+
     def __call__(self):
         auths_list = self.request.resource_url(
             self.request.root['auths']
         ) + '@@list'
+
         class authbackend_delete_schema(colander.MappingSchema):
             submitted = colander.SchemaNode(
                 colander.String(),
                 widget=deform.widget.HiddenWidget(),
                 default='true',
-                validator = colander.OneOf(['true']),
-                title= _('delete me'))
+                validator=colander.OneOf(['true']),
+                title=_('delete me'))
         params = self.get_base_params()
         request = self.request
         params['ab'] = ab = self.request.context.ab
@@ -419,7 +455,7 @@ class Delete(AuthView):
                                 'settings because an exception occured '
                                 'while adding your new authbackend '
                                 ': ${msg}',
-                                mapping={'msg': u'%s'%e})
+                                mapping={'msg': u'%s' % e})
                     self.request.session.flash(message, 'error')
                     session.rollback()
             except  ValidationFailure, e:

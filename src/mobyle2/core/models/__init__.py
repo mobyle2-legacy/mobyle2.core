@@ -12,6 +12,7 @@ SQLAlchemy declarative visitor needed imports
 
 import auth
 import project
+import program
 import job
 import jobdata
 import registry
