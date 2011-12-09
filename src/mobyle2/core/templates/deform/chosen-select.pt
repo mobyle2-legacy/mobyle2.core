@@ -1,18 +1,18 @@
 <select
   name="${field.name}"
+  multiple="${field.widget.get_multiple()}"
   id="${field.oid}"
-size="3"
-  multiple = "true" tabindex="3"
   tal:attributes="size field.widget.size;
   style string:width:${field.widget.width};;;
   class field.widget.css_class">
   <option value="" name="Select..." i18n:attributes="name"/>
-  <option i18n:translate=""
-  tal:repeat="(value, description) field.widget.values"
-  tal:attributes="selected value == cstruct and 'selected';
-  class field.widget.css_class"
-  value="${value}">${description}</option>
-
+  <tal:block i18n:translate=""
+    tal:repeat="(selected, value, description) field.widget.get_values(cstruct)">
+    <option tal:condition="selected" selected="selected"
+    class="${field.widget.css_class}" value="${value}">${description}</option> 
+    <option tal:condition="not selected"
+    class="${field.widget.css_class}" value="${value}">${description}</option>  
+  </tal:block>
 </select>
 <script type="text/javascript">
 deform.addCallback(
@@ -28,17 +28,9 @@ deform.addCallback(
            {method: 'GET', url: data_url, dataType: 'json'},
            function (data) {
              var terms = {};
-             var current_opts_ids = new Array();
-             $('option', target_elem).each(function(i,val){ 
-                   current_opts_ids.push(val.value);
-             });
-             $.each(data, function (i, val){
-              if($.inArray(val[0], current_opts_ids)==-1){
-                terms[val[0]] = val[1];
-              }
-             });
+             $.each(data, function (i, val){ terms[val[0]]=val[1];});
              return terms;  
-             },
+           },
            chozen_opts);
         }
     });

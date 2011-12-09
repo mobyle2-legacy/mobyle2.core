@@ -82,6 +82,30 @@ class ChosenSelectWidget(widget.SelectWidget):
     def get_data_url(self):
         return json.encode(getattr(self, 'data_url', None) )
 
+    def get_values(self, cstruct):
+        data, keys, cdata = [], [], None
+        if cstruct:
+            exec 'cdata=%s' % cstruct
+        if cdata:
+            for value in cdata:
+                k, s = '', ''
+                if isinstance(value, basestring):
+                    k, s = value, value
+                elif isinstance(value, list) or isinstance(value, tuple):
+                    k, s = value[0], value[1]
+                if not k in keys:
+                    data.append(('selected', k, s))
+                    keys.append(k)
+        for value in getattr(self, 'values', []):
+            if isinstance(value, basestring):
+                k, s = value, value
+            elif isinstance(value, list) or isinstance(value, tuple):
+                k, s = value[0], value[1]
+            if not k in keys:
+                data.append(('', k, s))
+                keys.append(k) 
+        return data
+
     def __init__(self, data_url, chosen_opts=None, **kw):
         widget.SelectWidget.__init__(self, **kw)
         self.data_url = data_url
