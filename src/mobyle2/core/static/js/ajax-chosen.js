@@ -14,8 +14,8 @@
       }
       function startTypingTimeout(e, element) {
         var target = $(e.target || e.srcElement);
-        $.data(element, 
-          "typingTimeout", 
+        $.data(element,
+          "typingTimeout",
           window.setTimeout(
               function() {
                 target.triggerHandler("ajaxchosen");
@@ -58,10 +58,10 @@
       .keydown(handleKeyDownUp)
       .keyup(handleKeyDownUp)
       .keypress(handleKeyPress)
-      .bind('ajaxchosen', 
+      .bind('ajaxchosen',
         function(e) {
            var target = $(e.target || e.srcElement);
-           var curselect = $('select', target.parents('.chzn-container').parent()); 
+           var curselect = $('select', target.parents('.chzn-container').parent());
            var inputC = $(target).parent('li');
            var field, val;
            hide_no_results();
@@ -82,11 +82,11 @@
            }
            ajaxoptions.complete = function(xhr, settings) {
              $('div.chosen-loading-spinner', inputC).remove();
-           }  
+           }
            ajaxoptions.success = function(data) {
              var items;
              if (!(data != null)) {return;}
-             target.find('option').each(function(i, item) {
+             curselect.find('option').each(function(i, item) {
                if (!$(item).is(":selected")) {
                  $(item).remove();
                }

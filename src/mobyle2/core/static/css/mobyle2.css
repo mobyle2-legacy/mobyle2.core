@@ -61,8 +61,6 @@ form#add_auth_backend label.field_opt{
     display:inline-block;
 }
 
-
-
 .chosen-loading-spinner {
   background: url('../img/loading-spinner.gif') no-repeat 97% #ffffff;
   width:16px;
@@ -73,14 +71,19 @@ form#add_auth_backend label.field_opt{
   line-height:16px;
 }
 
-
 .chzn-choices .search-field {
   width:100%;
 }
 
 
+.spacer {
+  margin:0;
+  padding:0;
+}
 
 
+#content-body {
+  overflow-x: scroll; 
 
-
+}
 

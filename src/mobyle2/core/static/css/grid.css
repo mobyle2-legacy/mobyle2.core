@@ -240,3 +240,10 @@ body {
 .clearfix {
   zoom: 1;
 }
+
+div.right-slot {
+  margin-left:10px;
+}
+
+
+
