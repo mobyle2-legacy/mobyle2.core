@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from mobyle2.core.models import Base
+from mobyle2.core.models import Base, DBSession as session
 from mobyle2.core.models.registry import get_registry_key
 from sqlalchemy import Column
 from sqlalchemy import Unicode
@@ -211,14 +211,14 @@ def register_default_roles(session):
 
 class UserRole(Base):
     __tablename__ = 'authentication_userrole'
-    user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
 
 class GroupRole(Base):
     __tablename__ = 'authentication_grouprole'
-    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
 
 class Role(Base):
@@ -226,12 +226,14 @@ class Role(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(2500))
-    users = relationship("User", backref="roles", uselist=True,
-                         secondary="authentication_userrole", secondaryjoin="UserRole.role_id==Role.id")
-    groups = relationship("AuthGroup", backref="roles", uselist=True,
-                         secondary="authentication_grouprole", secondaryjoin="GroupRole.role_id==Role.id")
     global_permissions = relationship(
         "Permission", backref="roles", uselist=True,
         secondary="authentication_acl",
         secondaryjoin="Acl.permission==Permission.id")
+
+    @classmethod
+    def by_id(self, id):
+        return session.query(self).filter(self.id==int(id)).one()
+
+
 

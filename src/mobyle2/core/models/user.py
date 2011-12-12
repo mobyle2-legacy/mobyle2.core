@@ -1,11 +1,16 @@
 from ordereddict import OrderedDict
-from mobyle2.core.models import DBSession, Base, metadata
+from mobyle2.core.models import DBSession as session, Base, metadata
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 import apex
+
+
+
+from mobyle2.core.models.auth import Role, GroupRole, UserRole
+
 
 from mobyle2.core.utils import _
 from apex import models
@@ -23,11 +28,29 @@ class AuthUser(Base, models.AuthUser):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
         models.AuthUser.__init__(self, *args, **kwargs)
+    roles = relationship(
+        "Role", backref="users", uselist=True,
+        primaryjoin  ="UserRole.user_id==AuthUser.id",
+        secondaryjoin="UserRole.role_id==Role.id",
+        secondary="authentication_userrole", )
+    @classmethod
+    def by_id(self, id):
+        return session.query(self).filter(self.id==int(id)).one()
+
 
 class AuthGroup(Base, models.AuthGroup):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
         models.AuthUser.__init__(self, *args, **kwargs)
+    roles = relationship(
+        "Role", backref="groups", uselist=True,
+        primaryjoin  ="GroupRole.group_id==AuthGroup.id",
+        secondaryjoin="GroupRole.role_id==Role.id",
+        secondary="authentication_grouprole", )
+    @classmethod
+    def by_id(self, id):
+        return session.query(self).filter(self.id==int(id)).one()
+
 
 class User(Base):
     __tablename__ = 'users'
