@@ -11,9 +11,23 @@
   </ul>
 </td>
 <input type="hidden" name="__start__" value="${field.name}:mapping"/>
-<div
-  tal:define="rndr field.renderer;
+<tal:block tal:define="rndr field.renderer;
   tmpl field.widget.item_template"
-  tal:repeat="f field.children"
-  tal:replace="structure rndr(tmpl,field=f,cstruct=cstruct.get(f.name,null))"/>
+  tal:repeat="f field.children">
+  <div tal:replace="structure rndr(tmpl,field=f,cstruct=cstruct.get(f.name,null))"/>
+  <tal:block tal:condition="field.repeat_columns|nothing">
+    <td class="deformlvl1" tal:condition="python:repeat.f.number % field.repeat_columns == 0">
+      <ul>
+        <div i18n:translate="">${field.title}</div>
+        <li class="errorLi" tal:condition="field.errormsg">
+          <h3 class="errorMsgLbl" i18n:translate="">There was a problem with this section</h3>
+          <p class="errorMsg">${field.errormsg}</p>
+        </li>
+        <li class="section" tal:condition="field.description">
+          <div>${field.description}</div>
+        </li>
+      </ul>
+    </td> 
+  </tal:block>
+</tal:block>
 <input type="hidden" name="__end__" value="${field.name}:mapping"/> 

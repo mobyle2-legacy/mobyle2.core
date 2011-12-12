@@ -1,29 +1,40 @@
-<ul>                                 
+<ul>
   <li i18n:translate tal:content="field.title"/>
-<li class="errorLi" tal:condition="field.errormsg">
-<h3 class="errorMsgLbl" i18n:translate="">There was a problem with this section</h3>
-<p class="errorMsg">${field.errormsg}</p>
-</li>
-<li class="section" tal:condition="field.description">
-<div>${field.description}</div>
-</li>
+  <li class="errorLi" tal:condition="field.errormsg">
+    <h3 class="errorMsgLbl" i18n:translate="">There was a problem with this section</h3>
+    <p class="errorMsg">${field.errormsg}</p>
+  </li>
+  <li class="section" tal:condition="field.description">
+    <div>${field.description}</div>
+  </li>
 </ul>
 <input type="hidden" name="__start__" value="${field.name}:mapping"/>
-<table class="deformMappingFieldset">
+<table class="deformMappingFieldset"
+  tal:define="repeat_columns python:int(field.widget.repeat_columns)|0">
   <thead>
     <tr>
       <th/>
       <th/>
-      <th tal:repeat="f field.widget.headers" i18n:translate="" i18n:domain="mobyle2">${f}</th>
+      <tal:block tal:repeat="f field.widget.headers">
+        <th i18n:translate="" i18n:domain="mobyle2">${f}</th>
+        <tal:block tal:condition="repeat_columns">
+          <th tal:condition="python:repeat.f.number % repeat_columns == 0"></th>
+        </tal:block>
+      </tal:block>
     </tr>
   </thead>
   <tfoot>
     <tr>
       <th/>
       <th/>
-      <th i18n:translate="" tal:repeat="f field.widget.headers"><tal:b i18n:translate="">${f}</tal:b></th>
+      <tal:block tal:repeat="f field.widget.headers">
+        <th i18n:translate="" i18n:domain="mobyle2">${f}</th>
+        <tal:block tal:condition="repeat_columns">
+          <th tal:condition="python:repeat.f.number % repeat_columns == 0"></th>
+        </tal:block>
+      </tal:block>
     </tr>
-  </tfoot> 
+  </tfoot>
   <tbody>
     <tr
       tal:define="rndr field.renderer;
