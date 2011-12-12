@@ -10,6 +10,8 @@ from mobyle2.core.utils import _
 
 import demjson as json
 
+from colander import null
+
 deform_templates = resource_filename('deform', 'templates')
 mobyle2_templates = resource_filename('mobyle2.core', 'templates/deform')
 search_path = (mobyle2_templates, deform_templates)
@@ -32,6 +34,7 @@ class TableWidget(widget.MappingWidget):
     template = 'table'
     item_template = 'table_item'
     headers = []
+    repeat_columns = 5
 
 class LabelledTrWidget(widget.MappingWidget):
     template = 'tmapping'
@@ -86,6 +89,8 @@ class ChosenSelectWidget(widget.SelectWidget):
         data, keys, cdata = [], [], None
         if cstruct:
             exec 'cdata=%s' % cstruct
+        if not isinstance(cdata, list) or isinstance(cdata, tuple):
+            cdata = [cdata]
         if cdata:
             for value in cdata:
                 k, s = '', ''
@@ -103,7 +108,7 @@ class ChosenSelectWidget(widget.SelectWidget):
                 k, s = value[0], value[1]
             if not k in keys:
                 data.append(('', k, s))
-                keys.append(k) 
+                keys.append(k)
         return data
 
     def __init__(self, data_url, chosen_opts=None, **kw):
@@ -111,5 +116,25 @@ class ChosenSelectWidget(widget.SelectWidget):
         self.data_url = data_url
         if chosen_opts:
             self.chosen_opts = chosen_opts
+
+
+    def deserialize(self, field, pstruct):
+        cstruct = widget.SelectWidget.deserialize(self, field, pstruct)
+        if not isinstance(cstruct, tuple) and not isinstance(cstruct, list):
+            cstruct = [cstruct]
+        for i, item in enumerate(cstruct[:]):
+            if isinstance(item, basestring):
+                cstruct[i] = (item, '')
+
+        def filtering(item):
+            if item:
+                if isinstance(item, list) or isinstance(item, tuple):
+                    if item[0]:
+                        return True
+                else:
+                    return True
+        cstruct = filter(filtering, cstruct)
+        return cstruct
+
 
 # vim:set et sts=4 ts=4 tw=80:

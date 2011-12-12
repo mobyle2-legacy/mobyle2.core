@@ -1,19 +1,33 @@
+<tal:block
+  tal:condition="nothing|field.error and not field.widget.hidden">
+  <p class="${field.widget.error_class}"
+    tal:condition="field.error.messages()|nothing"
+    tal:define="errstr 'error-%s' % field.oid"
+    tal:repeat="msg field.error.messages()|nothing">
+    <tal:block
+      tal:condition="msg"
+      i18n:translate="">
+      ${msg}
+    </tal:block>
+  </p>
+</tal:block>
+<input type="hidden" value="${field.name}:sequence" name="__start__"/>
 <select
-  name="${field.name}"
+  name="id"
   multiple="${field.widget.get_multiple()}"
   id="${field.oid}"
   tal:attributes="size field.widget.size;
   style string:width:${field.widget.width};;;
   class field.widget.css_class">
-  <option value="" name="Select..." i18n:attributes="name"/>
   <tal:block i18n:translate=""
     tal:repeat="(selected, value, description) field.widget.get_values(cstruct)">
     <option tal:condition="selected" selected="selected"
-    class="${field.widget.css_class}" value="${value}">${description}</option> 
+    class="${field.widget.css_class}" value="${value}">${description}</option>
     <option tal:condition="not selected"
-    class="${field.widget.css_class}" value="${value}">${description}</option>  
+    class="${field.widget.css_class}" value="${value}">${description}</option>
   </tal:block>
 </select>
+<input type="hidden" value="${field.name}:sequence" name="__end__"/>
 <script type="text/javascript">
 deform.addCallback(
     '${field.oid}',
@@ -29,7 +43,7 @@ deform.addCallback(
            function (data) {
              var terms = {};
              $.each(data, function (i, val){ terms[val[0]]=val[1];});
-             return terms;  
+             return terms;
            },
            chozen_opts);
         }

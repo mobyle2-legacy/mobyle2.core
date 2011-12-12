@@ -37,6 +37,17 @@ bool_values = {
     'false': False,
 }
 
+def format_user_for_form(u):
+    if u.login:
+        label = "%s %s" % (u.login, '%s')
+    else:
+        label = "%s"
+    if (u.login != u.username) or not u.login:
+        label = (label % u.username).strip()
+    if u.email and (u.email not in label):
+        label += '  -- %s' % u.email
+    return label
+
 class Base(bBase):
     def get_base_params(self):
         params = {'view': self}
@@ -293,7 +304,10 @@ class EditRole(Base):
         form, request = None, self.request
         url = "%s@@ajax_users_list" % (
             self.request.resource_url(self.request.context)
-        ) 
+        )
+        gurl = "%s@@ajax_groups_list" % (
+            self.request.resource_url(self.request.context)
+        )
         is_a_get = request.method == 'GET'
         is_a_post = request.method == 'POST'
         params = self.get_base_params()
@@ -311,30 +325,34 @@ class EditRole(Base):
             pass
         params['role'] = role
         if role is not None:
-            users = [('1', 'aaa'), ('2', '222')]
-            default_user = ['1']
-            class GroupSchema(colander.SequenceSchema):
-                group = colander.SchemaNode(
-                    colander.String(),
-                    validator = v.validate_group,
-                    name = 'group',
-                    title = _('Group'),
-                )
-
-            class UserSchema(colander.Schema):
-                user = colander.SchemaNode(
-                    colander.String(),
-                    widget = widget.ChosenSelectWidget(data_url=url),
-                    validator = v.validate_user,
-                    name = 'user',
-                    title = _('User'),
-                    values=(('bb', 'ee'), ('cc', 'rr'))
-                )
-
+            role_users = []
+            role_groups = []
+            def reset_default_users_groups(role, users, groups,):
+                for l in users, groups:
+                    while len(l) > 0:
+                        l.pop()
+                for u in role.users:
+                   users.append(
+                        (u.id, format_user_for_form(u))
+                    )
+                for group in role.groups:
+                    groups.append(
+                        (group.id, group.name)
+                    )
+            reset_default_users_groups(role, role_users, role_groups)
+            class UserS(colander.TupleSchema):
+                id = colander.SchemaNode(colander.Int(), missing = '',)
+                label = colander.SchemaNode(colander.String(), missing = '',)
+            class GroupS(colander.TupleSchema):
+                id = colander.SchemaNode(colander.Int(), missing = '',)
+                label = colander.SchemaNode(colander.String(), missing = '',)
+            class GroupSc(colander.SequenceSchema):
+                group = GroupS(name="group", missing=tuple())
+            class UserSc(colander.SequenceSchema):
+                user = UserS(name="user", missing=tuple())
             class Members(colander.MappingSchema):
-                users = UserSchema(default=(('bb', 'ee'), ('cc', 'rr')), values=user)
-                groups = GroupSchema()
-
+                users = UserSc(name="users", title=_('Users'),widget = widget.ChosenSelectWidget(url), default=role_users, validator = v.validate_user, missing=tuple(),)
+                groups = GroupSc(name="groups", title=_('Groups'), widget = widget.ChosenSelectWidget(gurl), default=role_groups, validator = v.validate_group, missing=tuple(),)
             class Schema(colander.Schema):
                 roleid = colander.SchemaNode(
                     colander.String(),
@@ -355,23 +373,71 @@ class EditRole(Base):
                     colander.String(),
                     widget = deform.widget.TextAreaWidget(),
                     default = role.description,
+                    missing = '',
                     name = 'desc',
                     title = _('Description'),
                 )
-                members = Members()
-
-            form = widget.Form(request, Schema(title=_('Edit role')),
-                buttons=(_('Send'),), formid = 'add_permission')
+                members = Members(name="members")
+            form = widget.Form(request,
+                               Schema(title=_('Edit role'), validator=v.role_edit_form_global_validator),
+                               buttons=(_('Send'),), formid = 'add_permission')
             if is_a_get:
                 params['form'] = form.render()
             if is_a_post:
                 try:
+                    modified = False
                     controls = request.POST.items()
                     data  = form.validate(controls)
+                    role = auth.Role.by_id(data['roleid'])
+                    if not role.name == data['name']:
+                        role.name = data['name']
+                        form.schema['description'].default = role.name
+                        modified = True
+                    if not role.description == data['description']:
+                        role.description = data['description']
+                        form.schema['description'].default = role.description
+                        modified = True
+                    users = []
+                    for uid, label in data['members']['users']:
+                        u = user.AuthUser.by_id(uid)
+                        users.append(u)
+                    groups = []
+                    for uid, label in data['members']['groups']:
+                        u = user.AuthGroup.by_id(uid)
+                        groups.append(u)
+                    for ilist, olist in ((users, role.users), (groups, role.groups)):
+                        if not ilist:
+                            modified = True
+                            for item in olist[:]:
+                                del olist[olist.index(item)]
+                        else:
+                            for item in ilist:
+                                if not item in olist:
+                                    modified = True
+                                    olist.append(item)
+                            for item in olist[:]:
+                                if not item in ilist:
+                                    del olist[olist.index(item)]
+                                    modified = True
+                    if modified:
+                        session.add(role)
+                        try:
+                            session.commit()
+                            reset_default_users_groups(role, role_users, role_groups)
+                            request.session.flash(_('Role modified', 'info'))
+                        except Exception, e:
+                            try:
+                                session.rollback()
+                            except:
+                                pass
+                            request.session.flash(
+                                _('Something went wrong'
+                                  'while modifying role: %s') % e)
                     params['form'] = form.render()
-                except Exception, e:
+                except deform.exception.ValidationFailure, e:
                     params['form'] = e.render()
         return render_to_response(self.template, params, request)
+
 
 class AjaxUsersList(Base):
 
@@ -386,25 +452,37 @@ class AjaxUsersList(Base):
             se.and_(
                 table.status == 'a',
                 se.or_(bu.username.ilike(term),
-                       bu.email.ilike(term), 
-                       bu.login.ilike(term), 
+                       bu.email.ilike(term),
+                       bu.login.ilike(term),
                       )
             )
         ).order_by(bu.email, bu.username, bu.login).all()
         data = []
         for row in rows:
             u = row.base_user
-            if u.login:
-                label = "%s %s" % (u.login, '%s')
-            else:
-                label = "%s"
-            if (u.login != u.username) or not u.login:
-                label = (label % u.username).strip()
-            if u.email and (u.email not in label):
-                label += '  -- %s' % u.email
+            label = format_user_for_form(u)
             item = ("%s"%row.id, label)
             if not item in data:
                 data.append(item)
         return data
 
+
+class AjaxGroupsList(Base):
+
+    def __call__(self):
+        term = '%(%)s%(s)s%(%)s' % {
+            's': self.request.params.get('term', '').lower(),
+            '%': '%',
+        }
+        table = user.AuthGroup
+        rows = session.query(table).filter(
+            table.name.ilike(term)
+        ).order_by(table.name)
+        data = []
+        for row in rows:
+            label = row.name
+            item = ("%s"%row.id, label)
+            if not item in data:
+                data.append(item)
+        return data
 # vim:set et sts=4 ts=4 tw=0:

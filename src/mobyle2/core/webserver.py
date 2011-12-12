@@ -176,6 +176,7 @@ def includeme(config, debug=False):
     config.add_view('%s.views.user.ManageRole' % dn, name='role', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.ManagePermission' % dn, name='permission', context='%s.models.user.Users' % dn)
     config.add_view('%s.views.user.AjaxUsersList' % dn, name='ajax_users_list', context='%s.models.user.Users' % dn, renderer='json')
+    config.add_view('%s.views.user.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.user.Users' % dn, renderer='json')
     # redirect after login
     config.add_route('redirect_after_login', '/redirect_after_login')
     config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login')
