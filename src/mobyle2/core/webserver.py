@@ -153,7 +153,7 @@ def includeme(config, debug=False):
     config.add_static_view('s', '%s:static'%dn)
     config.add_static_view('deform', 'deform:static')
     # basr urls
-    config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn)
+    config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn, permission='view')
     # auth managment
     config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn)
     config.add_view('%s.views.auth.ManageSettings' % dn,    name='manage-settings',  context='%s.models.auth.AuthenticationBackends' % dn)

@@ -82,7 +82,7 @@ form#add_auth_backend label.field_opt{
 }
 
 
-#content-body {
+#content-body div.perm-role{
   overflow-x: scroll; 
 
 }

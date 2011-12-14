@@ -2,23 +2,31 @@
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
 from copy import deepcopy
-from mobyle2.core.models import DBSession
-from mobyle2.core.models import project
-from project import Projects
-from auth import AuthenticationBackends
-from user import Users
+
 
 from ordereddict import OrderedDict
 from mobyle2.core.utils import _
 
-from pyramid.security import Everyone
-from pyramid.security import Allow
-from pyramid.security import Authenticated
+from pyramid.security import (
+    authenticated_userid,
+    Everyone,
+    Allow,
+    Authenticated,
+    Deny,
+)
+from pyramid.interfaces import IStaticURLInfo
+from pyramid.decorator import reify
+
+from mobyle2.core.models import DBSession
+from mobyle2.core.models import project
+from mobyle2.core.models.auth import AuthenticationBackends, Permission, Role 
+from mobyle2.core.models.user import Users, User as U, AuthGroup as G
 
 mapping_apps = OrderedDict([
-    ('projects', Projects),
+    ('projects', project.Projects),
 ])
 class Root(object):
+
     def __init__(self, request):
         self.__name__ = ''
         self.__description__ = _('Home')
@@ -37,12 +45,34 @@ class Root(object):
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-    @property
+    @reify
     def __acl__(self):
-        acls = [
-            (Allow, Everyone, 'view'),
-            (Allow, Authenticated, 'authenticated'),
-        ]
+        request = self.request
+        registry = request.registry
+        uid = authenticated_userid(self.request)
+        static_permission = [(Allow, Everyone, 'view')]
+        static_subpaths = [a[2]
+                           for a in registry.queryUtility(
+                               IStaticURLInfo)._get_registrations(registry)]
+        # special case: handle static views
+        acls = []
+        if request.matched_route:
+            if request.matched_route in static_subpaths:
+                acls.append(static_permission)
+        # otherwise going with business permissions
+        else:
+            acls = [
+                (Allow, Authenticated, 'authenticated'),
+            ]
+            roles = Role.all()
+            perms = Permission.all()
+            for perm in perms:
+                for role in roles:
+                    if perm in role.global_permissions:
+                        spec = Allow
+                    else:
+                        spec = Deny
+                    acls.append((spec, role.name, perm.name))
         return acls
 
 def root_factory(request):

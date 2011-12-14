@@ -2,9 +2,21 @@
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+
+class AbstractModel(object):
+    @classmethod
+    def by_name(cls, name):
+        return DBSession.query(cls).filter(cls.name==name).one() 
+    def by_id(cls, id):
+        return DBSession.query(cls).filter(cls.id==int(id)).one()
+    @classmethod
+    def all(cls):
+        return DBSession.query(cls).all()  
+
 DBSession = scoped_session(sessionmaker())
-Base = declarative_base()
+Base = declarative_base(cls=AbstractModel)
 metadata = Base.metadata
+
 
 """
 SQLAlchemy declarative visitor needed imports
@@ -29,3 +41,6 @@ def initialize_sql(engine, create=False):
     registry.register_default_keys(DBSession)
     auth.register_default_permissions(DBSession)
     auth.register_default_roles(DBSession)
+    auth.register_default_acls(DBSession)
+
+

@@ -99,8 +99,8 @@ class ManageAcl(Base):
     def __call__(self):
         request = self.request
         params = self.get_base_params()
-        roles = OrderedDict([(str(r.id), r)
-                             for r in session.query(auth.Role
+        roles = OrderedDict([(str(ro.id), ro)
+                             for ro in session.query(auth.Role
                                       ).order_by(auth.Role.name).all()])
         permissions = OrderedDict([(str(p.id), p)
                                    for p in session.query(

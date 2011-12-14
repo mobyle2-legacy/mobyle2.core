@@ -33,23 +33,17 @@ class AuthUser(Base, models.AuthUser):
         primaryjoin  ="UserRole.user_id==AuthUser.id",
         secondaryjoin="UserRole.role_id==Role.id",
         secondary="authentication_userrole", )
-    @classmethod
-    def by_id(self, id):
-        return session.query(self).filter(self.id==int(id)).one()
 
 
 class AuthGroup(Base, models.AuthGroup):
     def __init__(self, *args, **kwargs):
         Base.__init__(self, *args, **kwargs)
         models.AuthUser.__init__(self, *args, **kwargs)
-    roles = relationship(
+    global_roles = relationship(
         "Role", backref="groups", uselist=True,
         primaryjoin  ="GroupRole.group_id==AuthGroup.id",
         secondaryjoin="GroupRole.role_id==Role.id",
         secondary="authentication_grouprole", )
-    @classmethod
-    def by_id(self, id):
-        return session.query(self).filter(self.id==int(id)).one()
 
 
 class User(Base):
