@@ -10,6 +10,7 @@ from mobyle2.core.utils import _
 from pyramid.security import (
     authenticated_userid,
     Everyone,
+    NO_PERMISSION_REQUIRED,
     Allow,
     Authenticated,
     Deny,
@@ -19,8 +20,11 @@ from pyramid.decorator import reify
 
 from mobyle2.core.models import DBSession
 from mobyle2.core.models import project
-from mobyle2.core.models.auth import AuthenticationBackends, Permission, Role 
-from mobyle2.core.models.user import Users, User as U, AuthGroup as G
+from mobyle2.core.models.auth import AuthenticationBackends, Permission, Role, P
+from mobyle2.core.models.user import Users, User as U
+
+from pyramid.security import has_permission
+
 
 mapping_apps = OrderedDict([
     ('projects', project.Projects),
@@ -35,7 +39,7 @@ class Root(object):
         self.session = DBSession()
         self.items = OrderedDict()
         maps = deepcopy(mapping_apps)
-        is_admin = True # todo : implement
+        is_admin = has_permission(P['global_admin'], self, request)
         if is_admin:
             maps['auths'] = AuthenticationBackends
             maps['users'] = Users
@@ -55,17 +59,21 @@ class Root(object):
                            for a in registry.queryUtility(
                                IStaticURLInfo)._get_registrations(registry)]
         # special case: handle static views
-        acls = []
+        acls = [(Allow, Everyone, NO_PERMISSION_REQUIRED)]
+
+        load = True
         if request.matched_route:
+            # only skip acl matching if we are in static
             if request.matched_route in static_subpaths:
                 acls.append(static_permission)
+                load = False
         # otherwise going with business permissions
-        else:
+        if load:
             acls = [
                 (Allow, Authenticated, 'authenticated'),
             ]
-            roles = Role.all()
             perms = Permission.all()
+            roles = Role.all()
             for perm in perms:
                 for role in roles:
                     if perm in role.global_permissions:

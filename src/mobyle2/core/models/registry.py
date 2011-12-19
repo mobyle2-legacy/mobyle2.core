@@ -16,27 +16,6 @@ class Registry(Base):
         self.name = name
         self.value = value
 
-def register_default_keys(session):
-    # authentication settings
-    default_keys = {
-        'auth.allow_anonymous': 'false',
-        'auth.use_captcha': 'false',
-        'auth.self_registration': 'false',
-        'auth.recaptcha_private_key': None,
-        'auth.recaptcha_public_key': None,
-    }
-    for k in default_keys:
-        try:
-            session.query(Registry).filter(Registry.name == k).one()
-        except exc.NoResultFound, e:
-            try:
-                session.add(
-                    Registry(k, default_keys[k])
-                )
-                session.commit()
-            except exc.IntegrityError:
-                session.rollback()
-    session.flush()
 
 class NotSet(object):pass
 notset = NotSet()
@@ -49,7 +28,7 @@ def get_registry_key(key, default=notset, as_bool=True):
         if as_bool:
             res = asbool(res)
     except exc.NoResultFound, e:
-        if isinstance(default, notset):
+        if isinstance(default, NotSet):
             raise
         else:
             res = default
@@ -70,3 +49,31 @@ def set_registry_key(key, value):
         raise
     return res
              
+
+def register_default_keys(session, force=False):
+    # authentication settings
+    if not force:
+        force = not get_registry_key('mobyle2.configured_keys', False)
+    if not force:
+        return  
+    default_keys = {
+        'auth.allow_anonymous': 'false',
+        'auth.use_captcha': 'false',
+        'auth.self_registration': 'false',
+        'auth.recaptcha_private_key': None,
+        'auth.recaptcha_public_key': None,
+    }
+    for k in default_keys:
+        try:
+            session.query(Registry).filter(Registry.name == k).one()
+        except exc.NoResultFound, e:
+            try:
+                session.add(
+                    Registry(k, default_keys[k])
+                )
+                session.commit()
+            except exc.IntegrityError:
+                session.rollback()
+    set_registry_key('mobyle2.configured_keys', "1")
+    session.flush()
+

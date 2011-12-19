@@ -3,6 +3,7 @@
 __docformat__ = 'restructuredtext en'
 
 from pyramid.url import resource_url, current_route_url
+from pyramid.security import unauthenticated_userid
 from pyramid.traversal import resource_path, resource_path_tuple, traverse
 
 from pyramid.renderers import get_renderer
@@ -93,7 +94,10 @@ def get_base_params(view=None,
     if main:       p['main'] =        get_renderer('../templates/master.pt').implementation()
     if login:
         if not 'came_from' in req.GET:
-            req.GET['came_from'] = req.url
+            if request is not None:
+                userid = unauthenticated_userid(req) 
+                if userid:
+                    req.GET['came_from'] = req.url
         login_params = apex_views.login(req)
         if not isinstance(login_params, HTTPFound):
             login_params['include_came_from'] = True

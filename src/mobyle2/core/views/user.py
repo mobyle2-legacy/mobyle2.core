@@ -2,18 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import copy
+import transaction
 
 from ordereddict import OrderedDict
+from colander import Invalid
 
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
 
 from sqlalchemy.sql import expression as se
+from apex import models as apexmodels
 
 from mobyle2.core.models import auth
 from mobyle2.core.models import user
 from mobyle2.core.models import DBSession as session
-from mobyle2.core.models import registry as r
 from mobyle2.core.views import Base as bBase, get_base_params as get_base_params
 from mobyle2.core import validator as v
 from mobyle2.core.utils import _
@@ -23,10 +25,8 @@ from pyramid.httpexceptions import HTTPFound
 import deform
 import colander
 
-from mobyle2.core.events import RegenerateVelruseConfigEvent
 from mobyle2.core import widget
 
-from mobyle2.core.models.registry import get_registry_key
 
 bool_values = {
     '1': True,
@@ -164,6 +164,111 @@ class ManageAcl(Base):
         return render_to_response(self.template, params, request)
 
 
+class ManageUser(Base):
+    template ='../templates/user/user_user.pt'
+    def __call__(self):
+        params = self.get_base_params()
+        form, request = None, self.request
+        is_a_post = request.method == 'POST'
+        deleting = request.params.get('user_action', '') == 'delete'
+        if is_a_post and deleting:
+            items = [a[1]
+                     for a in request.POST.items()
+                     if a[0] == 'delete']
+            todelete = session.query(
+                apexmodels.AuthUser).filter(
+                    apexmodels.AuthUser.id.in_(items)
+                ).all()
+            noecho = [session.delete(i) for i in todelete]
+            session.commit()
+            request.session.flash(_('Items have been deleted'), 'info')
+        action = request.params.get('user_action', '')
+        users = session.query(apexmodels.AuthUser).order_by(apexmodels.AuthUser.login,
+                                                            apexmodels.AuthUser.username,
+                                                            apexmodels.AuthUser.email).all()
+        rdata = []
+        for u in users:
+            item = {
+                'id': u.id,
+                'username': u.username,
+                'login': u.login,
+                'email': u.email,
+                'deletable': True,
+            }
+            rdata.append(item)
+        params['users'] = rdata
+        return render_to_response(self.template, params, request)
+
+
+class ManageGroup(Base):
+    template ='../templates/user/user_group.pt'
+    def __call__(self):
+        params = self.get_base_params()
+        form, request = None, self.request
+        is_a_post = request.method == 'POST'
+        adding = request.params.get('__formid__', '') == 'add_group'
+        default_groups = [a[0]
+                          for a in apexmodels.get_default_groups(
+                              request.registry.settings)]
+        deleting = request.params.get('group_action', '') == 'delete'
+        class GroupSH(colander.MappingSchema):
+            name = colander.SchemaNode(
+                colander.String(),
+                title = _('Group name'),
+                validator = colander.All(
+                    v.not_empty_string,
+                    v.existing_group,
+                )
+            )
+            description = colander.SchemaNode(colander.String(), title=_('Group description'),)
+        add_form = deform.Form( GroupSH(), buttons=(_('Send'),), formid = 'add_group')
+        if is_a_post and deleting:
+            items = [a[1]
+                     for a in request.POST.items()
+                     if a[0] == 'delete' and not a[1] in default_groups]
+            todelete = session.query(
+                user.Group).filter(
+                    se.and_(
+                        user.Group.id.in_(items),
+                        se.not_(user.Group.name.in_(default_groups))
+                    )
+                ).all()
+            noecho = [session.delete(i) for i in todelete]
+            session.commit()
+            request.session.flash(_('Items have been deleted'), 'info')
+        if is_a_post and adding:
+            controls = request.POST.items()
+            try:
+                data = add_form.validate(controls)
+                group = session.query(
+                    user.Group).filter(
+                        user.Group.name == data['name']
+                    ).first()
+                if not group:
+                    rl = user.Group(name=data['name'], description=data['description'])
+                    session.add(rl)
+                    session.commit()
+                    request.session.flash(_('Group added: %s' % rl.name, 'info'))
+                    params['add_form'] = add_form.render()
+            except Exception, e:
+                params['add_form'] = e.render()
+        else:
+            params['add_form'] = add_form.render()
+        action = request.params.get('group_action', '')
+        groups = session.query(
+            user.Group).order_by(user.Group.name).all()
+        rdata = []
+        for group in groups:
+            item = {
+                'id': group.id,
+                'name': group.name,
+                'deletable': not group.name in default_groups,
+                'description':group.description,
+            }
+            rdata.append(item)
+        params['groups'] = rdata
+        return render_to_response(self.template, params, request)
+
 class ManageRole(Base):
     template ='../templates/user/user_role.pt'
 
@@ -177,7 +282,7 @@ class ManageRole(Base):
             name = colander.SchemaNode(
                 colander.String(), title=_('Role name'), validator = colander.All(
                     v.not_empty_string,
-                    v.existing_group,
+                    v.existing_role,
                 )
             )
             description = colander.SchemaNode(colander.String(), title=_('Role description'),)
@@ -297,6 +402,305 @@ class ManagePermission(Base):
         params['permissions'] = rdata
         return render_to_response(self.template, params, request)
 
+class EditGroup(Base):
+    template ='../templates/user/user_editgroup.pt'
+
+    def __call__(self):
+        form, request = None, self.request
+        url = "%s@@ajax_users_list" % (
+            self.request.resource_url(self.request.context)
+        )
+        is_a_get = request.method == 'GET'
+        is_a_post = request.method == 'POST'
+        params = self.get_base_params()
+        r_types = {'users':_('Users'), 'groups': _('Groups',)}
+        rid = -666
+        try:
+            rid = int(request.params.get('groupid', '-666'))
+        except:
+            pass
+        group = None
+        try:
+            group = session.query(
+                user.Group).filter(user.Group.id==int(rid)).first()
+        except:
+            pass
+        params['group'] = group
+        if group is not None:
+            group_users = []
+            def reset_default_users_groups(group, users,):
+                for l in users:
+                    while len(l) > 0:
+                        l.pop()
+                for u in group.users:
+                   users.append(
+                        (u.id, format_user_for_form(u.base_user))
+                    )
+            reset_default_users_groups(group, group_users)
+            class UserS(colander.TupleSchema):
+                id = colander.SchemaNode(colander.Int(), missing = '',)
+                label = colander.SchemaNode(colander.String(), missing = '',)
+            class UserSc(colander.SequenceSchema):
+                user = UserS(name="user", missing=tuple())
+            class Members(colander.MappingSchema):
+                users = UserSc(name="users", title=_('Users'),widget = widget.ChosenSelectWidget(url), default=group_users, validator = v.not_existing_user, missing=tuple(),)
+            class Schema(colander.Schema):
+                groupid = colander.SchemaNode(
+                    colander.String(),
+                    widget = deform.widget.HiddenWidget(),
+                    validator = v.not_existing_group,
+                    default = rid,
+                    name = 'groupid',
+                    title = _('Group'),
+                )
+                name = colander.SchemaNode(
+                    colander.String(),
+                    widget = deform.widget.TextInputWidget(size=len('%s'%group.name)),
+                    default = group.name,
+                    name = 'group',
+                    title = _('Group'),
+                )
+                description = colander.SchemaNode(
+                    colander.String(),
+                    widget = deform.widget.TextAreaWidget(),
+                    default = group.description,
+                    missing = '',
+                    name = 'desc',
+                    title = _('Description'),
+                )
+                members = Members(name="members")
+            form = widget.Form(request,
+                               Schema(title=_('Edit group'), validator=v.group_edit_form_global_validator),
+                               buttons=(_('Send'),), formid = 'add_permission')
+            if is_a_get:
+                params['form'] = form.render()
+            if is_a_post:
+                try:
+                    modified = False
+                    controls = request.POST.items()
+                    data  = form.validate(controls)
+                    group = user.Group.by_id(data['groupid'])
+                    if not group.name == data['name']:
+                        group.name = data['name']
+                        form.schema['name'].default = group.name
+                        modified = True
+                    if not group.description == data['description']:
+                        group.description = data['description']
+                        form.schema['description'].default = group.description
+                        modified = True
+                    users = []
+                    for uid, label in data['members']['users']:
+                        u = user.User.by_id(uid)
+                        users.append(u)
+                    for ilist, olist in ((users, group.users),):
+                        if not ilist:
+                            modified = True
+                            for item in olist[:]:
+                                del olist[olist.index(item)]
+                        else:
+                            for item in ilist:
+                                if not item in olist:
+                                    modified = True
+                                    olist.append(item)
+                            for item in olist[:]:
+                                if not item in ilist:
+                                    del olist[olist.index(item)]
+                                    modified = True
+                    if modified:
+                        session.add(group)
+                        try:
+                            session.commit()
+                            reset_default_users_groups(group, group_users)
+                            request.session.flash(_('Group modified', 'info'))
+                        except Exception, e:
+                            try:
+                                session.rollback()
+                            except:
+                                pass
+                            request.session.flash(
+                                _('Something went wrong'
+                                  'while modifying group: %s') % e)
+                    params['form'] = form.render()
+                except deform.exception.ValidationFailure, e:
+                    params['form'] = e.render()
+        return render_to_response(self.template, params, request)
+
+class AddEditUser(Base):
+    template ='../templates/user/user_edituser.pt'
+
+    def __call__(self):
+        form, request = None, self.request
+        gurl = "%s@@ajax_groups_list" % (
+            self.request.resource_url(self.request.context)
+        )
+        is_a_get = request.method == 'GET'
+        is_a_post = request.method == 'POST'
+        params = self.get_base_params()
+        r_types = {'users':_('Users'), 'groups': _('Groups',)}
+        rid = -666
+        try:
+            rid = int(request.params.get('userid', '-666'))
+        except:
+            pass
+        usr = None
+        try:
+            usr = session.query(
+                user.User).filter(
+                    user.User.id==int(rid)).first()
+        except:
+            pass
+        def existing_user_validator(node, value, column):
+            item, value = None, value.strip()
+            try:
+                item = session.query(apexmodels.AuthUser).filter(
+                    getattr(apexmodels.AuthUser, column) == value).first()
+            except Exception, e:
+                raise Invalid(node, _('Unknown Error: %s' % e))
+            if item is not None:
+                if usr.id != item.id:
+                    raise Invalid(node, _('Already exists'))
+        def existing_user_username(node, value):
+            return existing_user_validator(node, value, 'username')
+
+        def existing_user_login(node, value):
+            return existing_user_validator(node, value, 'login')
+
+        def existing_user_email(node, value):
+            return existing_user_validator(node, value, 'email') 
+        default_groups = []
+        class GroupS(colander.TupleSchema):
+            id = colander.SchemaNode(colander.Int(), missing = '',)
+            label = colander.SchemaNode(colander.String(), missing = '',)
+        class GroupSc(colander.SequenceSchema):
+            group = GroupS(name="group", missing=tuple()) 
+        class Groups(colander.MappingSchema):
+            groups = GroupSc(name="groups", title=_('Groups'), widget = widget.ChosenSelectWidget(gurl), default=default_groups, validator = v.not_existing_group, missing=tuple(),) 
+        class Schema(colander.Schema):
+            userid = colander.SchemaNode(
+                colander.String(),
+                widget = deform.widget.HiddenWidget(),
+                validator = v.permisiv_not_existing_user,
+                default = rid,
+                name = 'userid', title = _('User'),
+            )
+            name = colander.SchemaNode(
+                colander.String(),
+                validator = existing_user_login,
+                widget = deform.widget.TextInputWidget(size=100),
+                name = 'name', title = _('Name'),
+            )
+            dname = colander.SchemaNode(
+                colander.String(),
+                validator = existing_user_username,
+                widget = deform.widget.TextInputWidget(size=100),
+                dname = 'dname', title = _('Display Name'),
+            )
+            email = colander.SchemaNode(
+                colander.String(),
+                validator = existing_user_email,
+                widget = deform.widget.TextInputWidget(size=100),
+                name = 'email', title = _('Email'),
+            )
+            groups = Groups(name="groups")
+        if usr is not None:
+            label = _('Edit user')
+        else:
+            label = _('Add user')
+        form = widget.Form(request,
+                           Schema(title=label, validator=v.user_edit_form_global_validator),
+                           buttons=(_('Send'),), formid = 'add_user') 
+        persisted_attrs = {'username':'dname', 
+                           'login':'name',  
+                           'email': 'email'
+                          }
+        def fill_form(form, usr, data=None):
+            if not data: data = {}
+            if usr is not None:
+                for attr in persisted_attrs:
+                    form_attr = persisted_attrs[attr]
+                    dv = None
+                    if usr is not None:
+                        dv = getattr(usr.base_user, attr, None)
+                    default_value = data.get(form_attr, dv)
+                    if default_value is not None:
+                        form.schema[form_attr].default = default_value
+                for l in default_groups:
+                    while len(l) > 0:
+                        l.pop() 
+                if usr is not None:
+                    for group in usr.groups:
+                        default_groups.append((group.id, group.name)) 
+        if is_a_post:
+            controls = request.POST.items()
+            try:
+                data  = form.validate(controls) 
+                if usr is not None:
+                    modified = False
+                    for attr in persisted_attrs:
+                        form_attr = persisted_attrs[attr]
+                        form_value = data[form_attr]
+                        user_value = getattr(usr.base_user, attr)
+                        if not user_value == form_value:
+                            modified = True
+                            setattr(usr.base_user, attr, form_value)
+                        groups = []
+                        for uid, label in data['groups']['groups']:
+                            g = user.Group.by_id(uid)
+                            groups.append(g) 
+                        for ilist, olist in ((groups, usr.groups),):
+                            if not ilist:
+                                modified = True
+                                for item in olist[:]:
+                                    del olist[olist.index(item)]
+                            else:
+                                for item in ilist:
+                                    if not item in olist:
+                                        modified = True
+                                        olist.append(item)
+                                for item in olist[:]:
+                                    if not item in ilist:
+                                        del olist[olist.index(item)]
+                                        modified = True 
+                    if modified:
+                        try:
+                            session.commit()
+                            request.session.flash(_('User modified', 'info'))
+                        except Exception, e:
+                            try:
+                                session.rollback()
+                            except:
+                                pass
+                            request.session.flash(
+                                _('Something went wrong'
+                                  'while modifying user: %s') % e)
+                    session.add(usr)
+                    fill_form(form, usr, data)
+                    params['form'] = form.render()
+                elif usr is None and request.params.get('userid', '-666') == '-666':
+                    groups = [user.Group.by_id(a[0]) for a in data['groups']['groups']]
+                    busr = apexmodels.create_user(**{
+                        'email': data['email'],
+                        'username': data['name'],
+                        'login': data['name'],
+                    })
+                    usr = user.User.by_id(busr.id)
+                    for g in groups:
+                        usr.groups.append(g)
+                    session.add(usr)
+                    session.commit()
+                    request.session.flash(_('User was created'), 'info')
+                    eurl = self.request.url+'?userid=%s'%usr.id
+                    return HTTPFound(eurl)
+            except deform.exception.ValidationFailure, e:
+                fill_form(form, usr)
+                params['form'] = e.render()  
+        # get the page
+        if is_a_get:
+            if usr is not None:
+                fill_form(form, usr)
+            params['form'] = form.render() 
+        return render_to_response(self.template, params, request)
+
 class EditRole(Base):
     template ='../templates/user/user_editrole.pt'
 
@@ -331,11 +735,11 @@ class EditRole(Base):
                 for l in users, groups:
                     while len(l) > 0:
                         l.pop()
-                for u in role.users:
+                for u in role.global_users:
                    users.append(
-                        (u.id, format_user_for_form(u))
+                        (u.id, format_user_for_form(u.base_user))
                     )
-                for group in role.groups:
+                for group in role.global_groups:
                     groups.append(
                         (group.id, group.name)
                     )
@@ -351,13 +755,13 @@ class EditRole(Base):
             class UserSc(colander.SequenceSchema):
                 user = UserS(name="user", missing=tuple())
             class Members(colander.MappingSchema):
-                users = UserSc(name="users", title=_('Users'),widget = widget.ChosenSelectWidget(url), default=role_users, validator = v.validate_user, missing=tuple(),)
-                groups = GroupSc(name="groups", title=_('Groups'), widget = widget.ChosenSelectWidget(gurl), default=role_groups, validator = v.validate_group, missing=tuple(),)
+                users = UserSc(name="users", title=_('Users'),widget = widget.ChosenSelectWidget(url), default=role_users, validator = v.not_existing_user, missing=tuple(),)
+                groups = GroupSc(name="groups", title=_('Groups'), widget = widget.ChosenSelectWidget(gurl), default=role_groups, validator = v.not_existing_group, missing=tuple(),)
             class Schema(colander.Schema):
                 roleid = colander.SchemaNode(
                     colander.String(),
                     widget = deform.widget.HiddenWidget(),
-                    validator = v.validate_role,
+                    validator = v.not_existing_role,
                     default = rid,
                     name = 'roleid',
                     title = _('Role'),
@@ -391,7 +795,7 @@ class EditRole(Base):
                     role = auth.Role.by_id(data['roleid'])
                     if not role.name == data['name']:
                         role.name = data['name']
-                        form.schema['description'].default = role.name
+                        form.schema['name'].default = role.name
                         modified = True
                     if not role.description == data['description']:
                         role.description = data['description']
@@ -399,13 +803,13 @@ class EditRole(Base):
                         modified = True
                     users = []
                     for uid, label in data['members']['users']:
-                        u = user.AuthUser.by_id(uid)
+                        u = user.User.by_id(uid)
                         users.append(u)
                     groups = []
                     for uid, label in data['members']['groups']:
-                        u = user.AuthGroup.by_id(uid)
+                        u = user.Group.by_id(uid)
                         groups.append(u)
-                    for ilist, olist in ((users, role.users), (groups, role.groups)):
+                    for ilist, olist in ((users, role.global_users), (groups, role.global_groups)):
                         if not ilist:
                             modified = True
                             for item in olist[:]:
@@ -447,8 +851,8 @@ class AjaxUsersList(Base):
             '%': '%',
         }
         table = user.User
-        bu = user.AuthUser
-        rows = session.query(table).join(table.base_user).filter(
+        bu = apexmodels.AuthUser
+        rows = session.query(table).join(bu).filter(
             se.and_(
                 table.status == 'a',
                 se.or_(bu.username.ilike(term),
@@ -474,7 +878,7 @@ class AjaxGroupsList(Base):
             's': self.request.params.get('term', '').lower(),
             '%': '%',
         }
-        table = user.AuthGroup
+        table = user.Group
         rows = session.query(table).filter(
             table.name.ilike(term)
         ).order_by(table.name)

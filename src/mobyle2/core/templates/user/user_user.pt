@@ -1,0 +1,42 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    <p i18n:translate="">User managment</p>
+    <div class="add" >
+      <h1 class="add" i18n:translate="">Add a user</h1>
+      <a href="${request.resource_url(context)}@@add_user">Add an user</a>
+    </div>
+    <div class="listing users"
+      tal:condition="users">
+      <h1 class="add" i18n:translate="">Existing users</h1>
+      <form action="${request.url}" method="post">
+        <table class="mobyle2-datatables">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ID</th>
+              <th>login</th>
+              <th>username</th>
+              <th>email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tal:r tal:repeat="user users">
+              <tr>
+                <td>
+                  <input tal:condition="python:user.get('deletable', False)" 
+                    type="checkbox" value="${user.id}" name="delete"/>
+                </td>
+                <td><a href="${request.resource_url(context)}@@edit_user?userid=${user['id']}">${user['id']}</a></td> 
+                <td>${user['login']}</td>
+                <td><a href="${request.resource_url(context)}@@edit_user?userid=${user['id']}">${user['email']}</a></td>
+                <td>${user['email']}</td>
+              </tr>
+            </tal:r>
+          </tbody>
+        </table>
+        <input type="hidden" name="user_action" value="delete"/>
+        <input type="submit" name="Send" value="Send"/>
+      </form>
+    </div>
+  </metal>
+</metal>

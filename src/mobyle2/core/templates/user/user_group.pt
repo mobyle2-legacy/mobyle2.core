@@ -1,0 +1,38 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    <p i18n:translate="">Group managment</p>
+    <div class="add" tal:condition="add_form|nothing">
+      <h1 class="add" i18n:translate="">Add a group</h1>
+      <p tal:content="structure add_form"/>
+    </div>
+    <div class="listing groups"
+      tal:condition="groups">
+      <h1 class="add" i18n:translate="">Existing groups</h1>
+      <form action="${request.url}" method="post">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tal:r tal:repeat="group groups">
+              <tr>
+                <td>
+                  <input tal:condition="python:group.get('deletable', False)" 
+                    type="checkbox" value="${group.id}" name="delete"/>
+                </td>
+                <td><a href="${request.resource_url(context)}@@edit_group?groupid=${group['id']}">${group['name']}</a></td>
+                <td>${group['description']}</td>
+              </tr>
+            </tal:r>
+          </tbody>
+        </table>
+        <input type="hidden" name="group_action" value="delete"/>
+        <input type="submit" name="Send" value="Send"/>
+      </form>
+    </div>
+  </metal>
+</metal>

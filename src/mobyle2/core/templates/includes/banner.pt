@@ -1,7 +1,7 @@
 <metal:define metal:define-macro="main">
   <div id="banner">
     <a href="${request.resource_url(request.root)}">
-      <img src="${static}/img/logo.jpg" alt="logo" class="grid_1"/>
+      <img src="${static}/images/logo.jpg" alt="logo" class="grid_1"/>
     </a>
     <h1 class="grid_5 push_1" id="title">Mobyle2, get the job done.</h1>
   </div>

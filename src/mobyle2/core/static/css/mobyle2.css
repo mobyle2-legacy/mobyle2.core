@@ -62,7 +62,7 @@ form#add_auth_backend label.field_opt{
 }
 
 .chosen-loading-spinner {
-  background: url('../img/loading-spinner.gif') no-repeat 97% #ffffff;
+  background: url('../images/loading-spinner.gif') no-repeat 97% #ffffff;
   width:16px;
   height:16px;
   display:block;

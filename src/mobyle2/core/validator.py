@@ -4,26 +4,38 @@ __docformat__ = 'restructuredtext en'
 
 from colander import Invalid
 
+from apex.models import AuthUser
+
 from mobyle2.core.utils import _
 from mobyle2.core.models.auth import Role
-from mobyle2.core.models.user import AuthUser, AuthGroup
-
+from mobyle2.core.models.user import User, Group
 from mobyle2.core.models import DBSession as session
 
+to_be_translated = [
+    _('Those roleid do not exists: %s'),
+    _('Those userid do not exists: %s'),
+    _('This role already exists') ,
+    _('This group already exists') , 
+    _('Those groupid do not exists: %s'),
+    _('This roleid does not exists: %s'),
+    _('This userid does not exists: %s'),
+    _('This groupid does not exists: %s'),
+]
+ 
 def not_empty_string(node, value):
     if not value.strip():
         raise Invalid(node, _('You must set a not null string'))
 
-def existing_group(node, value):
+def existing_validator(node, value, cls, label='item'):
     item, value = None, value.strip()
     try:
-        item = session.query(Role).filter(Role.name == value).first()
+        item = session.query(cls).filter(cls.name == value).first()
     except Exception, e:
         raise Invalid(node, _('Unknown Error: %s' % e))
     if item is not None:
-        raise Invalid(node, _('This role already exists'))
+        raise Invalid(node, _('This %s already exists'%label))
 
-def existing_validator(node, values, table, label='item'):
+def not_existing_validator(node, values, table, label='item'):
     if isinstance(values, basestring):
         values = [values]
     errors = []
@@ -53,24 +65,54 @@ def existing_validator(node, values, table, label='item'):
                   mapping={'label':label,
                            'userids': ','.join(['%s'%s for s in errors])}))
 
-def validate_role(node, value):
-    return existing_validator(node, value, Role, 'roleid')
-def validate_user(node, value):
-    return existing_validator(node, value, AuthUser, 'userid')
-def validate_group(node, value):
-    return existing_validator(node, value, AuthGroup, 'groupid')
+def not_existing_role(node, value):
+    return not_existing_validator(node, value, Role, 'roleid')
 
-to_be_translated = [
-    _('Those roleid do not exists: %s'),
-    _('Those userid do not exists: %s'),
-    _('Those groupid do not exists: %s'),
-    _('This roleid does not exists: %s'),
-    _('This userid does not exists: %s'),
-    _('This groupid does not exists: %s'),
-]
+def not_existing_user(node, value):
+    return not_existing_validator(node, value, User, 'userid')
+
+def permisiv_not_existing_user(node, value):
+    if not value or value in ['-666']:
+        return
+    return not_existing_validator(node, value, User, 'userid') 
+
+def not_existing_group(node, value):
+    return not_existing_validator(node, value, Group, 'groupid')
+
+def existing_group(node, value):
+    return existing_validator(node, value, Group, 'group')
+
+def existing_user_validator(node, value, column):
+    item, value = None, value.strip()
+    try:
+        item = session.query(AuthUser).filter(getattr(AuthUser, column) == value).first()
+    except Exception, e:
+        raise Invalid(node, _('Unknown Error: %s' % e))
+    if item is not None:
+        raise Invalid(node, _('Already exists'))
+
+def existing_user_username(node, value):
+    return existing_user_validator(node, value, 'username')
+
+def existing_user_login(node, value):
+    return existing_user_validator(node, value, 'login')
+
+def existing_user_email(node, value):
+    return existing_user_validator(node, value, 'email')
+
+def existing_role(node, value):
+    return existing_validator(node, value, Role, 'role')  
+
+def group_edit_form_global_validator(form, values):
+    validators = [(not_existing_group, values.get('groupid', '')),]
+    for v, value in validators:
+        v(form, value) 
+
+def user_edit_form_global_validator(form, values):
+    pass
 
 def role_edit_form_global_validator(form, values):
-    validators = [(validate_role, values.get('roleid', '')),]
+    validators = [(not_existing_role, values.get('roleid', '')),]
     for v, value in validators:
         v(form, value)
 

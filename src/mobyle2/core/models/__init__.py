@@ -7,6 +7,7 @@ class AbstractModel(object):
     @classmethod
     def by_name(cls, name):
         return DBSession.query(cls).filter(cls.name==name).one() 
+    @classmethod
     def by_id(cls, id):
         return DBSession.query(cls).filter(cls.id==int(id)).one()
     @classmethod

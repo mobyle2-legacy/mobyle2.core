@@ -9,6 +9,7 @@ from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from mobyle2.core import utils
 from pyramid.threadlocal import get_current_registry
+from pyramid.exceptions import Forbidden
 
 from sqlalchemy import engine_from_config
 
@@ -87,10 +88,11 @@ def includeme(config, debug=False):
     # verify captcha settings
     captcha = get_registry_key('auth.use_captcha', False)
     if captcha:
-        settings['apex.use_recaptcha_on_login'] = True
-        settings['apex.use_recaptcha_on_forgot'] = True
+        settings['apex.use_recaptcha_on_login'] = False
+        settings['apex.use_recaptcha_on_forgot'] = False
         settings['apex.use_recaptcha_on_register'] = True
-        settings['apex.use_recaptcha_on_reset'] = True
+        settings['apex.use_recaptcha_on_reset'] = False
+        settings['apex.use_recaptcha_on_useradd'] = False
         rpubk = get_registry_key('auth.recaptcha_public_key', '')
         rprivk =  get_registry_key('auth.recaptcha_private_key', '')
         if rpubk:
@@ -140,8 +142,10 @@ def includeme(config, debug=False):
     #  config.include('pyramid_zcml')
     config.begin()
     config.hook_zca()
+
+    from mobyle2.core.models import auth
+    P = auth.P
     #if settings.get('application.debug', False):
-    config.add_view('%s.views.root.Reload' % dn,     name='reload', context='%s.models.root.Root' % dn)
     #config.scan('%s.models'%dn)
     # translation directories
     config.add_translation_dirs('%s:locale/'%dn)
@@ -153,42 +157,48 @@ def includeme(config, debug=False):
     config.add_static_view('s', '%s:static'%dn)
     config.add_static_view('deform', 'deform:static')
     # basr urls
-    config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn, permission='view')
+    config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn, permission=P['global_view'])
     # auth managment
-    config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.ManageSettings' % dn,    name='manage-settings',  context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.List' % dn, name='list', context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.Add' % dn,  name='add',  context='%s.models.auth.AuthenticationBackends' % dn)
-    config.add_view('%s.views.auth.View' % dn, name='',     context='%s.models.auth.AuthenticationBackendRessource' % dn)
-    config.add_view('%s.views.auth.Edit' % dn, name='edit', context='%s.models.auth.AuthenticationBackendRessource' % dn)
-    config.add_view('%s.views.auth.Delete' % dn, name='delete', context='%s.models.auth.AuthenticationBackendRessource' % dn)
+    config.add_view('%s.views.root.Reload' % dn,  name='reload', context='%s.models.root.Root' % dn, permission = P['global_authadmin'])
+    config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn, permission =P['global_authadmin'])
+    config.add_view('%s.views.auth.ManageSettings' % dn,    name='manage-settings',  context='%s.models.auth.AuthenticationBackends' % dn, permission =P['global_authadmin'])
+    config.add_view('%s.views.auth.List' % dn, name='list', context='%s.models.auth.AuthenticationBackends' % dn, permission =P['global_authadmin'])
+    config.add_view('%s.views.auth.Add' % dn,  name='add',  context='%s.models.auth.AuthenticationBackends' % dn, permission =P['global_authadmin'])
+    config.add_view('%s.views.auth.View' % dn, name='',     context='%s.models.auth.AuthenticationBackendRessource' % dn, permission =P['global_authadmin'])
+    config.add_view('%s.views.auth.Edit' % dn, name='edit', context='%s.models.auth.AuthenticationBackendRessource' % dn, permission =P['global_authadmin'])
+    config.add_view('%s.views.auth.Delete' % dn, name='delete', context='%s.models.auth.AuthenticationBackendRessource' % dn, permission =P['global_authadmin'])
     #config.add_view('%s.views.auth.Helper' % dn,    name='helper',  context='%s.models.auth.AuthenticationBackends' % dn)
     # project urls
-    config.add_view('%s.views.project.Home' % dn, name='', context='%s.models.project.Projects' % dn)
-    config.add_view('%s.views.project.List' % dn, name='list', context='%s.models.project.Projects' % dn)
-    config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn)
-    config.add_view('%s.views.project.Add' % dn,  name='add', context='%s.models.project.Projects' % dn)
-    config.add_view('%s.views.project.View' % dn, name='',   context='%s.models.project.ProjectRessource' % dn)
+    config.add_view('%s.views.project.Home' % dn, name='', context='%s.models.project.Projects' % dn, permission =P['project_view'])
+    config.add_view('%s.views.project.List' % dn, name='list', context='%s.models.project.Projects' % dn, permission =P['project_view'])
+    config.add_view('%s.views.project.Edit' % dn, name='edit', context='%s.models.project.ProjectRessource' % dn, permission =P['project_edit'])
+    config.add_view('%s.views.project.Add' % dn,  name='add', context='%s.models.project.Projects' % dn, permission =P['project_create'])
+    config.add_view('%s.views.project.View' % dn, name='',   context='%s.models.project.ProjectRessource' % dn, permission =P['project_view'])
     # users managment
-    config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn)
-    config.add_view('%s.views.user.EditRole' % dn, name='edit_role', context='%s.models.user.Users' % dn)
-    config.add_view('%s.views.user.ManageAcl' % dn, name='acl', context='%s.models.user.Users' % dn)
-    config.add_view('%s.views.user.ManageRole' % dn, name='role', context='%s.models.user.Users' % dn)
-    config.add_view('%s.views.user.ManagePermission' % dn, name='permission', context='%s.models.user.Users' % dn)
-    config.add_view('%s.views.user.AjaxUsersList' % dn, name='ajax_users_list', context='%s.models.user.Users' % dn, renderer='json')
-    config.add_view('%s.views.user.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.user.Users' % dn, renderer='json')
+    config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.EditRole' % dn, name='edit_role', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.EditGroup' % dn, name='edit_group', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.AddEditUser' % dn, name='add_user', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.AddEditUser' % dn, name='edit_user', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.ManageAcl' % dn, name='acl', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.ManageRole' % dn, name='role', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.ManageGroup' % dn, name='groups', context='%s.models.user.Users' % dn, permission = P['global_admin'])
+    config.add_view('%s.views.user.ManageUser' % dn, name='users', context='%s.models.user.Users' % dn, permission = P['global_admin'])
+    config.add_view('%s.views.user.ManagePermission' % dn, name='permission', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
+    config.add_view('%s.views.user.AjaxUsersList' % dn, name='ajax_users_list', context='%s.models.user.Users' % dn, renderer='json', permission =  P['global_useradmin'])
+    config.add_view('%s.views.user.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.user.Users' % dn, renderer='json', permission = P['global_useradmin'])
     # redirect after login
     config.add_route('redirect_after_login', '/redirect_after_login')
-    config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login')
+    config.add_view('mobyle2.core.views.root.RedirectAfterLogin', route_name='redirect_after_login', permission =P['global_view'])
     # apex overrides
     render_template = 'mobyle2.core:templates/apex_template.pt'
-    config.add_view('mobyle2.core.views.apexviews.login', route_name='apex_login', renderer=render_template)
-    config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template)
-    config.add_view('mobyle2.core.views.apexviews.forgot', route_name='apex_forgot', renderer=render_template)
-    config.add_view('mobyle2.core.views.apexviews.reset', route_name='apex_reset', renderer=render_template)
-    config.add_view('mobyle2.core.views.apexviews.activate', route_name='apex_activate', renderer=render_template)
-    config.add_view('mobyle2.core.views.apexviews.useradd', route_name='apex_useradd', renderer=render_template)
-    config.add_view('mobyle2.core.views.apexviews.managegroups', route_name='apex_managegroups', renderer=render_template)
+    config.add_view('mobyle2.core.views.apexviews.login', route_name='apex_login', renderer=render_template, permission =P['global_view'])
+    config.add_view('mobyle2.core.views.apexviews.register', route_name='apex_register', renderer=render_template, permission =P['global_view'])
+    config.add_view('mobyle2.core.views.apexviews.forgot', route_name='apex_forgot', renderer=render_template, permission =P['global_view'])
+    config.add_view('mobyle2.core.views.apexviews.reset', route_name='apex_reset', renderer=render_template, permission =P['global_view'])
+    config.add_view('mobyle2.core.views.apexviews.activate', route_name='apex_activate', renderer=render_template, permission = P['global_view'])
+    config.add_view('mobyle2.core.views.apexviews.useradd', route_name='apex_useradd', renderer=render_template, permission = P['global_admin'])
+    config.add_view('mobyle2.core.views.auth.forbidden', context=Forbidden)
     config.end()
     config.commit()
     from mobyle2.core.models.registry import set_registry_key

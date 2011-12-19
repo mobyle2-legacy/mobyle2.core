@@ -8,6 +8,9 @@ from ordereddict import OrderedDict
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
 
+
+from apex.lib.flash import flash
+
 from mobyle2.core.models import auth
 from mobyle2.core.models import DBSession as session
 from mobyle2.core.models import registry as r
@@ -458,4 +461,18 @@ class Delete(AuthView):
         response = render_to_response(self.template,
                                       params, self.request)
         return response
+
+def forbidden(request):
+    """ forbidden(request)
+    No return value
+
+    Called when user hits a resource that requires a permission and the
+    user doesn't have the required permission. Will prompt for login.
+
+    """
+    flash(_('Access denied, please log in'), 'error')
+    return HTTPFound(location='%s?came_from=%s' %
+                    (request.route_url('apex_login'), request.url))
+
+
 # vim:set et sts=4 ts=4 tw=0:

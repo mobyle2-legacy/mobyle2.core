@@ -7,6 +7,7 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 import apex
 
+from pyramid.decorator import reify
 
 
 from mobyle2.core.models.auth import Role, GroupRole, UserRole
@@ -23,34 +24,43 @@ user_statuses = {
 }
 
 tauth_users = models.AuthUser.metadata.tables[models.AuthUser.__table__.name]
-
-class AuthUser(Base, models.AuthUser):
-    def __init__(self, *args, **kwargs):
-        Base.__init__(self, *args, **kwargs)
-        models.AuthUser.__init__(self, *args, **kwargs)
-    roles = relationship(
-        "Role", backref="users", uselist=True,
-        primaryjoin  ="UserRole.user_id==AuthUser.id",
-        secondaryjoin="UserRole.role_id==Role.id",
-        secondary="authentication_userrole", )
+tauth_groups = models.AuthUser.metadata.tables[models.AuthGroup.__table__.name]
 
 
-class AuthGroup(Base, models.AuthGroup):
-    def __init__(self, *args, **kwargs):
-        Base.__init__(self, *args, **kwargs)
-        models.AuthUser.__init__(self, *args, **kwargs)
+class Group(Base):
+    __table__ = tauth_groups
     global_roles = relationship(
-        "Role", backref="groups", uselist=True,
-        primaryjoin  ="GroupRole.group_id==AuthGroup.id",
+        "Role", backref="global_groups", uselist=True,
+        primaryjoin  ="GroupRole.group_id==Group.id",
         secondaryjoin="GroupRole.role_id==Role.id",
         secondary="authentication_grouprole", )
+    users = relationship(
+        "User", 
+        uselist=True,
+        primaryjoin  ="auth_user_groups.c.group_id==Group.id",
+        secondaryjoin="auth_user_groups.c.user_id== User.id",
+        secondary="auth_user_groups", )
 
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, ForeignKey(AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    id = Column(Integer, ForeignKey(models.AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     status = Column(Unicode(1))
-    base_user = relationship("AuthUser")
+    groups = relationship(
+        "Group", 
+        uselist=True,
+        primaryjoin  ="auth_user_groups.c.user_id==User.id",
+        secondaryjoin="auth_user_groups.c.group_id== Group.id",
+        secondary="auth_user_groups",) 
+
+    @reify
+    def base_user(self):
+        user = getattr(self, '_base_user_obj', None)
+        if user is None:
+            setattr(self, '_base_user_obj', models.AuthUser.get_by_id(self.id))
+            user = getattr(self, '_base_user_obj', None)
+        return user
+
     projects = relationship("Project", uselist=True, backref="user")
     global_roles = relationship(
         "Role", backref="global_users", uselist=True,
@@ -92,10 +102,5 @@ class Users:
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-
-class Acl(Base):
-    __tablename__ = 'authentication_acl'
-    role = Column(Integer, ForeignKey("authentication_role.id", name="fk_acl_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-    permission = Column(Integer, ForeignKey("authentication_permission.id", name="fk_acl_permission", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
 

@@ -17,6 +17,8 @@
           <!--<script type="text/javascript" src="${dstatic}/scripts/jquery-1.4.2.min.js"></script>-->
           <script type="text/javascript" src="${dstatic}/scripts/deform.js"></script>
           <script type="text/javascript" src="${dstatic}/scripts/jquery.form.js"></script>
+          <script type="text/javascript" src="${static}/js/jquery-ui-1.8.16.custom.min.js"></script>
+          <script type="text/javascript" src="${static}/js/jquery.dataTables.min.js"></script>
           <script type="text/javascript" src="${static}/js/chosen.jquery.js"></script>
           <script type="text/javascript" src="${static}/js/ajax-chosen.js"></script>
           <script type="text/javascript" src="${static}/js/mobyle2.js"></script>
@@ -29,6 +31,8 @@
           <link rel="stylesheet" type="text/css" href="${dstatic}/css/form.css"/>
           <link rel="stylesheet" type="text/css" href="${static}/css/chosen.css"/>
           <link rel="stylesheet" type="text/css"  href="${static}/css/grid.css"/>
+          <link rel="stylesheet" type="text/css"  href="${static}/css/ui-lightness/jquery-ui-1.8.16.custom.css"/>
+          <link rel="stylesheet" type="text/css"  href="${static}/css/datatables.css"/>
           <link rel="stylesheet" type="text/css"  href="${static}/css/mobyle2.css"/>
         </metal:define>
       </metal:define>
