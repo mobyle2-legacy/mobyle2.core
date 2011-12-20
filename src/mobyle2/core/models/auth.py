@@ -18,7 +18,6 @@ from mobyle2.core.models import Base, DBSession as session
 from mobyle2.core.models.registry import get_registry_key , set_registry_key
 
 
-ANONYME_ROLE = 'mobyle2 > anonyme'
 AUTH_BACKENDS =OrderedDict([
     ( 'openid'                   , 'openid')   ,
     ( 'facebook'                 , 'facebook') ,
@@ -170,16 +169,30 @@ class Permission(Base):
             )
         ).all()
 
+ANONYME_ROLE = 'mobyle2 > anonyme'
+R = {
+    ANONYME_ROLE: 'mobyle2 > anonyme',
+    'anonyme': ANONYME_ROLE,
+    'internal_user'         : 'mobyle2 > internal_user'        ,
+    'external_user'         : 'mobyle2 > external_user'        ,
+    'project_owner'         : 'mobyle2 > project_owner'        ,
+    'project_watcher'       : 'mobyle2 > project_watcher'      ,
+    'project_contributor'   : 'mobyle2 > project_contributor'  ,
+    'project_manager'       : 'mobyle2 > project_manager'      ,
+    'portal_administrator'  : 'mobyle2 > portal_administrator' ,
+
+}
+
 
 default_roles = {
     ANONYME_ROLE : _('Anonym'),
-    'mobyle2 > internal_user' : _('Internal user'),
-    'mobyle2 > external_user' : _('External user'),
-    'mobyle2 > project_owner' : _('Project owner'),
-    'mobyle2 > project_watcher' : _('Project watcher'),
-    'mobyle2 > project_contributor' : _('Project contributor'),
-    'mobyle2 > project_manager' : _('Project manager'),
-    'mobyle2 > portal_administrator' : _('Portal administrator'),
+    R['internal_user'] : _('Internal user'),
+    R['external_user'] : _('External user'),
+    R['project_owner'] : _('Project owner'),
+    R['project_watcher'] : _('Project watcher'),
+    R['project_contributor'] : _('Project contributor'),
+    R['project_manager'] : _('Project manager'),
+    R['portal_administrator'] : _('Portal administrator'),
 }
 # shortcuts
 P = {
@@ -221,12 +234,6 @@ default_permissions = {
     P['global_useradmin']: _('Users only administrative access'),
     P['global_authadmin']: _('Authentication backends only administrative access'),
     P['global_view']: _('View access'),
-    P['group_create']: _('Create group'),
-    P['group_delete']: _('Delete group'),
-    P['group_edit']: _('Edit group'),
-    P['user_create']: _('Create user'),
-    P['user_delete']: _('Delete user'),
-    P['user_edit']:   _('Edit user'),
     P['project_view']: _('View project'),
     P['project_create']: _('Create project'),
     P['project_delete']: _('Delete project'),
@@ -250,15 +257,6 @@ default_acls = {
     P['global_admin']:     {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
     P['global_authadmin']: {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
     P['global_useradmin']: {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['group_create']:     {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['group_delete']:     {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['group_edit']:       {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['group_edit']:       {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['group_view']:       {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['user_create']:      {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['user_delete']:      {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['user_edit']:        {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
-    P['user_view']:        {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : F, 'mobyle2 > project_manager' : F, 'mobyle2 > portal_administrator' : T,},
     P['project_view']:     {'mobyle2 > project_watcher' : T, 'mobyle2 > project_contributor' : T,'mobyle2 > anonyme' : T, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : T, 'mobyle2 > project_manager' : T, 'mobyle2 > portal_administrator' : T,},
     P['project_create']:   {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : T, 'mobyle2 > project_manager' : T, 'mobyle2 > portal_administrator' : T,},
     P['project_delete']:   {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : T, 'mobyle2 > project_manager' : T, 'mobyle2 > portal_administrator' : T,},
@@ -277,19 +275,6 @@ default_acls = {
     P['job_delete']:       {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : F,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : T, 'mobyle2 > project_manager' : T, 'mobyle2 > portal_administrator' : T,},
     P['job_edit']:         {'mobyle2 > project_watcher' : F, 'mobyle2 > project_contributor' : T,'mobyle2 > anonyme' : F, 'mobyle2 > internal_user' : F, 'mobyle2 > external_user' : F, 'mobyle2 > project_owner' : T, 'mobyle2 > project_manager' : T, 'mobyle2 > portal_administrator' : T,},
 }
-
-
-
-class UserRole(Base):
-    __tablename__ = 'authentication_userrole'
-    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-
-
-class GroupRole(Base):
-    __tablename__ = 'authentication_grouprole'
-    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
-    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
 
 class Role(Base):
@@ -349,7 +334,11 @@ def register_default_acls(session, force=False):
     if not force:
         return
     for p in default_acls:
-        perm = Permission.by_name(p)
+        try:
+            perm = Permission.by_name(p)
+        except:
+            import pdb;pdb.set_trace()  ## Breakpoint ##
+
         roles = default_acls[p]
         for role in roles:
             access = roles[role]

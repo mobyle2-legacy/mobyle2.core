@@ -10,11 +10,11 @@ import apex
 from pyramid.decorator import reify
 
 
-from mobyle2.core.models.auth import Role, GroupRole, UserRole
+from mobyle2.core.models.auth import Role
 
 
 from mobyle2.core.utils import _
-from apex import models
+from apex import models as apexmodels
 import mobyle2
 
 user_statuses = {
@@ -23,12 +23,13 @@ user_statuses = {
     's' : 'Suspended',
 }
 
-tauth_users = models.AuthUser.metadata.tables[models.AuthUser.__table__.name]
-tauth_groups = models.AuthUser.metadata.tables[models.AuthGroup.__table__.name]
+
+class AuthUserGroups(Base):
+    __table__ = apexmodels.user_group_table
 
 
 class Group(Base):
-    __table__ = tauth_groups
+    __table__ = apexmodels.AuthGroup.__table__
     global_roles = relationship(
         "Role", backref="global_groups", uselist=True,
         primaryjoin  ="GroupRole.group_id==Group.id",
@@ -37,27 +38,33 @@ class Group(Base):
     users = relationship(
         "User", 
         uselist=True,
-        primaryjoin  ="auth_user_groups.c.group_id==Group.id",
-        secondaryjoin="auth_user_groups.c.user_id== User.id",
-        secondary="auth_user_groups", )
+        primaryjoin  ="AuthUserGroups.group_id==Group.id",
+        secondaryjoin="AuthUserGroups.user_id==User.id",
+        secondary=    AuthUserGroups.__table__,)
 
+
+class GroupRole(Base):
+    __tablename__ = 'authentication_grouprole'
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+   
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, ForeignKey(models.AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    id = Column(Integer, ForeignKey(apexmodels.AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     status = Column(Unicode(1))
     groups = relationship(
         "Group", 
         uselist=True,
-        primaryjoin  ="auth_user_groups.c.user_id==User.id",
-        secondaryjoin="auth_user_groups.c.group_id== Group.id",
-        secondary="auth_user_groups",) 
+        primaryjoin  ="AuthUserGroups.user_id==User.id",
+        secondaryjoin="AuthUserGroups.group_id==Group.id",
+        secondary=    AuthUserGroups.__table__,) 
 
     @reify
     def base_user(self):
         user = getattr(self, '_base_user_obj', None)
         if user is None:
-            setattr(self, '_base_user_obj', models.AuthUser.get_by_id(self.id))
+            setattr(self, '_base_user_obj', apexmodels.AuthUser.get_by_id(self.id))
             user = getattr(self, '_base_user_obj', None)
         return user
 
@@ -79,6 +86,11 @@ class User(Base):
     def get_status(self):
         user_statuses.get(self.status, None)
 
+class UserRole(Base):
+    __tablename__ = 'authentication_userrole'
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+ 
 class UserRessource(object):
     def __init__(self, p, parent):
         self.user = p
@@ -101,6 +113,7 @@ class Users:
 
     def __getitem__(self, item):
         return self.items.get(item, None)
+
 
 
 
