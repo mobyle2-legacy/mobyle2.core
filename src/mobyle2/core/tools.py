@@ -34,11 +34,5 @@ def create_superuser(nick, password):
     session.commit()
 
 
-def make_database():
-    """database"""
-
-
-
-
 
 # vim:set et sts=4 ts=4 tw=80:
