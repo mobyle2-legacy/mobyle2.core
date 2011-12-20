@@ -173,13 +173,13 @@ ANONYME_ROLE = 'mobyle2 > anonyme'
 R = {
     ANONYME_ROLE: 'mobyle2 > anonyme',
     'anonyme': ANONYME_ROLE,
-    'internal_user'         : 'mobyle2 > internal_user'        ,
-    'external_user'         : 'mobyle2 > external_user'        ,
-    'project_owner'         : 'mobyle2 > project_owner'        ,
-    'project_watcher'       : 'mobyle2 > project_watcher'      ,
-    'project_contributor'   : 'mobyle2 > project_contributor'  ,
-    'project_manager'       : 'mobyle2 > project_manager'      ,
-    'portal_administrator'  : 'mobyle2 > portal_administrator' ,
+    'internal_user'         : 'mobyle2 > internal_user',
+    'external_user'         : 'mobyle2 > external_user',
+    'project_owner'         : 'mobyle2 > project_owner',
+    'project_watcher'       : 'mobyle2 > project_watcher',
+    'project_contributor'   : 'mobyle2 > project_contributor',
+    'project_manager'       : 'mobyle2 > project_manager',
+    'portal_administrator'  : 'mobyle2 > portal_administrator',
 
 }
 

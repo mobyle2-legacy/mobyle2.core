@@ -36,7 +36,7 @@ class Group(Base):
         secondaryjoin="GroupRole.role_id==Role.id",
         secondary="authentication_grouprole", )
     users = relationship(
-        "User", 
+        "User",
         uselist=True,
         primaryjoin  ="AuthUserGroups.group_id==Group.id",
         secondaryjoin="AuthUserGroups.user_id==User.id",
@@ -47,18 +47,18 @@ class GroupRole(Base):
     __tablename__ = 'authentication_grouprole'
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
     group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
-   
+
 
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, ForeignKey(apexmodels.AuthUser.id, "fk_user_authuser", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     status = Column(Unicode(1))
     groups = relationship(
-        "Group", 
+        "Group",
         uselist=True,
         primaryjoin  ="AuthUserGroups.user_id==User.id",
         secondaryjoin="AuthUserGroups.group_id==Group.id",
-        secondary=    AuthUserGroups.__table__,) 
+        secondary=    AuthUserGroups.__table__,)
 
     @reify
     def base_user(self):
@@ -86,16 +86,19 @@ class User(Base):
     def get_status(self):
         user_statuses.get(self.status, None)
 
+
 class UserRole(Base):
     __tablename__ = 'authentication_userrole'
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
- 
+
+
 class UserRessource(object):
     def __init__(self, p, parent):
         self.user = p
         self.__name__ = "%s"%p.id
         self.__parent__ = parent
+
 
 class Users:
     @property
@@ -113,7 +116,4 @@ class Users:
 
     def __getitem__(self, item):
         return self.items.get(item, None)
-
-
-
 
