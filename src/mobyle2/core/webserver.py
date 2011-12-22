@@ -100,6 +100,17 @@ def includeme(config, debug=False):
         if rprivk:
             settings['apex.recaptcha_private_key'] = rprivk
 
+
+
+    projects_dir = settings.get('mobyle2.projects_dir')
+    if not projects_dir: raise Exception('please configure mobyle2.projects_dir')
+    if not os.path.exists(projects_dir):
+        try:
+            os.makedirs(projects_dir)
+            os.chmod(projects_dir, 0600)
+        except Exception, e:
+            raise Exception('Cant create directory: %s' % projects_dir)
+
     config.include('apex', route_prefix='/auth')
     #
     authentication_policy = AuthTktAuthenticationPolicy(dn)
@@ -151,7 +162,7 @@ def includeme(config, debug=False):
     config.add_translation_dirs('%s:locale/'%dn)
     config.add_translation_dirs('deform:locale/')
     config.add_subscriber('%s.subscribers.user_created'%dn, 'apex.events.UserCreatedEvent')
-    config.add_subscriber('%s.subscribers.add_localizer'%dn, 'pyramid.events.NewRequest')
+    config.add_subscriber('%s.subscribers.add_globals'%dn, 'pyramid.events.NewRequest')
     config.add_subscriber('%s.subscribers.regenerate_velruse_config'%dn, '%s.events.RegenerateVelruseConfigEvent' % dn)
     # static files
     config.add_static_view('s', '%s:static'%dn)
