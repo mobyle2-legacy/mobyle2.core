@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 name = 'mobyle2.core'
 setup(
     name=name,
-    namespace_packages=[         'mobyle2',
+    namespace_packages=[         'mobyle2', 'Mobyle',
          'mobyle2.core',],
 
     version = '1.0',
