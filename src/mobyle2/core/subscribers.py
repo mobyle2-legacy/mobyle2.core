@@ -20,13 +20,14 @@ def add_renderer_globals(event):
         event['localizer'] = request.localizer
         event.update(params)
 
-def add_localizer(event):
+def add_globals(event):
     request = event.request
     localizer = get_localizer(request)
     def auto_translate(string):
         return __(request, string)
     request.localizer = localizer
     request.translate = auto_translate
+    request.projects_dir = request.registry.settings['mobyle2.projects_dir']
 
 def regenerate_velruse_config(event):
     set_registry_key('mobyle2.needrestart', True)
@@ -48,7 +49,7 @@ def user_created(event):
                 pname = 'Default project of %s' % user.username
                 if will:
                     pname = '%s (%s)' % (pname, will)
-                project = Project(pname, _('Default project created on sign in'), newuser)
+                project = Project.create(pname, _('Default project created on sign in'), newuser)
                 session.add(project)
                 session.commit() 
                 break
