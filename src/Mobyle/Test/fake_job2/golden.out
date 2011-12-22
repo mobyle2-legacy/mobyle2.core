@@ -1,0 +1,70 @@
+ID   104K_THEAN              Reviewed;         893 AA.
+AC   Q4U9M9;
+DT   18-APR-2006, integrated into UniProtKB/Swiss-Prot.
+DT   05-JUL-2005, sequence version 1.
+DT   23-SEP-2008, entry version 20.
+DE   RecName: Full=104 kDa microneme/rhoptry antigen;
+DE   AltName: Full=p104;
+DE   Flags: Precursor;
+GN   ORFNames=TA08425;
+OS   Theileria annulata.
+OC   Eukaryota; Alveolata; Apicomplexa; Aconoidasida; Piroplasmida;
+OC   Theileriidae; Theileria.
+OX   NCBI_TaxID=5874;
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RC   STRAIN=Ankara;
+RX   PubMed=15994557; DOI=10.1126/science.1110418;
+RA   Pain A., Renauld H., Berriman M., Murphy L., Yeats C.A., Weir W.,
+RA   Kerhornou A., Aslett M., Bishop R., Bouchier C., Cochet M.,
+RA   Coulson R.M.R., Cronin A., de Villiers E.P., Fraser A., Fosker N.,
+RA   Gardner M., Goble A., Griffiths-Jones S., Harris D.E., Katzer F.,
+RA   Larke N., Lord A., Maser P., McKellar S., Mooney P., Morton F.,
+RA   Nene V., O'Neil S., Price C., Quail M.A., Rabbinowitsch E.,
+RA   Rawlings N.D., Rutter S., Saunders D., Seeger K., Shah T., Squares R.,
+RA   Squares S., Tivey A., Walker A.R., Woodward J., Dobbelaere D.A.E.,
+RA   Langsley G., Rajandream M.A., McKeever D., Shiels B., Tait A.,
+RA   Barrell B.G., Hall N.;
+RT   "Genome of the host-cell transforming parasite Theileria annulata
+RT   compared with T. parva.";
+RL   Science 309:131-133(2005).
+CC   -!- SUBCELLULAR LOCATION: Cell membrane; Lipid-anchor, GPI-anchor
+CC       (Potential). Note=In microneme/rhoptry complexes (By similarity).
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   EMBL; CR940353; CAI76474.1; -; Genomic_DNA.
+DR   KEGG; tan:TA08425; -.
+DR   InterPro; IPR007480; DUF529.
+DR   Pfam; PF04385; FAINT; 4.
+PE   3: Inferred from homology;
+KW   Cell membrane; Complete proteome; Glycoprotein; GPI-anchor;
+KW   Lipoprotein; Membrane; Repeat; Signal; Sporozoite.
+FT   SIGNAL        1     19       Potential.
+FT   CHAIN        20    873       104 kDa microneme/rhoptry antigen.
+FT                                /FTId=PRO_0000232680.
+FT   PROPEP      874    893       Removed in mature form (Potential).
+FT                                /FTId=PRO_0000232681.
+FT   COMPBIAS    215    220       Poly-Leu.
+FT   COMPBIAS    486    683       Lys-rich.
+FT   COMPBIAS    854    859       Poly-Arg.
+FT   LIPID       873    873       GPI-anchor amidated aspartate
+FT                                (Potential).
+SQ   SEQUENCE   893 AA;  101921 MW;  2F67CEB3B02E7AC1 CRC64;
+     MKFLVLLFNI LCLFPILGAD ELVMSPIPTT DVQPKVTFDI NSEVSSGPLY LNPVEMAGVK
+     YLQLQRQPGV QVHKVVEGDI VIWENEEMPL YTCAIVTQNE VPYMAYVELL EDPDLIFFLK
+     EGDQWAPIPE DQYLARLQQL RQQIHTESFF SLNLSFQHEN YKYEMVSSFQ HSIKMVVFTP
+     KNGHICKMVY DKNIRIFKAL YNEYVTSVIG FFRGLKLLLL NIFVIDDRGM IGNKYFQLLD
+     DKYAPISVQG YVATIPKLKD FAEPYHPIIL DISDIDYVNF YLGDATYHDP GFKIVPKTPQ
+     CITKVVDGNE VIYESSNPSV ECVYKVTYYD KKNESMLRLD LNHSPPSYTS YYAKREGVWV
+     TSTYIDLEEK IEELQDHRST ELDVMFMSDK DLNVVPLTNG NLEYFMVTPK PHRDIIIVFD
+     GSEVLWYYEG LENHLVCTWI YVTEGAPRLV HLRVKDRIPQ NTDIYMVKFG EYWVRISKTQ
+     YTQEIKKLIK KSKKKLPSIE EEDSDKHGGP PKGPEPPTGP GHSSSESKEH EDSKESKEPK
+     EHGSPKETKE GEVTKKPGPA KEHKPSKIPV YTKRPEFPKK SKSPKRPESP KSPKRPVSPQ
+     RPVSPKSPKR PESLDIPKSP KRPESPKSPK RPVSPQRPVS PRRPESPKSP KSPKSPKSPK
+     VPFDPKFKEK LYDSYLDKAA KTKETVTLPP VLPTDESFTH TPIGEPTAEQ PDDIEPIEES
+     VFIKETGILT EEVKTEDIHS ETGEPEEPKR PDSPTKHSPK PTGTHPSMPK KRRRSDGLAL
+     STTDLESEAG RILRDPTGKI VTMKRSKSFD DLTTVREKEH MGAEIRKIVV DDDGTEADDE
+     DTHPSKEKHL STVRRRRPRP KKSSKSSKPR KPDSAFVPSI IFIFLVSLIV GIL
+//

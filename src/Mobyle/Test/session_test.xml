@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<userSpace id="test_Mobyle_transaction">
+  <authenticated>false</authenticated>
+  <activated>true</activated>
+  <email>monnom@mondomain.fr</email>
+  <captchaSolution>captchaSol</captchaSolution>
+  <dataList>
+    <data count="1" id="f835ddf28cb6aa776a41d7c71ec9cb5a.out" size="4410">
+      <userName>golden.out</userName>
+      <type>
+        <biotype>Protein</biotype>
+        <biotype>Nucleic</biotype>
+        <datatype>
+          <class>Sequence</class>
+        </datatype>
+        <dataFormat>SWISSPROT</dataFormat>
+      </type>
+      <headOfData>ID   104K_THEPA              Reviewed;         924</headOfData>
+      <inputModes>
+        <inputMode>result</inputMode>
+      </inputModes>
+      <producedBy ref="file://tmp/mobyle/results/dnadist/G25406684175968"/>
+    </data>
+    <data count="1" id="16bd6f89e732eb7cb0bbc13c65d202d3.aln" size="90044">
+      <userName>clustal.aln</userName>
+      <type>
+        <datatype>
+          <class>Alignment</class>
+        </datatype>
+        <dataFormat>PHYLIPI</dataFormat>
+      </type>
+      <headOfData>    47  1618
+F_75      ---------------------------</headOfData>
+      <inputModes>
+        <inputMode>upload</inputMode>
+        <inputMode>paste</inputMode>
+      </inputModes>
+      <usedBy ref="file://tmp/mobyle/results/dnadist/G25406684175968"/>
+      <usedBy ref="file://tmp/mobyle/results/dnadist/X25423048243999"/>
+    </data>
+  </dataList>
+  <jobList>
+    <job id="file://tmp/mobyle/results/dnadist/X25423048243999">
+      <userName>mon programme a moi</userName>
+      <programName>prog 1</programName>
+      <date>11/20/08  12:00:00</date>
+      <status>killed</status>
+      <dataUsed ref="16bd6f89e732eb7cb0bbc13c65d202d3.aln"/>
+    </job>
+    <job id="file://tmp/mobyle/results/dnadist/G25406684175968">
+      <userName>file://tmp/mobyle/results/dnadist/G25406684175968</userName>
+      <programName>dnadist</programName>
+      <date>11/19/08  10:50:33</date>
+      <status>running</status>
+      <dataProduced ref="f835ddf28cb6aa776a41d7c71ec9cb5a.out" />
+      <dataUsed ref="16bd6f89e732eb7cb0bbc13c65d202d3.aln"/>
+    </job>
+  </jobList>
+</userSpace>

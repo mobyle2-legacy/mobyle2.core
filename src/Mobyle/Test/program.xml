@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- XML Authors: Bertrand Néron                                                -->
+<!-- 'Biological Software and Databases' Group, Institut Pasteur, Paris.         -->
+<!-- Distributed under LGPLv2 Licence. Please refer to the COPYING.LIB document. -->
+
+<program>
+  <head>
+    <name>program</name>
+    <version>0.0</version>
+    <doc>
+      <title>ProgramParser test</title>
+      <description>
+        <text lang="en">ProgramParser test</text>
+      </description>
+      <authors>author</authors>
+      <reference>ref1</reference>
+      <reference>ref2</reference>
+    </doc>
+    <category>cat1</category>
+    <category>cat2</category>
+    <biomobyCategory>biomoby_category</biomobyCategory>
+    <command path="the/path/to/the/binary">the_command</command>
+  </head>
+
+  <parameters>
+
+    <parameter ismandatory="1" issimple="1">
+      <name>param1</name>
+      <prompt lang="en">parameter 1</prompt>
+      <type>
+        <datatype>
+          <class>String</class>
+        </datatype>
+      </type>
+      <vdef>
+        <value>param1_vdef</value>
+      </vdef>
+      <format>
+        <code proglang="perl">param1_code_perl</code>
+        <code proglang="python">param1_code_python</code>
+      </format>
+      <argpos>10</argpos>
+    </parameter>
+   
+    <parameter>
+      <name>param2</name>
+      <prompt lang="en">parameter 2</prompt>
+      <type>
+        <datatype>
+          <class>Integer</class>
+        </datatype>
+      </type>
+      <vdef>
+        <value>1</value>
+      </vdef>
+      <vlist>
+        <velem undef= "1">
+          <value>1</value>
+          <label>one</label>
+        </velem>
+        <velem>
+          <value>2</value>
+          <label>two</label>
+        </velem>
+        <velem>
+          <value>3</value>
+          <label>three</label>
+        </velem>
+      </vlist>
+      <format>
+        <code proglang="python">("", str(value))[value is not None and value != vdef]</code>
+      </format>
+      <argpos>20</argpos>
+    </parameter>
+    
+    <paragraph>
+    	<name>paragraph1</name>
+    	<prompt>paragraph 1</prompt>
+    	<argpos>30</argpos>
+    	<precond>
+    		<code proglang="python">precond_py_paragraph_1</code>
+    	</precond>
+    	<parameters>
+    		<parameter>
+    			<name>parameter1_1</name>
+    			<prompt lang="en">parameter 1 from paragraph 1</prompt>
+    			<type>
+    				<datatype>
+          				<class>Boolean</class>
+        			</datatype>
+    			</type>
+    			<precond>
+    				<code proglang="python">precond_py_parameter1_1</code>
+    			</precond>
+    		</parameter>
+    	</parameters>
+    </paragraph> 
+    
+  </parameters>
+</program>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://marygay.sis.pasteur.fr:81/MobylePortal/xsl/job.xsl" type="text/xsl"?>
+<jobState>
+  <name>http://marygay.sis.pasteur.fr:81/mobyle/programs/dnadist.xml</name>
+  <host>http://marygay.sis.pasteur.fr:81</host>
+  <id>http://marygay.sis.pasteur.fr:81/mobyle/results/dnadist/X25423048243999</id>
+  <date>11/19/08  10:50:56</date>
+  <status>
+    <value>killed</value>
+  </status>
+  <email>bneron@pasteur.fr</email>
+  <sessionKey>R18991749411106</sessionKey>
+  <data>
+    <input>
+      <parameter>
+        <name>replicates</name>
+        <type>
+          <datatype>
+            <class>Integer</class>
+          </datatype>
+        </type>
+        <prompt lang="en">How many replicates</prompt>
+      </parameter>
+      <value>50</value>
+    </input>
+    <input>
+      <parameter>
+        <name>seqboot_seed</name>
+        <type>
+          <datatype>
+            <class>Integer</class>
+          </datatype>
+        </type>
+        <prompt lang="en">Random number seed (must be odd)</prompt>
+      </parameter>
+      <value>3</value>
+    </input>
+    <input>
+      <parameter>
+        <name>seqboot</name>
+        <type>
+          <datatype>
+            <class>Boolean</class>
+          </datatype>
+        </type>
+        <prompt lang="en">Perform a bootstrap before analysis</prompt>
+      </parameter>
+      <value>True</value>
+    </input>
+    <input>
+      <parameter>
+        <name>infile</name>
+        <type>
+          <biotype>Nucleic</biotype>
+          <datatype>
+            <class>Alignment</class>
+          </datatype>
+          <acceptedDataFormats>
+            <dataFormat>PHYLIP</dataFormat>
+          </acceptedDataFormats>
+        </type>
+        <prompt lang="en">Alignment File</prompt>
+      </parameter>
+      <file fmt="PHYLIPI" size="90044">clustal.aln</file>
+      <fmtProgram>squizz</fmtProgram>
+    </input>
+  <output>
+      <parameter>
+        <name>outfile</name>
+        <type>
+          <datatype>
+            <class>PhylipDistanceMatrix</class>
+            <superclass>AbstractText</superclass>
+          </datatype>
+        </type>
+        <prompt lang="en">Outfile</prompt>
+      </parameter>
+      <file size="1032000">dnadist.outfile</file>
+    </output>
+    <output>
+      <parameter>
+        <name>seqboot_out</name>
+        <type>
+          <datatype>
+            <class>Alignment</class>
+          </datatype>
+        </type>
+        <prompt lang="en">seqboot outfile</prompt>
+      </parameter>
+      <file size="4882900">seqboot.outfile</file>
+    </output>
+    <output>
+      <parameter>
+        <name>stdout</name>
+        <type>
+          <datatype>
+            <class>Text</class>
+          </datatype>
+        </type>
+        <prompt lang="en">standard output</prompt>
+      </parameter>
+      <file size="105851">dnadist.out</file>
+    </output>
+  </data>
+<paramFiles>
+    <file size="11">seqboot.params</file>
+    <file size="11">dnadist.params</file>
+  </paramFiles>
+  <commandLine>ln -s clustal.aln infile &amp;&amp; seqboot &lt; seqboot.params &amp;&amp; mv outfile seqboot.outfile &amp;&amp; rm infile &amp;&amp;ln -s seqboot.outfile infile &amp;&amp; dnadist &lt;dnadist.params &amp;&amp; mv outfile dnadist.outfile</commandLine>
+</jobState>

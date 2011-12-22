@@ -1,0 +1,14 @@
+LOCUS       INSI1_RAT                259 bp XXXXXX     XXX      XXX 02-FEB-2010
+DEFINITION  RecName: Full=Insulin-induced gene 1 protein; Short=INSIG-1;
+            AltName: Full=Insulin-induced growth response protein CL-6;
+            AltName: Full=Immediate-early protein CL-6;.
+ACCESSION   Q08755
+KEYWORDS    Cholesterol metabolism; Endoplasmic reticulum; Lipid metabolism;
+            Membrane; Steroid metabolism; Transmembrane; Ubl conjugation.
+ORIGIN      
+        1 MPRLHDHVWS YPSAGAARPY SLPRGMIAAA LCPQGPGAPE PEPAPRGQRE GTAGFSARPG
+       61 SWHHDLVQRS LVLFSFGVVL ALVLNLLQIQ RNVTLFPDEV IATIFSSAWW VPPCCGTAAA
+      121 VVGLLYPCID SHLGEPHKFK REWASVMRCI AVFVGINHAS AKLDFANNVQ LSLTLAALSL
+      181 GLWWTFDRSR SGLGLGITIA FLATLITQFL VYNGVYQYTS PDFLYIRSWL PCIFFSGGVT
+      241 VGNIGRQLAM GVPEKPHSD
+//

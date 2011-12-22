@@ -1,0 +1,14 @@
+ID   Q08755; SV 1; XXX; XXX; XXX; XXX; 259 BP.
+AC   Q08755;
+DE   RecName: Full=Insulin-induced gene 1 protein; Short=INSIG-1; AltName:
+DE   Full=Insulin-induced growth response protein CL-6; AltName:
+DE   Full=Immediate-early protein CL-6;
+KW   Cholesterol metabolism; Endoplasmic reticulum; Lipid metabolism; Membrane;
+KW   Steroid metabolism; Transmembrane; Ubl conjugation.
+SQ   Sequence 259 BP; 26 A; 6 C; 23 G; 11 T; 193 other;
+     MPRLHDHVWS YPSAGAARPY SLPRGMIAAA LCPQGPGAPE PEPAPRGQRE GTAGFSARPG        60
+     SWHHDLVQRS LVLFSFGVVL ALVLNLLQIQ RNVTLFPDEV IATIFSSAWW VPPCCGTAAA       120
+     VVGLLYPCID SHLGEPHKFK REWASVMRCI AVFVGINHAS AKLDFANNVQ LSLTLAALSL       180
+     GLWWTFDRSR SGLGLGITIA FLATLITQFL VYNGVYQYTS PDFLYIRSWL PCIFFSGGVT       240
+     VGNIGRQLAM GVPEKPHSD                                                    259
+//

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<userSpace id="S00384119982958">
+  <authenticated>false</authenticated>
+  <activated>true</activated>
+  <email>bneron@pasteur.fr</email>
+  <captchaSolution>prose</captchaSolution>
+  <dataList>
+    <data count="1" id="a597385a6a7809437cf4860e1f640c8d.data" size="135">
+      <userName>infile.data</userName>
+      <type>
+        <biotype>Protein</biotype>
+        <datatype>
+          <class>Text</class>
+        </datatype>
+      </type>
+      <headOfData>  5   13
+Alpha     AACGTGGCCACAT
+Beta      AAGGTCG</headOfData>
+      <inputModes>
+        <inputMode>paste</inputMode>
+      </inputModes>
+    </data>
+    <data count="1" id="ef180af027d88a33f35382a5ae9ea171.clustalw18" size="9967">
+      <userName>il2.clustalw18</userName>
+      <type>
+        <datatype>
+          <class>Text</class>
+        </datatype>
+      </type>
+      <headOfData>CLUSTAL X (1.8) multiple sequence alignment
+
+
+mous</headOfData>
+      <inputModes>
+        <inputMode>upload</inputMode>
+      </inputModes>
+      <usedBy ref="0"/>
+      <usedBy ref="1"/>
+      <usedBy ref="2"/>
+    </data>
+    <data id="98fb9c34f27b801336a9b044d4043bfd.data" size="312">
+      <userName>infile.data</userName>
+      <type>
+        <datatype>
+          <class>PhylipDistanceMatrix</class>
+          <superclass>AbstractText</superclass>
+        </datatype>
+      </type>
+      <headOfData>    5
+Alpha       0.000000  0.330447  0.625670  1.</headOfData>
+      <inputModes>
+        <inputMode>paste</inputMode>
+      </inputModes>
+    </data>
+  </dataList>
+  <jobList>
+    <job id="0">
+      <userName>http://marygay.sis.pasteur.fr:81/mobyle/results/protdist/Z00671014086008</userName>
+      <programName>fake_job</programName>
+      <date>11/19/08  10:50:56</date>
+      <status>killed</status>
+      <dataUsed ref="ef180af027d88a33f35382a5ae9ea171.clustalw18"/>
+    </job>
+    <job id="1">
+      <userName>http://marygay.sis.pasteur.fr:81/mobyle/results/protdist/P00811929946899</userName>
+      <programName>fake_job</programName>
+      <date>11/19/08  10:50:33</date>
+      <status>running</status>
+      <dataUsed ref="ef180af027d88a33f35382a5ae9ea171.clustalw18"/>
+    </job>
+    <job id="2">
+      <userName>http://marygay.sis.pasteur.fr:81/mobyle/results/protdist/Z00440649082899</userName>
+      <programName>fake_job</programName>
+      <date>11/05/08  12:58:02</date>
+      <status>finished</status>
+    </job>
+  </jobList>
+</userSpace>

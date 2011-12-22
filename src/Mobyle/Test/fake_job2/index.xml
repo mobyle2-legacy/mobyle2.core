@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://marygay.sis.pasteur.fr:81/MobylePortal/xsl/job.xsl" type="text/xsl"?>
+<jobState>
+  <name>http://marygay.sis.pasteur.fr:81/mobyle/programs/golden.xml</name>
+  <host>http://marygay.sis.pasteur.fr:81</host>
+  <id>http://marygay.sis.pasteur.fr:81/mobyle/results/fake_jobs/A00000000000000</id>
+  <date>11/05/08  12:58:02</date>
+  <status>
+    <value>finished</value>
+  </status>
+  <email>bneron@pasteur.fr</email>
+  <data>
+    <input>
+      <parameter>
+        <name>query</name>
+        <type>
+          <datatype>
+            <class>String</class>
+          </datatype>
+        </type>
+        <prompt lang="en">Query (Entry name or Accession number)</prompt>
+      </parameter>
+      <value>104k_thean</value>
+    </input>
+    <input>
+      <parameter>
+        <name>db</name>
+        <type>
+          <datatype>
+            <class>Choice</class>
+          </datatype>
+        </type>
+        <prompt lang="en">Database</prompt>
+      </parameter>
+      <value>uniprot</value>
+    </input>
+  <output>
+      <parameter>
+        <name>golden_out</name>
+        <type>
+          <biotype>Protein</biotype>
+          <biotype>Nucleic</biotype>
+          <datatype>
+            <class>Sequence</class>
+          </datatype>
+        </type>
+        <prompt lang="en">Sequence</prompt>
+      </parameter>
+      <file size="3795">golden.out</file>
+    </output>
+  </data>
+<commandLine>golden uniprot:104k_thean</commandLine>
+</jobState>

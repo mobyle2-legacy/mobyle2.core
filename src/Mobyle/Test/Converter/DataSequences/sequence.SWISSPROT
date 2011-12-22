@@ -1,0 +1,116 @@
+ID   INSI1_RAT               Reviewed;         259 AA.
+AC   Q08755;
+DT   01-NOV-1995, integrated into UniProtKB/Swiss-Prot.
+DT   01-NOV-1995, sequence version 1.
+DT   19-JAN-2010, entry version 60.
+DE   RecName: Full=Insulin-induced gene 1 protein;
+DE            Short=INSIG-1;
+DE   AltName: Full=Insulin-induced growth response protein CL-6;
+DE   AltName: Full=Immediate-early protein CL-6;
+GN   Name=Insig1; Synonyms=Cl-6;
+OS   Rattus norvegicus (Rat).
+OC   Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+OC   Mammalia; Eutheria; Euarchontoglires; Glires; Rodentia; Sciurognathi;
+OC   Muroidea; Muridae; Murinae; Rattus.
+OX   NCBI_TaxID=10116;
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [MRNA].
+RC   TISSUE=Liver;
+RX   MEDLINE=93315501; PubMed=7686911;
+RA   Diamond R.H., Du K., Lee V.M., Mohn K.L., Haber B.A., Tewari D.S.,
+RA   Taub R.;
+RT   "Novel delayed-early and highly insulin-induced growth response genes.
+RT   Identification of HRS, a potential regulator of alternative pre-mRNA
+RT   splicing.";
+RL   J. Biol. Chem. 268:15185-15192(1993).
+RN   [2]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE MRNA].
+RC   TISSUE=Lung;
+RX   PubMed=15489334; DOI=10.1101/gr.2596504;
+RG   The MGC Project Team;
+RT   "The status, quality, and expansion of the NIH full-length cDNA
+RT   project: the Mammalian Gene Collection (MGC).";
+RL   Genome Res. 14:2121-2127(2004).
+CC   -!- FUNCTION: Mediates feedback control of cholesterol synthesis by
+CC       controlling SCAP and HMGCR. Functions by blocking the processing
+CC       of sterol regulatory element-binding proteins (SREBPs). Capable of
+CC       retaining the SCAP-SREBF2 complex in the ER thus preventing it
+CC       from escorting SREBPs to the Golgi. Seems to regulate the
+CC       ubiquitin-mediated proteasomal degradation of HMGCR. May play a
+CC       role in growth and differentiation of tissues involved in
+CC       metabolic control. May play a regulatory role during G0/G1
+CC       transition of cell growth (By similarity).
+CC   -!- SUBUNIT: Binds to the SCAP-SREBF2 complex only in the presence of
+CC       sterols (By similarity).
+CC   -!- SUBCELLULAR LOCATION: Endoplasmic reticulum membrane; Multi-pass
+CC       membrane protein (By similarity).
+CC   -!- TISSUE SPECIFICITY: Highly expressed in liver and kidney.
+CC   -!- INDUCTION: By insulin and hepatectomy.
+CC   -!- PTM: Ubiquitinated. Subsequent to sterol deprivation, the SCAP-
+CC       SREBF2 complex becomes dissociated from INSIG1, is then
+CC       ubiquitinated and degraded in proteasomes. Although ubiquitination
+CC       is required for rapid INSIG1 degradation, it is not required for
+CC       release of the SCAP-SREBP complex (By similarity).
+CC   -!- SIMILARITY: Belongs to the INSIG family.
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   EMBL; L13619; AAA40938.1; -; mRNA.
+DR   EMBL; BC078827; AAH78827.1; -; mRNA.
+DR   IPI; IPI00203668; -.
+DR   PIR; A47112; A47112.
+DR   RefSeq; NP_071787.1; -.
+DR   UniGene; Rn.772; -.
+DR   STRING; Q08755; -.
+DR   Ensembl; ENSRNOT00000009233; ENSRNOP00000009233; ENSRNOG00000006859; Rattus norvegicus.
+DR   GeneID; 64194; -.
+DR   KEGG; rno:64194; -.
+DR   NMPDR; fig|10116.3.peg.20573; -.
+DR   UCSC; NM_022392; rat.
+DR   CTD; 64194; -.
+DR   RGD; 708457; Insig1.
+DR   eggNOG; roNOG05025; -.
+DR   HOVERGEN; Q08755; -.
+DR   InParanoid; Q08755; -.
+DR   OMA; PCLDSHL; -.
+DR   OrthoDB; EOG9ZKN5K; -.
+DR   PhylomeDB; Q08755; -.
+DR   NextBio; 612864; -.
+DR   ArrayExpress; Q08755; -.
+DR   Genevestigator; Q08755; -.
+DR   GermOnline; ENSRNOG00000006859; Rattus norvegicus.
+DR   GO; GO:0005783; C:endoplasmic reticulum; IEA:UniProtKB-KW.
+DR   GO; GO:0016021; C:integral to membrane; IEA:UniProtKB-SubCell.
+DR   GO; GO:0032869; P:cellular response to insulin stimulus; IEP:RGD.
+DR   GO; GO:0008203; P:cholesterol metabolic process; IEA:UniProtKB-KW.
+DR   GO; GO:0032355; P:response to estradiol stimulus; IEP:RGD.
+DR   GO; GO:0070542; P:response to fatty acid; IEP:RGD.
+DR   InterPro; IPR009904; INSIG.
+DR   PANTHER; PTHR15301; INSIG; 1.
+DR   Pfam; PF07281; INSIG; 1.
+PE   2: Evidence at transcript level;
+KW   Cholesterol metabolism; Endoplasmic reticulum; Lipid metabolism;
+KW   Membrane; Steroid metabolism; Transmembrane; Ubl conjugation.
+FT   CHAIN         1    259       Insulin-induced gene 1 protein.
+FT                                /FTId=PRO_0000191677.
+FT   TOPO_DOM      1     69       Cytoplasmic (By similarity).
+FT   TRANSMEM     70     90       Potential.
+FT   TOPO_DOM     91    108       Lumenal (Potential).
+FT   TRANSMEM    109    129       Potential.
+FT   TOPO_DOM    130    142       Cytoplasmic (By similarity).
+FT   TRANSMEM    143    159       Potential.
+FT   TOPO_DOM    160    164       Lumenal (Potential).
+FT   TRANSMEM    165    185       Potential.
+FT   TOPO_DOM    186    191       Cytoplasmic (By similarity).
+FT   TRANSMEM    192    212       Potential.
+FT   TOPO_DOM    213    223       Lumenal (Potential).
+FT   TRANSMEM    224    244       Potential.
+FT   TOPO_DOM    245    259       Cytoplasmic (By similarity).
+SQ   SEQUENCE   259 AA;  28232 MW;  68DA7E609818F637 CRC64;
+     MPRLHDHVWS YPSAGAARPY SLPRGMIAAA LCPQGPGAPE PEPAPRGQRE GTAGFSARPG
+     SWHHDLVQRS LVLFSFGVVL ALVLNLLQIQ RNVTLFPDEV IATIFSSAWW VPPCCGTAAA
+     VVGLLYPCID SHLGEPHKFK REWASVMRCI AVFVGINHAS AKLDFANNVQ LSLTLAALSL
+     GLWWTFDRSR SGLGLGITIA FLATLITQFL VYNGVYQYTS PDFLYIRSWL PCIFFSGGVT
+     VGNIGRQLAM GVPEKPHSD
+//
