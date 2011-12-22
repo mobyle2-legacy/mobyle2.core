@@ -1,13 +1,17 @@
+import os
 from ordereddict import OrderedDict
 
+import shutil
 from sqlalchemy import Column
+import logging
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
-from mobyle2.core.utils import _
-from mobyle2.core.models import Base
+from mobyle2.core.utils import _, mobyle2_settings
+from mobyle2.core.models import Base, DBSession as session
+from pyramid.decorator import reify
 #import mobyle2
 
 """
@@ -37,21 +41,89 @@ class Project(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
+    directory = Column(Unicode(2550))
     user_id = Column(Integer, ForeignKey("users.id", "fk_project_user",
                                          use_alter=True))
-    workflows = relationship("Workflow", backref="project", uselist=True)
-#    jobs = relationship("Job", backref="project", uselist=True)
-    programs = relationship("Program", backref="project", uselist=True)
+    #services = relationship("Service", backref="project", uselist=True)
 
-    def __init__(self, name, description, user, workflows=None, programs=None):
+    @classmethod
+    def projects_dir(self):
+        return mobyle2_settings('projects_dir')
+
+    def __init__(self, name, description, user, directory=None, services=None):
         self.name = name
         self.description = description
         self.user = user
-        if programs is not None:
-            self.programs.extend(programs)
-        if workflows is not None:
-            self.workflows.extend(workflows)
+        self.directory = directory
+        if services is not None:
+            self.services.extend(services)
 
+    @classmethod
+    def logger(self):
+        return logging.getLogger('mobyle2.project')
+
+    @classmethod
+    def delete(cls, instance):
+        logger = Project.logger()
+        if instance.directory:
+            if os.path.exists(instance.directory):
+                try:
+                    shutil.rmtree(instance.directory)
+                except Exception, e:
+                    logger.error('Cant remove directory for instance %s,%s,%s: %s' % (instance.id, instance.name, instance.directory, e))
+        try:
+            session.delete(instance)
+            session.commit()
+        except Exception, e:
+            logger.error('Cant remove instance %s,%s: %s' % (instance.id, instance.name, e))
+
+    def create_directory(self):
+        p = self
+        if p.id is None: 
+            raise Exception('Project.create: invalid project state')
+        subdir = "%s" % (p.id / 1000)
+        pdir = os.path.join(Project.projects_dir(), subdir, "%s"%p.id)
+        tries = 0
+        if os.path.exists(pdir):
+            while tries < 10000:
+                pdir = os.path.join('%s_%s' % (pdir, tries))
+                if not os.path.exists(pdir):
+                    break
+        if not os.path.exists(pdir):
+            os.makedirs(pdir)
+            p.directory = pdir
+            session.commit()
+        else:
+            raise Exception('Project directory Alrealdy exists')
+
+
+    @classmethod
+    def create(cls, name=None, description=None, user=None, directory=None, services=None):
+        p = cls(name, description, user, directory, services)
+        session.add(p)
+        try:
+            session.commit()
+        except Exception, e:
+            try:
+                session.rollback()
+            except Exception, e:
+                pass
+        try:
+            if p is not None:
+                p.create_directory()
+        except Exception, e:
+            if p is not None:
+                # try to delete a project in an inconsistent state
+                try:
+                    session.delete(p)
+                    session.commit()
+                except Exception, e:
+                    try:
+                        session.rollback()
+                    except Exception, e:
+                        pass
+            raise e     
+        return p
 
 class ProjectRessource(object):
     def __init__(self, p, parent):
