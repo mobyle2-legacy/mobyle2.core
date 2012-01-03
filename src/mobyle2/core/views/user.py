@@ -5,27 +5,24 @@ import copy
 import transaction
 
 from ordereddict import OrderedDict
-from colander import Invalid
+import deform
+import colander 
+from deform.exception import ValidationFailure
 
+from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
-from pyramid.response import Response
+
 
 from sqlalchemy.sql import expression as se
 from apex import models as apexmodels
 
-from mobyle2.core.models import auth
-from mobyle2.core.models import user
-from mobyle2.core.models import DBSession as session
-from mobyle2.core.views import Base as bBase, get_base_params as get_base_params
 from mobyle2.core import validator as v
-from mobyle2.core.utils import _
-
-from deform.exception import ValidationFailure
-from pyramid.httpexceptions import HTTPFound
-import deform
-import colander
-
 from mobyle2.core import widget
+from mobyle2.core.models import auth
+from mobyle2.core.models import DBSession as session
+from mobyle2.core.models import user
+from mobyle2.core.utils import _
+from mobyle2.core.views import Base as bBase, get_base_params as get_base_params, format_user_for_form
 
 
 bool_values = {
@@ -37,16 +34,6 @@ bool_values = {
     'false': False,
 }
 
-def format_user_for_form(u):
-    if u.login:
-        label = "%s %s" % (u.login, '%s')
-    else:
-        label = "%s"
-    if (u.login != u.username) or not u.login:
-        label = (label % u.username).strip()
-    if u.email and (u.email not in label):
-        label += '  -- %s' % u.email
-    return label
 
 class Base(bBase):
     def get_base_params(self):
@@ -555,10 +542,10 @@ class AddEditUser(Base):
                 item = session.query(apexmodels.AuthUser).filter(
                     getattr(apexmodels.AuthUser, column) == value).first()
             except Exception, e:
-                raise Invalid(node, _('Unknown Error: %s' % e))
+                raise colander.Invalid(node, _('Unknown Error: %s' % e))
             if item is not None:
                 if usr.id != item.id:
-                    raise Invalid(node, _('Already exists'))
+                    raise colander.Invalid(node, _('Already exists'))
         def existing_user_username(node, value):
             return existing_user_validator(node, value, 'username')
 
@@ -766,13 +753,13 @@ class EditRole(Base):
                     name = 'roleid',
                     title = _('Role'),
                 )
-                name = colander.SchemaNode(
-                    colander.String(),
-                    widget = deform.widget.TextInputWidget(size=len('%s'%role.name)),
-                    default = role.name,
-                    name = 'role',
-                    title = _('Role'),
-                )
+                #name = colander.SchemaNode(
+                #    colander.String(),
+                #    widget = deform.widget.TextInputWidget(size=len('%s'%role.name)),
+                #    default = role.name,
+                #    name = 'role',
+                #    title = _('Role'),
+                #)
                 description = colander.SchemaNode(
                     colander.String(),
                     widget = deform.widget.TextAreaWidget(),
@@ -783,7 +770,7 @@ class EditRole(Base):
                 )
                 members = Members(name="members")
             form = widget.Form(request,
-                               Schema(title=_('Edit role'), validator=v.role_edit_form_global_validator),
+                               Schema(title=_('Edit role %s' % role.name), validator=v.role_edit_form_global_validator),
                                buttons=(_('Send'),), formid = 'add_permission')
             if is_a_get:
                 params['form'] = form.render()
@@ -793,10 +780,10 @@ class EditRole(Base):
                     controls = request.POST.items()
                     data  = form.validate(controls)
                     role = auth.Role.by_id(data['roleid'])
-                    if not role.name == data['name']:
-                        role.name = data['name']
-                        form.schema['name'].default = role.name
-                        modified = True
+                    #if not role.name == data['name']:
+                    #    role.name = data['name']
+                    #    form.schema['name'].default = role.name
+                    #    modified = True
                     if not role.description == data['description']:
                         role.description = data['description']
                         form.schema['description'].default = role.description
@@ -842,51 +829,4 @@ class EditRole(Base):
                     params['form'] = e.render()
         return render_to_response(self.template, params, request)
 
-
-class AjaxUsersList(Base):
-
-    def __call__(self):
-        term = '%(%)s%(s)s%(%)s' % {
-            's': self.request.params.get('term', '').lower(),
-            '%': '%',
-        }
-        table = user.User
-        bu = apexmodels.AuthUser
-        rows = session.query(table).join(bu).filter(
-            se.and_(
-                table.status == 'a',
-                se.or_(bu.username.ilike(term),
-                       bu.email.ilike(term),
-                       bu.login.ilike(term),
-                      )
-            )
-        ).order_by(bu.email, bu.username, bu.login).all()
-        data = []
-        for row in rows:
-            u = row.base_user
-            label = format_user_for_form(u)
-            item = ("%s"%row.id, label)
-            if not item in data:
-                data.append(item)
-        return data
-
-
-class AjaxGroupsList(Base):
-
-    def __call__(self):
-        term = '%(%)s%(s)s%(%)s' % {
-            's': self.request.params.get('term', '').lower(),
-            '%': '%',
-        }
-        table = user.Group
-        rows = session.query(table).filter(
-            table.name.ilike(term)
-        ).order_by(table.name)
-        data = []
-        for row in rows:
-            label = row.name
-            item = ("%s"%row.id, label)
-            if not item in data:
-                data.append(item)
-        return data
 # vim:set et sts=4 ts=4 tw=0:

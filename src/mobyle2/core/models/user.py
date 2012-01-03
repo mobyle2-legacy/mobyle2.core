@@ -59,6 +59,11 @@ class User(Base):
         primaryjoin  ="AuthUserGroups.user_id==User.id",
         secondaryjoin="AuthUserGroups.group_id==Group.id",
         secondary=    AuthUserGroups.__table__,)
+    projects = relationship("Project", uselist=True)
+    global_roles = relationship(
+        "Role", backref="global_users", uselist=True,
+        secondary="authentication_userrole",
+        secondaryjoin="UserRole.role_id==Role.id") 
 
     @reify
     def base_user(self):
@@ -67,12 +72,6 @@ class User(Base):
             setattr(self, '_base_user_obj', apexmodels.AuthUser.get_by_id(self.id))
             user = getattr(self, '_base_user_obj', None)
         return user
-
-    projects = relationship("Project", uselist=True, backref="user")
-    global_roles = relationship(
-        "Role", backref="global_users", uselist=True,
-        secondary="authentication_userrole",
-        secondaryjoin="UserRole.role_id==Role.id")
 
     def __init__(self, user=None, id=None, status=None):
         if (user is None) and (id is None):

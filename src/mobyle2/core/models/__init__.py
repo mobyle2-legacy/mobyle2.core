@@ -1,29 +1,15 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy import MetaData
 from apex import models as apexmodels
-
-
-class AbstractModel(object):
-    @classmethod
-    def by_name(cls, name):
-        return DBSession.query(cls).filter(cls.name==name).one()
-    @classmethod
-    def by_id(cls, id):
-        return DBSession.query(cls).filter(cls.id==int(id)).one()
-    @classmethod
-    def all(cls):
-        return DBSession.query(cls).all()
-
-DBSession = scoped_session(sessionmaker())
-Base = declarative_base(cls=AbstractModel)
-metadata = Base.metadata
+from mobyle2.core.basemodel import DBSession, Base, metadata
 
 
 """
 SQLAlchemy declarative visitor needed imports
+keep the module out of the models namespace as
+        it needs to be imported
+        without declaring models in the metadata !!!!
 """
 
 import auth
@@ -77,5 +63,4 @@ def initialize_sql(engine, create=False):
     auth.register_default_permissions(DBSession)
     auth.register_default_roles(DBSession)
     auth.register_default_acls(DBSession)
-
 

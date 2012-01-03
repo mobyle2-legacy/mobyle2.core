@@ -5,30 +5,26 @@ import copy
 
 from ordereddict import OrderedDict
 
-from pyramid.renderers import render_to_response
-from pyramid.response import Response
-
-
-from apex.lib.flash import flash
-
-from mobyle2.core.models import auth
-from mobyle2.core.models import DBSession as session
-from mobyle2.core.models import registry as r
-from mobyle2.core.views import (Base as bBase,
-                                get_base_params as get_base_params)
-from mobyle2.core import validator as v
-from mobyle2.core.utils import _
-
 from deform.exception import ValidationFailure
-from pyramid.httpexceptions import HTTPFound
 import deform
 import colander
 
+from apex.lib.flash import flash
+
+from pyramid.httpexceptions import HTTPFound
+from pyramid.renderers import render_to_response
+from pyramid.response import Response 
+
 from mobyle2.core.events import RegenerateVelruseConfigEvent
-
-from mobyle2.core.models.registry import get_registry_key
-
+from mobyle2.core import validator as v
 from mobyle2.core import widget as w
+from mobyle2.core.models import auth
+from mobyle2.core.models import DBSession as session
+from mobyle2.core.models import registry as r
+from mobyle2.core.models.registry import get_registry_key
+from mobyle2.core.utils import _
+from mobyle2.core.views import (Base as bBase,
+                                get_base_params as get_base_params)
 
 bool_values = {
     '1': True,
@@ -462,7 +458,7 @@ class Delete(AuthView):
                                       params, self.request)
         return response
 
-def forbidden(request):
+def forbidden(req):
     """ forbidden(request)
     No return value
 
@@ -470,9 +466,12 @@ def forbidden(request):
     user doesn't have the required permission. Will prompt for login.
 
     """
-    flash(_('Access denied, please log in'), 'error')
-    return HTTPFound(location='%s?came_from=%s' %
-                    (request.route_url('apex_login'), request.url))
-
+    flash(_('Access denied to this section'), 'error')
+    came_from = req.resource_url(req.root)
+    if req.user is None:
+        came_from = req.url
+    return HTTPFound(location='%s?came_from=%s' % (
+            req.route_url('apex_login'), came_from
+    ))
 
 # vim:set et sts=4 ts=4 tw=0:

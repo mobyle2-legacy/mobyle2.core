@@ -6,8 +6,21 @@ import logging
 from pyramid.authentication import AuthTktAuthenticationPolicy as BAuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy as BACLAuthorizationPolicy
 
-from mobyle2.core.models import auth, user, project
+from pyramid.decorator import reify
 
+from pyramid.threadlocal import get_current_request
+
+from pyramid.security import (
+    authenticated_userid,
+    Everyone,
+    NO_PERMISSION_REQUIRED,
+    Allow,
+    Authenticated,
+    Deny,
+)
+
+from mobyle2.core.models import auth, user, project
+from mobyle2.core.basemodel import R, P
 
 class AuthTktAuthenticationPolicy(BAuthTktAuthenticationPolicy):
     """Mobyle2 authn policy"""
@@ -18,42 +31,59 @@ class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
     def permits(self, context, principals, permission):
         """map users and groups to their roles !"""
         request = getattr(context, 'request', None)
+        if request is None:
+            request = get_current_request()
+        anonym = True
         try:
             if request:
                 ausr = request.user
                 if ausr:
+                    anonym = False
                     usr = user.User.by_id(ausr.id)
                     roles = []
                     for r in usr.global_roles:
                         roles.append(r)
+                    if isinstance(context, project.SecuredObject):
+                        noecho = [roles.append(r)
+                                  for r in context.get_roles_for_user(usr)
+                                  if not r in roles]
                     for ag in request.user.groups:
                         g = user.Group.by_id(ag.id)
                         for r in g.global_roles:
                             if not r in roles:
                                 roles.append(r)
-                    if isinstance(context, project.Project):
-                        for r in usr.project_roles:
-                            roles.append(r)
-                        for g in user.groups:
-                            for r in g.project_roles:
-                                if not r in roles:
-                                    roles.append(r)
+                        if isinstance(context, project.SecuredObject):
+                            noecho = [roles.append(r)
+                                      for r in context.get_roles_for_group(g)
+                                      if not r in roles]
                     for r in roles:
                         rn = r.name
                         if not rn in principals:
-                            principals.append(rn) 
-                else:
-                    # we are not loggued, use anonym mode !
-                    principals.append(auth.ANONYME_ROLE)
-            else:
-                # we are not loggued, use anonym mode !
-                principals.append(auth.ANONYME_ROLE)
+                            principals.append(rn)
+
         except Exception, e:
+            raise
             logging.getLogger('mobyle2.auth').error(
                 'Something went wrong while verifying '
                 'user access: %s' % e)
+        # we are not loggued, use anonym mode !
+        if anonym:
+            principals.append(auth.ANONYMOUS_ROLE)
+        else:
+            #user is at least external
+            ext = R['external_user']
+            if not ext in principals:
+                principals.append(ext)
+            internal = R['internal_user']
+            # TODO: differentiate external vs internal
+            principals.append(internal)
 
+        if R['portal_administrator'] in principals:
+            principals.append(R['project_manager'])
         acl = BACLAuthorizationPolicy.permits(self, context, principals, permission)
+        #if 'ACLDenied' == acl.__class__.__name__:
+        #    import pdb;pdb.set_trace()
         return acl
+
 
 # vim:set et sts=4 ts=4 tw=80:

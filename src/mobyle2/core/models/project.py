@@ -9,31 +9,63 @@ from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
-from mobyle2.core.utils import _, mobyle2_settings
+from pyramid.security import (
+    authenticated_userid,
+    Everyone,
+    NO_PERMISSION_REQUIRED,
+    Allow,
+    Authenticated,
+    Deny,
+)
+
+from mobyle2.core.basemodel import P, R, SecuredObject
 from mobyle2.core.models import Base, DBSession as session
-from pyramid.decorator import reify
-#import mobyle2
+from mobyle2.core.utils import _, mobyle2_settings
 
-"""
->>> from mobyle2.core.models import user,project,job,workflow
->>> from mobyle2.core.models import DBSession as session
->>> uu1 = user.AuthUser();session.add(uu1);session.commit()
->>> uu2 = user.User(uu1.id,'a');session.add(uu2);session.commit()
->>> p = project.Project("bbb", "bbb", uu2)
->>> session.add(p)
->>> session.commit()
->>> j = job.Job("bbb", "bbb", p)
->>> session.add(j)
->>> session.commit()
->>> w = workflow.Workflow("bbb", "bbb", p, [j])
->>> session.add(w)
->>> session.commit()
->>> w.programs[0] == j
-True
->>> w.project == p
-True
+T, F = True, False
 
-"""
+
+default_project_section_acls_mapping = {
+    P['project_list']: {R['internal_user'] : T, R['external_user'] : T, R['portal_administrator']:F}
+}
+default_project_acls_mapping = {
+    P['project_view']:    {R['project_watcher'] : T, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['project_create']:  {R['project_watcher'] : F, R['project_contributor'] : F, R['project_owner'] : T, R['project_manager'] : T,},
+    P['project_delete']:  {R['project_watcher'] : F, R['project_contributor'] : F, R['project_owner'] : T, R['project_manager'] : T,},
+    P['project_edit']:    {R['project_watcher'] : F, R['project_contributor'] : F, R['project_owner'] : T, R['project_manager'] : T,},
+    P['notebook_view']:   {R['project_watcher'] : T, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['notebook_create']: {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['notebook_delete']: {R['project_watcher'] : F, R['project_contributor'] : F, R['project_owner'] : T, R['project_manager'] : T,},
+    P['notebook_edit']:   {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['service_view']:    {R['project_watcher'] : T, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['service_create']:  {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['service_delete']:  {R['project_watcher'] : F, R['project_contributor'] : F, R['project_owner'] : T, R['project_manager'] : T,},
+    P['service_edit']:    {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['job_run']:         {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['job_view']:        {R['project_watcher'] : T, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['job_create']:      {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+    P['job_delete']:      {R['project_watcher'] : F, R['project_contributor'] : F, R['project_owner'] : T, R['project_manager'] : T,},
+    P['job_edit']:        {R['project_watcher'] : F, R['project_contributor'] : T, R['project_owner'] : T, R['project_manager'] : T,},
+}
+default_projects_acls = []
+default_project_acls = []
+default_project_roles = []
+for k in default_project_acls_mapping:
+    for kk in default_project_acls_mapping[k]:
+        if not kk in default_project_roles:
+            default_project_roles.append(kk)
+for m, l in ((default_project_acls_mapping, default_project_acls,),
+             (default_project_section_acls_mapping, default_projects_acls),):
+    for perm in m:
+        permission = m[perm]
+        for r in permission:
+            if permission[r]:
+                spec = Allow
+            else:
+                spec = Deny
+            acl = (spec, r, perm)
+            if not acl in l:
+                l.append(acl)
 
 
 class Project(Base):
@@ -42,13 +74,20 @@ class Project(Base):
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
     directory = Column(Unicode(2550))
-    user_id = Column(Integer, ForeignKey("users.id", "fk_project_user",
-                                         use_alter=True))
+    user_id = Column(Integer, ForeignKey("users.id", "fk_project_user", use_alter=True))
+    owner = relationship("User", primaryjoin="Project.user_id==User.id")
+    usersroles = relationship('ProjectUserRole', backref='projets')
+    groupsrolesF = relationship('ProjectGroupRole', backref='projects')
+
     #services = relationship("Service", backref="project", uselist=True)
 
     @classmethod
     def projects_dir(self):
         return mobyle2_settings('projects_dir')
+
+    def object_acls(self, acls):
+        for a in default_project_acls:
+            self.append_acl(acls, a)
 
     def __init__(self, name, description, user, directory=None, services=None):
         self.name = name
@@ -79,7 +118,7 @@ class Project(Base):
 
     def create_directory(self):
         p = self
-        if p.id is None: 
+        if p.id is None:
             raise Exception('Project.create: invalid project state')
         subdir = "%s" % (p.id / 1000)
         pdir = os.path.join(Project.projects_dir(), subdir, "%s"%p.id)
@@ -122,17 +161,24 @@ class Project(Base):
                         session.rollback()
                     except Exception, e:
                         pass
-            raise e     
+            raise e
         return p
 
-class ProjectRessource(object):
+class ProjectRessource(SecuredObject):
+    __managed_type__ = 'project'
+    __managed_roles__ = default_project_roles
+    __acl_groups__ = "ProjectGroupRole"
+    __acl_users__ = "ProjectUserRole"
+    __default_acls__  = default_project_acls
     def __init__(self, p, parent):
         self.project = p
         self.__name__ = "%s" % p.id
         self.__parent__ = parent
+        SecuredObject.__init__(self, self.project)
 
 
-class Projects:
+class Projects(SecuredObject):
+    __default_acls__  = default_projects_acls
     @property
     def items(self):
         self._items = OrderedDict([("%s" % a.id, ProjectRessource(a, self))
@@ -140,32 +186,86 @@ class Projects:
         return self._items
 
     def __init__(self, name, parent):
+        self.context = self
         self.__name__ = name
         self.__parent__ = parent
         self.__description__ = _("Projects")
         self.request = parent.request
         self.session = parent.session
+        SecuredObject.__init__(self)
 
     def __getitem__(self, item):
         return self.items.get(item, None)
 
 
-class ProjectAcl(Base):
-    __tablename__ = 'acl_projects'
+
+
+#class ProjectAcl(Base):
+#    __tablename__ = 'authentication_project_acl'
+#    rid = Column(Integer,
+#                 ForeignKey("projects.id",
+#                             name='fk_projectacl_project',
+#                             use_alter=True),
+#                 primary_key=True)
+#    role = Column(Integer,
+#                  ForeignKey("authentication_role.id",
+#                             name="fk_projectacl_role",
+#                             use_alter=True),
+#                  primary_key=True)
+#    permission = Column(Integer,
+#                        ForeignKey("authentication_permission.id",
+#                                    name="fk_projectacl_permission",
+#                                    use_alter=True,
+#                                    ondelete="CASCADE",
+#                                    onupdate="CASCADE"),
+#                        primary_key=True)
+#
+
+
+
+
+
+class ProjectUserRole(Base):
+    __tablename__ = 'authentication_project_userrole'
     rid = Column(Integer,
                  ForeignKey("projects.id",
-                             name='fk_projectacl_project',
+                            name='fk_authentication_project_userrole_project',
+                            use_alter=True),
+                 primary_key=True)
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_project_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", name="fk_project_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    resource = relationship('Project', backref='mapping_user_role')
+    user = relationship('User', backref='mapping_user_role')
+    role = relationship('Role', backref='mapping_user_role')
+
+    def __init__(self, resource=None, role=None, user=None):
+        Base.__init__(self)
+        if resource is not None: self.resource = resource
+        if role is not None: self.role = role
+        if user is not None: self.user = user
+
+
+class ProjectGroupRole(Base):
+    __tablename__ = 'authentication_project_grouprole'
+    rid = Column(Integer,
+                 ForeignKey("projects.id",
+                             name='fk_authentication_project_grouprole_project',
                              use_alter=True),
                  primary_key=True)
-    role = Column(Integer,
-                  ForeignKey("authentication_role.id",
-                             name="fk_projectacl_role",
-                             use_alter=True),
-                  primary_key=True)
-    permission = Column(Integer,
-                        ForeignKey("authentication_permission.id",
-                                    name="fk_projectacl_permission",
-                                    use_alter=True,
-                                    ondelete="CASCADE",
-                                    onupdate="CASCADE"),
-                        primary_key=True)
+    role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_grouprolerole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    group_id = Column(Integer, ForeignKey("auth_groups.id", name="fk_grouprole_group", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
+    resource = relationship('Project', backref='mapping_group_role')
+    role    = relationship('Role',    backref='mapping_group_role')
+    group   = relationship('Group',
+                           backref='mapping_group_role',
+                           primaryjoin="ProjectGroupRole.group_id==Group.id",
+                           foreign_keys=[group_id])
+
+
+    def __init__(self, resource=None, role=None, group=None):
+        Base.__init__(self)
+        if resource is not None: self.resource = resource
+        if role is not None: self.role = role
+        if group is not None: self.group = group
+
+

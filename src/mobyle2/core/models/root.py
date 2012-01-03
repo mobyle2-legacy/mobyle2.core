@@ -15,7 +15,6 @@ from pyramid.security import (
     Authenticated,
     Deny,
 )
-from pyramid.interfaces import IStaticURLInfo
 from pyramid.decorator import reify
 
 from mobyle2.core.models import DBSession
@@ -25,11 +24,28 @@ from mobyle2.core.models.user import Users, User as U
 
 from pyramid.security import has_permission
 
+from mobyle2.core.basemodel import SecuredObject
+
 
 mapping_apps = OrderedDict([
     ('projects', project.Projects),
 ])
-class Root(object):
+
+
+class Root(SecuredObject):
+
+    def object_acls(self, acls):
+        perms = Permission.all()
+        roles = Role.all()
+        for perm in perms:
+            for role in roles:
+                if perm in role.global_permissions:
+                    spec = Allow
+                else:
+                    spec = Deny
+                acl = (spec, role.name, perm.name)
+                if not acl in acls:
+                    self.append_acl(acls, acl)
 
     def __init__(self, request):
         self.__name__ = ''
@@ -39,9 +55,12 @@ class Root(object):
         self.session = DBSession()
         self.items = OrderedDict()
         maps = deepcopy(mapping_apps)
-        is_admin = has_permission(P['global_admin'], self, request)
-        if is_admin:
+        SecuredObject.__init__(self)
+        is_useradmin = has_permission(P['global_useradmin'], self, request)
+        is_authadmin = has_permission(P['global_authadmin'], self, request)
+        if is_useradmin:
             maps['auths'] = AuthenticationBackends
+        if is_authadmin:
             maps['users'] = Users
         for item in maps:
             self.items[item] = maps[item](item, self)
@@ -49,39 +68,6 @@ class Root(object):
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-    @reify
-    def __acl__(self):
-        request = self.request
-        registry = request.registry
-        uid = authenticated_userid(self.request)
-        static_permission = [(Allow, Everyone, 'view')]
-        static_subpaths = [a[2]
-                           for a in registry.queryUtility(
-                               IStaticURLInfo)._get_registrations(registry)]
-        # special case: handle static views
-        acls = [(Allow, Everyone, NO_PERMISSION_REQUIRED)]
-
-        load = True
-        if request.matched_route:
-            # only skip acl matching if we are in static
-            if request.matched_route in static_subpaths:
-                acls.append(static_permission)
-                load = False
-        # otherwise going with business permissions
-        if load:
-            acls = [
-                (Allow, Authenticated, 'authenticated'),
-            ]
-            perms = Permission.all()
-            roles = Role.all()
-            for perm in perms:
-                for role in roles:
-                    if perm in role.global_permissions:
-                        spec = Allow
-                    else:
-                        spec = Deny
-                    acls.append((spec, role.name, perm.name))
-        return acls
 
 def root_factory(request):
     return Root(request)

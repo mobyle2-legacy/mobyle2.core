@@ -2,27 +2,50 @@
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
 
-from pyramid.url import resource_url, current_route_url
+import colander, deform
+
+from pyramid.url import resource_url
 from pyramid.security import unauthenticated_userid
 from pyramid.traversal import resource_path, resource_path_tuple, traverse
-
 from pyramid.renderers import get_renderer
-from pyramid.renderers import render_to_response, render
-
+from pyramid.renderers import render_to_response
+from pyramid.httpexceptions import HTTPFound
 from pyramid.threadlocal import get_current_request
 
-from apex import views as apex_views
+from apex import views as apex_views, models as apexmodels
 
-from mobyle2.core.utils import auto_translate
-from mobyle2.core.models.auth import self_registration
-from pyramid.httpexceptions import HTTPFound
+from sqlalchemy.sql import expression as se
+
+from mobyle2.core import validator as v
+from mobyle2.core.models import (
+    auth as authm,
+    user as userm,
+    project as projectm,
+    DBSession as session,
+)
+from mobyle2.core.utils import auto_translate, _
+from mobyle2.core import widget
+
+from mobyle2.core.basemodel import default_roles
+
+
+def format_user_for_form(u):
+    if u.login:
+        label = "%s %s" % (u.login, '%s')
+    else:
+        label = "%s"
+    if (u.login != u.username) or not u.login:
+        label = (label % u.username).strip()
+    if u.email and (u.email not in label):
+        label += '  -- %s' % u.email
+    return label
+
 
 def get_nav_infos(context, request, default_nav_title=''):
     def t(string):
         return auto_translate(request, string)
-    _ = t# for babel
     i = {}
-    i['name'] = _(getattr(context, '__description__', default_nav_title))
+    i['name'] = t(getattr(context, '__description__', default_nav_title))
     i['url'] = resource_url(context, request)
     i['path'] = resource_path(context)
     return i
@@ -95,13 +118,13 @@ def get_base_params(view=None,
     if login:
         if not 'came_from' in req.GET:
             if request is not None:
-                userid = unauthenticated_userid(req) 
-                if userid:
+                userid = unauthenticated_userid(req)
+                if not userid:
                     req.GET['came_from'] = req.url
         login_params = apex_views.login(req)
         if not isinstance(login_params, HTTPFound):
             login_params['include_came_from'] = True
-            login_params['self_register'] = self_registration()
+            login_params['self_register'] = authm.self_registration()
             p['login_params'] = login_params
         else:
             p['login_params'] = {}
@@ -125,9 +148,193 @@ class Base:
     def translate(self, string):
         return auto_translate(self.request, string)
 
+    def get_base_params(self):
+        return get_base_params(self)
+
     def __call__(self):
         params = {'view': self}
-        params.update(get_base_params(self))
+        params.update(self.get_base_params())
         return render_to_response(self.template, params, self.request)
+
+
+class ManageRole(Base):
+    template ='../templates/project/project_role.pt'
+
+    def __call__(self):
+        form, request, context = None, self.request, self.request.context
+        url = "%s@@ajax_users_list" % (
+            self.request.resource_url(context)
+        )
+        gurl = "%s@@ajax_groups_list" % (
+            self.request.resource_url(context)
+        )
+        is_a_get = request.method == 'GET'
+        is_a_post = request.method == 'POST'
+        params = self.get_base_params()
+        rid = -666
+        try:
+            rid = int(request.params.get('id', '-666'))
+        except:
+            pass
+        p = None
+        try:
+            p = projectm.Project.by_id(int(rid))
+        except Exception, e:
+            if isinstance(context, projectm.SecuredObject):
+                p = context.context
+                rid = p.id
+        params['project'] = p
+        proxy_roles = context.proxy_roles
+        roles = proxy_roles.keys()
+        members = {}
+        for k in proxy_roles:
+            members[k] = {'users': [], 'groups': []}
+        if p is not None:
+            def reset_default_users_groups(project, members):
+                for key in members:
+                    data = members[key]
+                    for l in data['users'], data['groups']:
+                        while len(l) > 0:
+                            l.pop()
+                    for u in proxy_roles[key].list_users:
+                        members[key]['users'].append((u.id,
+                                                      format_user_for_form(u.base_user)))
+                    for u in proxy_roles[key].list_groups:
+                        members[key]['groups'].append((u.id, u.name))
+            reset_default_users_groups(context, members)
+            class UserS(colander.TupleSchema):
+                id = colander.SchemaNode(colander.Int(), missing = '',)
+                label = colander.SchemaNode(colander.String(), missing = '',)
+            class GroupS(colander.TupleSchema):
+                id = colander.SchemaNode(colander.Int(), missing = '',)
+                label = colander.SchemaNode(colander.String(), missing = '',)
+            class GroupSc(colander.SequenceSchema):
+                group = GroupS(name="group", missing=tuple())
+            class UserSc(colander.SequenceSchema):
+                user = UserS(name="user", missing=tuple())
+            def members_factory(name, dmembers):
+                dusers, dgroups = dmembers['users'], dmembers['groups']
+                class Members(colander.MappingSchema):
+                    users = UserSc(name="users", title=_('Users'),widget =
+                                   widget.ChosenSelectWidget(url),
+                                   default=dusers, validator = v.not_existing_user, missing=tuple(),)
+                    groups = GroupSc(name="groups", title=_('Groups'), widget =
+                                     widget.ChosenSelectWidget(gurl),
+                                     default=dgroups, validator = v.not_existing_group, missing=tuple(),)
+                return Members(name=name, title=default_roles.get(name, name))
+            sh = colander.Schema(title=_('Edit role %s' % p.name),
+                   validator=v.role_edit_form_global_validator)
+            for r in roles:
+                field = members_factory(r, members[r]) 
+                sh.add(field)
+            form = widget.Form(request,
+                               sh,
+                               buttons=(_('Send'),), formid = 'manage_project_roles')
+            if is_a_get:
+                params['form'] = form.render()
+            if is_a_post:
+                try:
+                    modified = False
+                    controls = request.POST.items()
+                    fdata  = form.validate(controls)
+                    for rolename in proxy_roles:
+                        initial_members = members[rolename]
+                        data = fdata[rolename]
+                        pr = proxy_roles[rolename]
+                        users = []
+                        for uid, label in data['users']:
+                            u = userm.User.by_id(uid)
+                            users.append(u)
+                        groups = []
+                        for uid, label in data['groups']:
+                            u = userm.Group.by_id(uid)
+                            groups.append(u)
+                        for ilist, olist, append, remove in ((users,
+                                                              pr.list_users,
+                                                              pr.append_user,
+                                                              pr.remove_user),
+                                                             (groups,
+                                                              pr.list_groups,
+                                                              pr.append_group,
+                                                              pr.remove_group)):
+                            if not ilist:
+                                modified = True
+                                for item in olist[:]:
+                                    remove(item)
+                            else:
+                                for item in ilist:
+                                    if not item in olist:
+                                        modified = True
+                                        append(item)
+                                for item in olist[:]:
+                                    if not item in ilist:
+                                        remove(item)
+                                        modified = True
+                    if modified:
+                        try:
+                            session.commit()
+                            reset_default_users_groups(p, members)
+                            request.session.flash(_('Role modified', 'info'))
+                        except Exception, e:
+                            try:
+                                session.rollback()
+                            except:
+                                pass
+                            request.session.flash(
+                                _('Something went wrong'
+                                  'while modifying project: %s') % e)
+                    params['form'] = form.render()
+                except deform.exception.ValidationFailure, e:
+                    params['form'] = e.render()
+        return render_to_response(self.template, params, request)
+
+
+class AjaxUsersList(Base):
+
+    def __call__(self):
+        term = '%(%)s%(s)s%(%)s' % {
+            's': self.request.params.get('term', '').lower(),
+            '%': '%',
+        }
+        table = userm.User
+        bu = apexmodels.AuthUser
+        rows = session.query(table).join(bu).filter(
+            se.and_(
+                table.status == 'a',
+                se.or_(bu.username.ilike(term),
+                       bu.email.ilike(term),
+                       bu.login.ilike(term),
+                      )
+            )
+        ).order_by(bu.email, bu.username, bu.login).all()
+        data = []
+        for row in rows:
+            u = row.base_user
+            label = format_user_for_form(u)
+            item = ("%s"%row.id, label)
+            if not item in data:
+                data.append(item)
+        return data
+
+
+class AjaxGroupsList(Base):
+
+    def __call__(self):
+        term = '%(%)s%(s)s%(%)s' % {
+            's': self.request.params.get('term', '').lower(),
+            '%': '%',
+        }
+        table = userm.Group
+        rows = session.query(table).filter(
+            table.name.ilike(term)
+        ).order_by(table.name)
+        data = []
+        for row in rows:
+            label = row.name
+            item = ("%s"%row.id, label)
+            if not item in data:
+                data.append(item)
+        return data
+
 
 # vim:set et sts=4 ts=4 tw=0:
