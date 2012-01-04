@@ -2,13 +2,26 @@
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
 import logging
+from zope.interface import implementer
 
-from pyramid.authentication import AuthTktAuthenticationPolicy as BAuthTktAuthenticationPolicy
-from pyramid.authorization import ACLAuthorizationPolicy as BACLAuthorizationPolicy
+from pyramid.authentication import (
+    AuthTktAuthenticationPolicy as BAuthTktAuthenticationPolicy,
+    AuthTktCookieHelper as BAuthTktCookieHelper,
+#    text_type,
+#    ascii_native_,
+    VALID_TOKEN,
+)
+from pyramid.authorization import (
+    ACLAuthorizationPolicy as BACLAuthorizationPolicy,
+)
 
 from pyramid.decorator import reify
 
 from pyramid.threadlocal import get_current_request
+from pyramid.interfaces import (
+    IAuthenticationPolicy,
+    IDebugLogger,
+    )
 
 from pyramid.security import (
     authenticated_userid,
@@ -19,9 +32,12 @@ from pyramid.security import (
     Deny,
 )
 
+
+
 from mobyle2.core.models import auth, user, project
 from mobyle2.core.basemodel import R, P
 
+@implementer(IAuthenticationPolicy)
 class AuthTktAuthenticationPolicy(BAuthTktAuthenticationPolicy):
     """Mobyle2 authn policy"""
 
@@ -60,7 +76,16 @@ class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
                         rn = r.name
                         if not rn in principals:
                             principals.append(rn)
-
+            if not anonym:
+                #user is at least external
+                ext = R['external_user']
+                internal = R['internal_user']
+                l = ausr.last_login
+                if l is not None:
+                    if l.external_user:
+                        principals.append(ext)
+                    if l.internal_user:
+                        principals.append(internal)
         except Exception, e:
             raise
             logging.getLogger('mobyle2.auth').error(
@@ -69,15 +94,6 @@ class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
         # we are not loggued, use anonym mode !
         if anonym:
             principals.append(auth.ANONYMOUS_ROLE)
-        else:
-            #user is at least external
-            ext = R['external_user']
-            if not ext in principals:
-                principals.append(ext)
-            internal = R['internal_user']
-            # TODO: differentiate external vs internal
-            principals.append(internal)
-
         if R['portal_administrator'] in principals:
             principals.append(R['project_manager'])
         acl = BACLAuthorizationPolicy.permits(self, context, principals, permission)
