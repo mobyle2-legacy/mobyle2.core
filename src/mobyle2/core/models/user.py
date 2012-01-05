@@ -86,6 +86,29 @@ class User(Base):
         user_statuses.get(self.status, None)
 
 
+    @classmethod
+    def search(self, pattern):
+        """search by login, then username, then mail"""
+        u = None
+        try:
+            u = apexmodels.AuthUser.get_by_login(pattern)
+        except:
+            pass
+        if u is None:
+            try:
+                u = apexmodels.AuthUser.get_by_username(pattern)
+            except:
+                pass 
+        if u is None:
+            try:
+                u = apexmodels.AuthUser.get_by_email(pattern)
+            except:
+                pass  
+        if u is not None:
+            u = self.by_id(u.id)
+        return u
+
+
 class UserRole(Base):
     __tablename__ = 'authentication_userrole'
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)

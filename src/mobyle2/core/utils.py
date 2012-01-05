@@ -30,14 +30,16 @@ def asbool(value):
     return value 
 
 
-def mobyle2_settings(key=None, default=None):
+def mobyle2_settings(key=None, default=None, registry=None):
     """ Gets an apex setting if the key is set.
         If no key it set, returns all the apex settings.
 
         Some settings have issue with a Nonetype value error,
         you can set the default to fix this issue.
     """
-    settings = get_current_registry().settings
+    if not registry:
+        registry = get_current_registry()
+    settings = registry.settings
 
     if key:
         return settings.get('mobyle2.%s' % key, default)

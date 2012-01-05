@@ -23,6 +23,8 @@ from mobyle2.core.models import Base, DBSession as session
 from mobyle2.core.utils import _, mobyle2_settings
 
 T, F = True, False
+PUBLIC_PROJECT_NAME = 'Public project'
+PUBLIC_PROJECT_USERNAME = 'Mobyle2 Public'
 
 
 default_project_section_acls_mapping = {
@@ -82,17 +84,22 @@ class Project(Base):
     #services = relationship("Service", backref="project", uselist=True)
 
     @classmethod
-    def projects_dir(self):
+    def _projects_dir(self):
         return mobyle2_settings('projects_dir')
+
+    @classmethod
+    def projects_dir(self, registry=None):
+        return mobyle2_settings('projects_dir', registry=registry)
+
 
     def object_acls(self, acls):
         for a in default_project_acls:
             self.append_acl(acls, a)
 
-    def __init__(self, name, description, user, directory=None, services=None):
+    def __init__(self, name, description, owner, directory=None, services=None):
         self.name = name
         self.description = description
-        self.user = user
+        self.owner = owner
         self.directory = directory
         if services is not None:
             self.services.extend(services)
@@ -116,12 +123,12 @@ class Project(Base):
         except Exception, e:
             logger.error('Cant remove instance %s,%s: %s' % (instance.id, instance.name, e))
 
-    def create_directory(self):
+    def create_directory(self, registry=None):
         p = self
         if p.id is None:
             raise Exception('Project.create: invalid project state')
         subdir = "%s" % (p.id / 1000)
-        pdir = os.path.join(Project.projects_dir(), subdir, "%s"%p.id)
+        pdir = os.path.join(Project.projects_dir(registry=registry), subdir, "%s"%p.id)
         tries = 0
         if os.path.exists(pdir):
             while tries < 10000:
@@ -137,7 +144,7 @@ class Project(Base):
 
 
     @classmethod
-    def create(cls, name=None, description=None, user=None, directory=None, services=None):
+    def create(cls, name=None, description=None, user=None, directory=None, services=None, registry=None):
         p = cls(name, description, user, directory, services)
         session.add(p)
         try:
@@ -149,19 +156,56 @@ class Project(Base):
                 pass
         try:
             if p is not None:
-                p.create_directory()
+                p.create_directory(registry=registry)
         except Exception, e:
             if p is not None:
                 # try to delete a project in an inconsistent state
                 try:
                     session.delete(p)
                     session.commit()
+                    p = None
                 except Exception, e:
                     try:
                         session.rollback()
                     except Exception, e:
                         pass
             raise e
+        # give user the owner role
+        if p is not None:
+            p.make_owner(p.owner)
+        return p
+
+    def make_owner(self, user):
+        sproject = ProjectRessource(self, None)
+        sproject.proxy_roles[R['project_owner']].append_user(user)
+
+    @classmethod
+    def by_owner(cls, owner):
+        res = []
+        prs = session.query(cls).filter_by(owner=owner).all()
+        noecho = [res.append(p) for p in prs if not p in res]
+        return res
+
+    @classmethod
+    def by_participation(cls, usr):
+        # fiest get user projects
+        res = []
+        def uniq_append(items):
+            for p in items:
+                if not p.resource in res:
+                    res.append(p.resource)
+        uniq_append(session.query(ProjectUserRole).filter_by(user=usr).all())
+        for g in usr.groups:
+            uniq_append(session.query(ProjectGroupRole).filter_by(group=g).all())
+        return res
+
+    @classmethod
+    def get_public_project(cls):
+        # leave import there for circular problems
+        from mobyle2.core.models import user
+        public_user = user.User.search(PUBLIC_PROJECT_USERNAME)
+        p = None
+        if len(public_user.projects): p = public_user.projects[0]
         return p
 
 class ProjectRessource(SecuredObject):
@@ -244,7 +288,6 @@ class ProjectUserRole(Base):
         if role is not None: self.role = role
         if user is not None: self.user = user
 
-
 class ProjectGroupRole(Base):
     __tablename__ = 'authentication_project_grouprole'
     rid = Column(Integer,
@@ -267,5 +310,29 @@ class ProjectGroupRole(Base):
         if resource is not None: self.resource = resource
         if role is not None: self.role = role
         if group is not None: self.group = group
+
+
+def create_public_workspace(registry=None):
+    project_name = PUBLIC_PROJECT_NAME
+    username = PUBLIC_PROJECT_USERNAME
+    project_desc = '%s description' % project_name
+    user_public_email = '%s@internal' % username
+    from apex.models import create_user, AuthUser
+    import transaction
+    usr = AuthUser.get_by_login(username)
+    if usr is None:
+        kwargs = {
+            'email': user_public_email,
+            'username': username,
+            'login': username
+        }
+        if registry:
+            kwargs['registry'] = registry
+        usr = create_user(**kwargs)
+    else:
+        usr.username = username
+        usr.email = user_public_email
+        usr.login = username
+        transaction.commit()
 
 

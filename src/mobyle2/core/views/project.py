@@ -16,6 +16,7 @@ from pyramid.httpexceptions import HTTPFound
 from mobyle2.core.basemodel import P
 from mobyle2.core.views import Base, get_base_params
 from mobyle2.core.utils import _
+from mobyle2.core import widget
 from mobyle2.core.models import (
     project,
     user,
@@ -101,10 +102,57 @@ class Add(ProjectView):
 
 class List(Base):
     template = '../templates/project/project_list.pt'
+    def __call__(self):
+        request = self.request
+        params = {}
+        params.update(get_base_params(self))
+        projects = OrderedDict()
+        projects['public'] = {
+            'label':_('Public projects') ,
+            'items':[project.Project.get_public_project()]}
+        def not_present(p):
+            ids = []
+            for k in projects:
+                if p.id in [q.id for q in projects[k]['items']]:
+                    return False
+            return True
+        # maybe we are admin and want to see projects from a particular user
+        usr, id = None, -666
+        anonym = not getattr(self.request, 'user', False)
+        if not anonym:
+            id = self.request.user.id
+        is_project_manager = R['project_manager'] in self.effective_principals
+        if 'id' in request.params and is_project_manager:
+            try:
+                id = int(request.params.get('id'))
+                usr = user.User.by_id(id)
+            except:
+                pass
+        if usr is None and not anonym:
+            usr = user.User.by_id(self.request.user.id)
+        if usr is not None:
+            projects['own'] = {'label':_('My projects'), 'items': []}
+            pr = project.Project.by_owner(usr)
+            for p in pr:
+                if not_present(p):
+                    projects['own']['items'].append(p)
+            projects['activity'] = {'label':_('Projects where i have activities'), 'items': []}
+            pr = project.Project.by_participation(usr)
+            for p in pr:
+                if not_present(p):
+                    projects['activity']['items'].append(p)
+        params['projects_map'] = projects
+        return render_to_response(self.template, params, self.request)
 
 
 class View(Base):
     template = '../templates/project/project_view.pt'
+    def __call__(self):
+        params = {'view': self}
+        params.update(get_base_params(self))
+        params['can_edit'] = has_permission(P['project_edit'], self.request.root, self.request)
+        params['can_editroles'] = has_permission(P['project_editperm'], self.request.root, self.request)
+        return render_to_response(self.template, params, self.request)
 
 
 class Edit(Add):
@@ -155,11 +203,47 @@ class Edit(Add):
 class Home(Add):
     template = '../templates/project/project_home.pt'
     def __call__(self):
+        form, request, context = None, self.request, self.request.context
+        is_a_get = request.method == 'GET'
+        is_a_post = request.method == 'POST'
         params = {'view': self}
         params.update(get_base_params(self))
         can_add = False
         can_add = has_permission(P['project_create'], self.request.root, self.request)
+        is_project_manager = R['project_manager'] in self.effective_principals
+        url = "%s@@ajax_users_list" % (self.request.resource_url(context))
+        if is_project_manager:
+            class UserSchema(colander.TupleSchema):
+                id = colander.SchemaNode(colander.Int(), missing = '',)
+                label = colander.SchemaNode(colander.String(), missing = '',)
+            class UserWrap(colander.SequenceSchema):
+                user = UserSchema(name="user", missing=tuple())
+            class ProjectManagementSchema(colander.MappingSchema):
+                userwrap = UserWrap(name="user", title=_("View projects of a member"),
+                                    widget = widget.SingleChosenSelectWidget(url, width='400px'),
+                                    default=[], validator = v.not_existing_user, missing=tuple(),)
+            form = widget.Form(request, 
+                               ProjectManagementSchema(title=_("Project management")), 
+                               buttons=(_('Send'),), formid='view_member_projects')
+        if is_a_get:
+            params['form'] = form.render()
+        if is_a_post:
+            if is_project_manager:
+                try:
+                    modified = False
+                    controls = request.POST.items()
+                    fdata  = form.validate(controls)
+                    id = fdata['userwrap'][0][0]
+                    url = "%s@@list?id=%s" % (
+                        self.request.resource_url(self.request.context),
+                        id
+                    )
+                    return HTTPFound(location=url)
+                    params['form'] = form.render()
+                except deform.exception.ValidationFailure, e:
+                    params['form'] = e.render()
         params['can_add'] = can_add
+        params['is_project_manager'] = is_project_manager
         return render_to_response(self.template, params, self.request)
 
 

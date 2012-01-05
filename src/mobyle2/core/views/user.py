@@ -166,7 +166,7 @@ class ManageUser(Base):
                 apexmodels.AuthUser).filter(
                     apexmodels.AuthUser.id.in_(items)
                 ).all()
-            noecho = [session.delete(i) for i in todelete]
+            noecho = [apexmodels.delete_user(i) for i in todelete]
             session.commit()
             request.session.flash(_('Items have been deleted'), 'info')
         action = request.params.get('user_action', '')

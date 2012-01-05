@@ -9,6 +9,7 @@ from pyramid.security import unauthenticated_userid
 from pyramid.traversal import resource_path, resource_path_tuple, traverse
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render_to_response
+from pyramid.interfaces import IAuthorizationPolicy 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.threadlocal import get_current_request
 
@@ -30,12 +31,14 @@ from mobyle2.core.basemodel import default_roles
 
 
 def format_user_for_form(u):
+    login = u.login
+    username = u.username
     if u.login:
-        label = "%s %s" % (u.login, '%s')
-    else:
-        label = "%s"
-    if (u.login != u.username) or not u.login:
-        label = (label % u.username).strip()
+        label = login
+    if (not login) and username:
+        label = username
+    if login and username and (login!=username):
+        label += ' %s' % username
     if u.email and (u.email not in label):
         label += '  -- %s' % u.email
     return label
@@ -151,6 +154,12 @@ class Base:
     def get_base_params(self):
         return get_base_params(self)
 
+    @property
+    def effective_principals(self):
+        ap = self.request.registry.queryUtility(IAuthorizationPolicy)
+        global_p = ap.get_contextual_principals(self.request.context) 
+        return global_p
+ 
     def __call__(self):
         params = {'view': self}
         params.update(self.get_base_params())
@@ -335,6 +344,5 @@ class AjaxGroupsList(Base):
             if not item in data:
                 data.append(item)
         return data
-
 
 # vim:set et sts=4 ts=4 tw=0:

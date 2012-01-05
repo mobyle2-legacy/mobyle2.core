@@ -43,7 +43,9 @@ class AbstractModel(object):
     def all(cls):
         return cls.session.query(cls).all()
 
-
+    @classmethod
+    def by_resource(cls,resource):
+        return cls.session.query(cls).filter_by(resource=resource)
 
 class MigrateAbstractModel(AbstractModel):
     session = MDBSession
@@ -439,7 +441,7 @@ default_acls = {
     P['global_admin']:     {R['project_watcher'] : F, R['project_contributor'] : F, R['anonyme'] : F, R['internal_user'] : F, R['external_user'] : F, R['project_owner'] : F, R['project_manager'] : F, R['portal_administrator'] : T,},
     P['global_authadmin']: {R['project_watcher'] : F, R['project_contributor'] : F, R['anonyme'] : F, R['internal_user'] : F, R['external_user'] : F, R['project_owner'] : F, R['project_manager'] : F, R['portal_administrator'] : T,},
     P['global_useradmin']: {R['project_watcher'] : F, R['project_contributor'] : F, R['anonyme'] : F, R['internal_user'] : F, R['external_user'] : F, R['project_owner'] : F, R['project_manager'] : F, R['portal_administrator'] : T,},
-    P['project_list']:     {R['project_watcher'] : F, R['project_contributor'] : F, R['anonyme'] : F, R['internal_user'] : F, R['external_user'] : F, R['project_owner'] : F, R['project_manager'] : F, R['portal_administrator'] : F,},
+    P['project_list']:     {R['project_watcher'] : T, R['project_contributor'] : T, R['anonyme'] : T, R['internal_user'] : T, R['external_user'] : T, R['project_owner'] : T, R['project_manager'] : T, R['portal_administrator'] : T,},
     P['project_view']:     {R['project_watcher'] : T, R['project_contributor'] : T, R['anonyme'] : T, R['internal_user'] : F, R['external_user'] : F, R['project_owner'] : T, R['project_manager'] : T, R['portal_administrator'] : T,},
     P['project_editperm']: {R['project_watcher'] : F, R['project_contributor'] : F, R['anonyme'] : F, R['internal_user'] : F, R['external_user'] : F, R['project_owner'] : T, R['project_manager'] : T, R['portal_administrator'] : T,},
     P['project_create']:   {R['project_watcher'] : F, R['project_contributor'] : F, R['anonyme'] : F, R['internal_user'] : T, R['external_user'] : T, R['project_owner'] : T, R['project_manager'] : T, R['portal_administrator'] : T,},
