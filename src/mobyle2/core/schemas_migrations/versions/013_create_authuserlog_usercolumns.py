@@ -35,27 +35,7 @@ def upgrade(migrate_engine):
     engine = migrate_engine
     r_meta = s.MetaData(migrate_engine, True)
     Base.metadata.bind = migrate_engine
-    class AuthUser(Base):
-        """ Table name: auth_users
 
-    ::
-
-        id = Column(types.Integer(), primary_key=True)
-        login = Column(Unicode(80), default=u'', index=True)
-        username = Column(Unicode(80), default=u'', index=True)
-        _password = Column('password', Unicode(80), default=u'')
-        email = Column(Unicode(80), default=u'', index=True)
-        active = Column(types.Enum(u'Y',u'N',u'D'), default=u'Y')
-        """
-        __tablename__ = 'auth_users'
-        __table_args__ = {"sqlite_autoincrement": True}
-
-        id = Column(types.Integer(), primary_key=True)
-        login = Column(Unicode(80), default=u'', index=True)
-        username = Column(Unicode(80), default=u'', index=True)
-        _password = Column('password', Unicode(80), default=u'')
-        email = Column(Unicode(80), default=u'', index=True)
-        active = Column(types.Enum(u'Y',u'N',u'D', name=u"active"), default=u'Y') 
     class AuthUserLog(Base):
         """
         event: 
@@ -68,7 +48,7 @@ def upgrade(migrate_engine):
         __table_args__ = {"sqlite_autoincrement": True}
 
         id = Column(types.Integer, primary_key=True)
-        user_id = Column(types.Integer, ForeignKey(AuthUser.id), index=True)
+        user_id = Column(types.Integer, ForeignKey("auth_users.id"), index=True)
         time = Column(types.DateTime(), default=func.now())
         ip_addr = Column(Unicode(39), nullable=False)
         internal_user = Column(Boolean, nullable=False, default=False)

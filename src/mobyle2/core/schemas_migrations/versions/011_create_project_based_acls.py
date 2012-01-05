@@ -177,6 +177,8 @@ def upgrade(migrate_engine):
                     parent = [r_meta.tables[cs.parent.table.name].c[cs.parent.name]]
                     fk = ForeignKeyConstraint(columns=parent,refcolumns=target)
                     fk.use_alter = cs.use_alter
+                    fk.ondelete = 'CASCADE'
+                    fk.onupdate = 'CASCADE'
                     fk.name = cs.name
                     fks.append(fk)
 
