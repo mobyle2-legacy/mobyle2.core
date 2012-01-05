@@ -3,9 +3,9 @@ head()
 <%block name="content_body">
   <h1>List of projects</h1>
 <ul>
-  % for name, project in c.items.iteritems():
+  % for project in projects):
 <li>
-    <a href="${u(project, request)}">${name}</a>
+    <a href="${u(request.context, request)}/project.id">${project.namename}</a>
 </li>
   % endfor
 </ul>

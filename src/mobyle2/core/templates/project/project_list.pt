@@ -1,12 +1,19 @@
 <metal metal:use-macro="main.macros['main']">
   <metal metal:fill-slot="content_body"> 
     <h1>List of projects</h1>
-    <ul tal:define="items c.items">
-      <tal:r tal:repeat="name python:items">
-        <li tal:define="project items[name].project">
-          <a tal:attributes="href python:u(items[name])" >${project.id} (${project.name})</a>
-        </li>
-      </tal:r>
-    </ul>
+    <tal:r tal:repeat="section projects_map">
+      <tal:block tal:condition="len(projects)"
+        tal:define="projects projects_map[section]['items']">
+        <h2 i18n:translate="">${projects_map[section]['label']}</h2>
+        <ul>
+          <tal:r tal:repeat="project projects">
+            <li>
+              <a tal:attributes="href python:'%s%s'% (u(c), project.id)">
+                ${project.name} (${project.id} - ${project.description})</a>
+            </li>        
+          </tal:r>
+        </ul>
+      </tal:block>
+    </tal:r>
   </metal>
 </metal>
