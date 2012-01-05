@@ -162,6 +162,7 @@ def includeme(config, debug=False):
     config.add_translation_dirs('%s:locale/'%dn)
     config.add_translation_dirs('deform:locale/')
     config.add_subscriber('%s.subscribers.user_created'%dn, 'apex.events.UserCreatedEvent')
+    config.add_subscriber('%s.subscribers.user_deleted'%dn, 'apex.events.UserDeletedEvent')
     config.add_subscriber('%s.subscribers.add_globals'%dn, 'pyramid.events.NewRequest')
     config.add_subscriber('%s.subscribers.regenerate_velruse_config'%dn, '%s.events.RegenerateVelruseConfigEvent' % dn)
     # static files
@@ -188,6 +189,8 @@ def includeme(config, debug=False):
     config.add_view('%s.views.ManageRole' % dn, name='role', context='%s.models.project.ProjectRessource' % dn, permission = P['project_editperm'])
     config.add_view('%s.views.AjaxUsersList' % dn, name='ajax_users_list',   context='%s.models.project.ProjectRessource' % dn, renderer='json', permission = P['project_editperm'])
     config.add_view('%s.views.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.project.ProjectRessource' % dn, renderer='json', permission = P['project_editperm'])
+    config.add_view('%s.views.AjaxUsersList' % dn, name='ajax_users_list',   context='%s.models.project.Projects' % dn, renderer='json', permission = P['project_editperm'])
+    config.add_view('%s.views.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.project.Projects' % dn, renderer='json', permission = P['project_editperm']) 
     # users managment
     config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
     config.add_view('%s.views.user.EditRole' % dn, name='edit_role', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
@@ -216,6 +219,8 @@ def includeme(config, debug=False):
     config.end()
     config.commit()
     from mobyle2.core.models.registry import set_registry_key
+    from mobyle2.core.models.project import create_public_workspace
+    create_public_workspace(registry=config.registry)
     set_registry_key('mobyle2.needrestart', False)
     return config
 
