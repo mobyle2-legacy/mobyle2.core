@@ -13,8 +13,9 @@
 </tal:block>
 <input type="hidden" value="${field.name}:sequence" name="__start__"/>
 <select
+  tal:condition="python: field.widget.multiple"
   name="id"
-  multiple="${field.widget.get_multiple()}"
+  multiple=""
   id="${field.oid}"
   tal:attributes="size field.widget.size;
   style string:width:${field.widget.width};;;
@@ -25,6 +26,19 @@
     class="${field.widget.css_class}" value="${value}">${description}</option>
     <option tal:condition="not selected"
     class="${field.widget.css_class}" value="${value}">${description}</option>
+  </tal:block>
+</select>
+<select
+  tal:condition="python:not field.widget.multiple"
+  name="id"
+  id="${field.oid}"
+  tal:attributes="size field.widget.size;
+  style string:width:${field.widget.width};;;
+  class field.widget.css_class">
+  <tal:block i18n:translate=""
+    tal:repeat="(selected, value, description) field.widget.get_values(cstruct)">
+    <option tal:condition="selected" selected="selected"
+    class="${field.widget.css_class}" value=""></option>
   </tal:block>
 </select>
 <input type="hidden" value="${field.name}:sequence" name="__end__"/>

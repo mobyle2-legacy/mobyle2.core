@@ -59,7 +59,7 @@ class TrNode(TableBaseNode):
     _widget_class = TrWidget
 
 
-class ChosenSelectWidget(widget.SelectWidget):
+class MultipleChosenSelectWidget(widget.SelectWidget):
     """
     data_url:
         Optionnal ajax url to grab data from
@@ -68,11 +68,11 @@ class ChosenSelectWidget(widget.SelectWidget):
     multiple:
         set multiple html property
     """
+    size=0
     template = 'chosen-select'
     readonly_template = 'readonly/chosen-select'
-    chosen_opts = {"allow_single_deselect": True,
-                   "no_results_text": _("No results matched..."),}
-    width = '200px'
+    chosen_opts = {"no_results_text": _("No results matched..."),}
+    width = '400px'
     multiple = False
 
     def get_multiple(self):
@@ -80,8 +80,10 @@ class ChosenSelectWidget(widget.SelectWidget):
         if not self.multiple:
             ret = 'false'
         return ret
+
     def get_chosen_opts(self):
         return json.encode(self.chosen_opts)
+
     def get_data_url(self):
         return json.encode(getattr(self, 'data_url', None) )
 
@@ -111,12 +113,18 @@ class ChosenSelectWidget(widget.SelectWidget):
                 keys.append(k)
         return data
 
-    def __init__(self, data_url, chosen_opts=None, **kw):
+    def __init__(self, data_url, chosen_opts=None, width=width, size=size, **kw):
+        self.size = size
+        self.width=width
         widget.SelectWidget.__init__(self, **kw)
         self.data_url = data_url
         if chosen_opts:
             self.chosen_opts = chosen_opts
-
+        if self.size == 1:
+            self.chosen_opts["allow_single_deselect"] = True
+            self.multiple = False
+        else:
+            self.multiple = True
 
     def deserialize(self, field, pstruct):
         cstruct = widget.SelectWidget.deserialize(self, field, pstruct)
@@ -136,5 +144,11 @@ class ChosenSelectWidget(widget.SelectWidget):
         cstruct = filter(filtering, cstruct)
         return cstruct
 
+class SingleChosenSelectWidget(MultipleChosenSelectWidget):
+    def __init__(self, data_url, width=MultipleChosenSelectWidget.width, chosen_opts=None, **kw):
+        size = 1
+        MultipleChosenSelectWidget.__init__(self, data_url, chosen_opts, width, size, **kw)
+
+ChosenSelectWidget = MultipleChosenSelectWidget
 
 # vim:set et sts=4 ts=4 tw=80:

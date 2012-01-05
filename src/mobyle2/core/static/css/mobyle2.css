@@ -7,7 +7,7 @@
   line-height:100%;
   vertical-align:middle; 
 }
- 
+
 .global_tabs-wrap {
   clear:both;
 }
@@ -38,27 +38,27 @@ form#add_auth_backend label.field_opt{
 
 
 .deform label.desc{
-    display: block;
+  display: block;
 }
 
 .deform ul {
-    margin: auto;
-    padding: auto;
+  margin: auto;
+  padding: auto;
 }
 
 .deform li {
-    clear: none;
-    display: inherit;
-    margin: auto;
-    padding: auto;
+  clear: none;
+  display: inherit;
+  margin: auto;
+  padding: auto;
 }
 
 .deformSet-item {
-    padding: auto;
+  padding: auto;
 }
 
 .deform ul.inline > li{
-    display:inline-block;
+  display:inline-block;
 }
 
 .chosen-loading-spinner {
@@ -75,6 +75,10 @@ form#add_auth_backend label.field_opt{
   width:100%;
 }
 
+li.search-choice {
+  min-width:360px;
+}
+
 
 .spacer {
   margin:0;
@@ -86,4 +90,14 @@ form#add_auth_backend label.field_opt{
   overflow-x: scroll; 
 
 }
+
+fieldset.deformFormFieldset  {
+  border:none;
+}
+
+
+fieldset.deformFormFieldset legend {
+  display:none;
+} 
+
 
