@@ -44,8 +44,9 @@ class AuthTktAuthenticationPolicy(BAuthTktAuthenticationPolicy):
 
 class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
     """Mobyle2 authz policy"""
-    def permits(self, context, principals, permission):
-        """map users and groups to their roles !"""
+
+    def get_contextual_principals(self, context):
+        principals = []
         request = getattr(context, 'request', None)
         if request is None:
             request = get_current_request()
@@ -95,7 +96,15 @@ class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
         if anonym:
             principals.append(auth.ANONYMOUS_ROLE)
         if R['portal_administrator'] in principals:
-            principals.append(R['project_manager'])
+            principals.append(R['project_manager']) 
+        return principals
+
+
+    def permits(self, context, principals, permission):
+        """map users and groups to their roles !"""
+        for p in self.get_contextual_principals(context):
+            if not p in principals:
+                principals.append(p)
         acl = BACLAuthorizationPolicy.permits(self, context, principals, permission)
         #if 'ACLDenied' == acl.__class__.__name__:
         #    import pdb;pdb.set_trace()
