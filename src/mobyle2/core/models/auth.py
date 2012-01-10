@@ -151,6 +151,25 @@ class Permission(Base):
         if roles is not None:
             self.roles.extends(roles)
 
+""""
+
+Perm
+1 foo
+2 bar
+
+Acl
+1 1
+1 2
+
+Role
+1 car
+
+role = <Role car>
+role.global_permissions ==> [<Permission foo>, <Permisssion bar> ]
+
+"""
+
+
 
 class Role(Base):
     __tablename__ = 'authentication_role'

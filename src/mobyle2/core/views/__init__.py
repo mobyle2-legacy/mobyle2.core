@@ -230,7 +230,8 @@ class ManageRole(Base):
                     groups = GroupSc(name="groups", title=_('Groups'), widget =
                                      widget.ChosenSelectWidget(gurl),
                                      default=dgroups, validator = v.not_existing_group, missing=tuple(),)
-                return Members(name=name, title=default_roles.get(name, name))
+                m = Members(name=name, title=default_roles.get(name, name))
+                return m
             sh = colander.Schema(title=_('Edit role %s' % p.name),
                    validator=v.role_edit_form_global_validator)
             for r in roles:

@@ -207,17 +207,17 @@ class SecuredObject(object):
         >>> foo = Foo()
         >>> sfoo = Securedfoo(Foo)
         >>> u1 = session.query(User).first()
-        >>> sfoo.myrole.append_user(u1)
-        >>> [u1] == sfoo.myrole.list_users
-        >>> True == sfoo.myrole.has_user(u1)
-        >>> sfoo.myrole.remove_user(u1)
-        >>> False == sfoo.myrole.has_user(u1)
-        >>> g1 = session.query(Group).first()
-        >>> [g1] == sfoo.myrole.list_groups
-        >>> sfoo.myrole.append_group(g1)
-        >>> False == sfoo.myrole.has_user(u1)
-        >>> sfoo.myrole.remove_group(g1)
-        >>> False == sfoo.myrole.has_group(u1)
+        >>> sfoo.proxy_roles[R['foo_myrole']].append_user(u1)
+        >>> [u1] == sfoo.proxy_roles[R['foo_myrole']].list_users
+        >>> True == sfoo.proxy_roles[R['foo_myrole']].has_user(u1)
+        >>> sfoo.proxy_roles[R['foo_myrole']].remove_user(u1)
+        >>> False == sfoo.proxy_roles[R['foo_myrole']].has_user(u1)
+        >>> g1 = session.query(Group).first() # select * from auth_groups limit 1
+        >>> [g1] == sfoo.proxy_roles[R['foo_myrole']].list_groups
+        >>> sfoo.proxy_roles[R['foo_myrole']].append_group(g1)
+        >>> False == sfoo.proxy_roles[R['foo_myrole']].has_user(u1)
+        >>> sfoo.proxy_roles[R['foo_myrole']].remove_group(g1)
+        >>> False == sfoo.proxy_roles[R['foo_myrole']].has_group(u1)
         >>> True == R['foo_myrole'] in sfoo.get_roles_for_user(u1)
         >>> True == R['foo_myrole'] in sfoo.get_roles_for_group(g1)
 

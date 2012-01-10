@@ -68,7 +68,6 @@ class Root(SecuredObject):
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-
 def root_factory(request):
     return Root(request)
 

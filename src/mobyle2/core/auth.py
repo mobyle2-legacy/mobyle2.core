@@ -35,7 +35,7 @@ from pyramid.security import (
 
 
 from mobyle2.core.models import auth, user, project
-from mobyle2.core.basemodel import R, P
+from mobyle2.core.basemodel import R, P, SecuredObject
 
 @implementer(IAuthenticationPolicy)
 class AuthTktAuthenticationPolicy(BAuthTktAuthenticationPolicy):
@@ -60,7 +60,7 @@ class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
                     roles = []
                     for r in usr.global_roles:
                         roles.append(r)
-                    if isinstance(context, project.SecuredObject):
+                    if isinstance(context, SecuredObject):
                         noecho = [roles.append(r)
                                   for r in context.get_roles_for_user(usr)
                                   if not r in roles]
@@ -69,7 +69,7 @@ class ACLAuthorizationPolicy(BACLAuthorizationPolicy):
                         for r in g.global_roles:
                             if not r in roles:
                                 roles.append(r)
-                        if isinstance(context, project.SecuredObject):
+                        if isinstance(context, SecuredObject):
                             noecho = [roles.append(r)
                                       for r in context.get_roles_for_group(g)
                                       if not r in roles]

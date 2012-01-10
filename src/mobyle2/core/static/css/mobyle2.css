@@ -101,3 +101,7 @@ fieldset.deformFormFieldset legend {
 } 
 
 
+#manage_project_roles fieldset.deformFormFieldset legend {
+  display:inherit;
+} 
+

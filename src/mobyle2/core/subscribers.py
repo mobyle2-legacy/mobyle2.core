@@ -82,8 +82,11 @@ def user_deleted(event):
             res.extend(ProjectGroupRole.by_resource(p))
             res.extend(ProjectUserRole.by_resource(p))
             res.append(p)
+            modified = False
             for i in res:
+                modified = True
                 session.delete(i)
+            if modified:
                 session.commit()
         except Exception, e:
             error = 'Default project for %s cannot be deleted' % usr.username
