@@ -168,6 +168,7 @@ def includeme(config, debug=False):
     # static files
     config.add_static_view('s', '%s:static'%dn)
     config.add_static_view('deform', 'deform:static')
+    config.add_static_view('mobyle2.static', settings['mobyle2.static_dir'])
     # basr urls
     config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn, permission= P['global_view'])
     # auth managment
@@ -220,7 +221,9 @@ def includeme(config, debug=False):
     config.commit()
     from mobyle2.core.models.registry import set_registry_key
     from mobyle2.core.models.project import create_public_workspace
+    from mobyle2.core.models.server import create_local_server
     create_public_workspace(registry=config.registry)
+    create_local_server(registry=config.registry)
     set_registry_key('mobyle2.needrestart', False)
     return config
 

@@ -23,7 +23,7 @@ from mobyle2.core.basemodel import (
 
 
 
-                               
+
 
 
 def upgrade(migrate_engine):
@@ -38,7 +38,7 @@ def upgrade(migrate_engine):
 
     class AuthUserLog(Base):
         """
-        event: 
+        event:
           L - Login
           R - Register
           P - Password
@@ -53,14 +53,13 @@ def upgrade(migrate_engine):
         ip_addr = Column(Unicode(39), nullable=False)
         internal_user = Column(Boolean, nullable=False, default=False)
         external_user = Column(Boolean, nullable=False, default=False)
-        event = Column(types.Enum(u'L',u'R',u'P',u'F', name=u"event"), default=u'L') 
+        event = Column(types.Enum(u'L',u'R',u'P',u'F', name=u"event"), default=u'L')
     t=AuthUserLog.__table__
     if not 'internal_user' in r_meta.tables[t.name].c: t.c['internal_user'].create(table=t)
     if not 'external_user' in r_meta.tables[t.name].c: t.c['external_user'].create(table=t)
-
     session.flush()
 
 
 def downgrade(migrate_engine):
     # Operations to reverse the above upgrade go here.
-    pass 
+    pass

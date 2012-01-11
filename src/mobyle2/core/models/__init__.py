@@ -20,6 +20,7 @@ import jobdata
 import registry
 import user
 import workflow
+import server
 
 
 def initialize_sql(engine, create=False):
