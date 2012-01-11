@@ -80,6 +80,7 @@ class Project(Base):
     owner = relationship("User", primaryjoin="Project.user_id==User.id")
     usersroles = relationship('ProjectUserRole', backref='projets')
     groupsrolesF = relationship('ProjectGroupRole', backref='projects')
+    servers = relationship('Server', backref='implied_project', secondary='projects_servers')
 
     #services = relationship("Service", backref="project", uselist=True)
 
@@ -303,7 +304,6 @@ class ProjectGroupRole(Base):
                            backref='mapping_group_role',
                            primaryjoin="ProjectGroupRole.group_id==Group.id",
                            foreign_keys=[group_id])
-
 
     def __init__(self, resource=None, role=None, group=None):
         Base.__init__(self)

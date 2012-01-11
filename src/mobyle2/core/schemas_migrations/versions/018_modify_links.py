@@ -76,6 +76,11 @@ def upgrade(migrate_engine):
             if roles is not None:
                 self.roles.extends(roles)
 
+    class ProjectServer(Base):
+        __tablename__ = 'projects_servers'
+        project_id = Column(Integer, ForeignKey("servers.id",  name="fk_projectserver_server",  use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+        server_id =  Column(Integer, ForeignKey("projects.id", name="fk_projectserver_project", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+
 
     class Server(Base):
         __tablename__ = 'servers'
@@ -110,16 +115,6 @@ def upgrade(migrate_engine):
         exportable = Column(Boolean(), default=False, nullable=False)
         type = Column(Enum('program', 'workflow', 'viewer', name='service_type'), default='program', nullable=False)
 
-        def __init__(self,
-                     name=None,
-                     url=None,
-                     help_mail=None,
-                    ):
-            self.name = name
-            self.url = url
-            self.help_mail = help_mail
-
-
     debug = True
     session.configure(bind=migrate_engine)
     migrate_engine.echo=debug
@@ -127,48 +122,21 @@ def upgrade(migrate_engine):
     """ Create services table """
     r_meta = s.MetaData(migrate_engine, True)
     Base.metadata.bind = migrate_engine
+
     for o in [Service]:
         t = o.__table__
         if not t.name in r_meta.tables: t.create(migrate_engine)
         r_meta = s.MetaData(migrate_engine, True)
-        for c in ['enable', 'exportable',]:
+        for c in ['server_id',]:
             if not c in r_meta.tables[t.name].c: 
                 t.c[c].create(table=t)
         recreate_table_fkeys(o, session)
-    """ Reload all permissions """
-    real_perms = Permission.all()
-    for p in real_perms[:]:
-        if not p.name in default_permissions:
-            session.delete(p)
-            session.commit()
-    nreal_perms = [p.name for p in real_perms]
-    for p in default_permissions:
-        if not p in nreal_perms:
-            perm = Permission(name=p, description=default_permissions[p])
-            session.add(perm)
-            session.commit()
-    """ Reload all ACLS """
-    for p in default_acls:
-        default_acls
-        try:
-            perm = Permission.by_name(p)
-        except:
-            pass
-        roles = default_acls[p]
-        for role in roles:
-            access = roles[role]
-            orole = Role.by_name(role)
-            if access:
-                if not perm in orole.global_permissions:
-                    orole.global_permissions.append(perm)
-                    session.add(orole)
-                    session.commit()
-            else:
-                if perm in orole.global_permissions:
-                    del orole.global_permissions[orole.global_permissions.index(perm)]
-                    session.add(orole)
-                    session.commit()
-    session.flush()
+   
+    for o in [ProjectServer]:
+        t = o.__table__
+        if not t.name in r_meta.tables: t.create(migrate_engine)
+        r_meta = s.MetaData(migrate_engine, True)
+        recreate_table_fkeys(o, session)
 
 def downgrade(migrate_engine):
     # Operations to reverse the above upgrade go here.

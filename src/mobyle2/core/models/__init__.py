@@ -21,6 +21,7 @@ import registry
 import user
 import workflow
 import server
+import service
 
 
 def initialize_sql(engine, create=False):

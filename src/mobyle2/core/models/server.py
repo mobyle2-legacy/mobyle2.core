@@ -32,6 +32,7 @@ class Server(Base):
     name = Column(Unicode(50), unique=True)
     url = Column(Unicode(255))
     help_mail = Column(Unicode(255))
+    project = relationship('Project', backref='implied_service', secondary='projects_servers', uselist=False)
 
     @classmethod
     def get_local_server(self):
@@ -41,11 +42,23 @@ class Server(Base):
                  name=None,
                  url=None,
                  help_mail=None,
+                 project=None,
                 ):
         self.name = name
         self.url = url
         self.help_mail = help_mail
+        self.project = project
 
+class ProjectServer(Base):
+    __tablename__ = 'projects_servers'
+    project_id = Column(Integer, ForeignKey("servers.id",  name="fk_projectserver_server",  use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    server_id =  Column(Integer, ForeignKey("projects.id", name="fk_projectserver_project", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    project    = relationship('Project')
+    server    = relationship('Server')
+
+    def __init__(self, project=None, server=None):
+        self.project = project
+        self.server = server
 
 class ServerRessource(object):
     def __init__(self, resource, parent):

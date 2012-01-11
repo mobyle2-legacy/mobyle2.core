@@ -12,7 +12,7 @@ from sqlalchemy.sql import expression as se
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.echema import (
+from sqlalchemy.schema import (
     UniqueConstraint,
     Index,
 )
@@ -40,12 +40,12 @@ class Service(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(100), unique=True)
     server_id = Column(Integer, ForeignKey("servers.id", name="fk_service_server", use_alter=True), nullable=False)
-    project_id = Column(Integer, ForeignKey("projects.id", name="fk_service_project", use_alter=True), nullable=False)
     package = Column(Unicode(2500), default='not read', nullable=False)
     classification = Column(Unicode(2500), default='not read', nullable=False)
     enable = Column(Boolean(), default=True, nullable=False)
     exportable = Column(Boolean(), default=False, nullable=False)
     type = Column(Enum('program', 'workflow', 'viewer', name='service_type'), default='program', nullable=False)
+    server = relationship('Server', backref='service')
 
     def __init__(self,
                  name=None,
