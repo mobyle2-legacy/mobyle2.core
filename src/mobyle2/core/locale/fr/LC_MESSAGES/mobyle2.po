@@ -1,15 +1,10 @@
-# French translations for mobyle2.core.
-# Copyright (C) 2011 ORGANIZATION
-# This file is distributed under the same license as the mobyle2.core
-# project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
-#
+
 msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
-"POT-Creation-Date: 2011-12-06 11:53+0100\n"
-"PO-Revision-Date: 2011-12-06 11:53+0100\n"
+"POT-Creation-Date: 2012-01-11 23:25+0100\n"
+"PO-Revision-Date: 2012-01-11 23:25+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -18,12 +13,144 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
+#: src/mobyle2/core/basemodel.py:395
+msgid "Anonym"
+msgstr "Anonyme"
+
+#: src/mobyle2/core/basemodel.py:396
+msgid "Internal user"
+msgstr "Utilisateur interne"
+
+#: src/mobyle2/core/basemodel.py:397
+msgid "External user"
+msgstr "Utilisateur externe"
+
+#: src/mobyle2/core/basemodel.py:398
+msgid "Project owner"
+msgstr "Créateur du projet"
+
+#: src/mobyle2/core/basemodel.py:399
+msgid "Project watcher"
+msgstr "Surveillant du projet"
+
+#: src/mobyle2/core/basemodel.py:400
+msgid "Project contributor"
+msgstr "Contributeur du projet"
+
+#: src/mobyle2/core/basemodel.py:401
+msgid "Project manager"
+msgstr "Administrateur du projet"
+
+#: src/mobyle2/core/basemodel.py:402
+msgid "Portal administrator"
+msgstr "Administrateur du portail"
+
+#: src/mobyle2/core/basemodel.py:442
+msgid "Administrative access"
+msgstr "Accès d'administration"
+
+#: src/mobyle2/core/basemodel.py:443
+msgid "Server management"
+msgstr "Administrer les serveurs"
+
+#: src/mobyle2/core/basemodel.py:444
+msgid "Service management"
+msgstr "Administrer les services"
+
+#: src/mobyle2/core/basemodel.py:445
+msgid "Manage project permissions"
+msgstr "Administrer les permissions au niveau de ce projet"
+
+#: src/mobyle2/core/basemodel.py:446
+msgid "Users only administrative access"
+msgstr "Acces à l'administration des utilisateurs"
+
+#: src/mobyle2/core/basemodel.py:447
+msgid "Authentication backends only administrative access"
+msgstr "Acces à la Configuration des méthodes d'identification"
+
+#: src/mobyle2/core/basemodel.py:448
+msgid "View access"
+msgstr "Acces en lecture"
+
+#: src/mobyle2/core/basemodel.py:449
+#: src/mobyle2/core/templates/project/project_home.pt:5
+msgid "List projects"
+msgstr "Liste des projets"
+
+#: src/mobyle2/core/basemodel.py:450
+msgid "View project"
+msgstr "Voire un projet"
+
+#: src/mobyle2/core/basemodel.py:451
+msgid "Create project"
+msgstr "Créer un projet"
+
+#: src/mobyle2/core/basemodel.py:452
+msgid "Delete project"
+msgstr "Supprimer le projet"
+
+#: src/mobyle2/core/basemodel.py:453
+msgid "Edit project"
+msgstr "Editer le projet"
+
+#: src/mobyle2/core/basemodel.py:454
+msgid "View notebook"
+msgstr "Voire le notbook"
+
+#: src/mobyle2/core/basemodel.py:455
+msgid "Create notebook"
+msgstr "Créér le notbook"
+
+#: src/mobyle2/core/basemodel.py:456
+msgid "Delete notebook"
+msgstr "Supprimer le notebook"
+
+#: src/mobyle2/core/basemodel.py:457
+msgid "Edit notebook"
+msgstr "Editer le notebook"
+
+#: src/mobyle2/core/basemodel.py:458
+msgid "View service"
+msgstr "Voire le service"
+
+#: src/mobyle2/core/basemodel.py:459
+msgid "Create service"
+msgstr "Créer le service"
+
+#: src/mobyle2/core/basemodel.py:460
+msgid "Delete service"
+msgstr "Supprimer le service"
+
+#: src/mobyle2/core/basemodel.py:461
+msgid "dit service"
+msgstr "Editer le service"
+
+#: src/mobyle2/core/basemodel.py:462
+msgid "Run job"
+msgstr "Executer le job"
+
+#: src/mobyle2/core/basemodel.py:463 src/mobyle2/core/permission.py:101
+msgid "View job"
+msgstr "Voire un job"
+
+#: src/mobyle2/core/basemodel.py:464
+msgid "Create job"
+msgstr "Créer le job"
+
+#: src/mobyle2/core/basemodel.py:465
+msgid "Delete job"
+msgstr "Supprimer le job"
+
+#: src/mobyle2/core/basemodel.py:466
+msgid "Edit job"
+msgstr "Editer le job"
+
 #: src/mobyle2/core/permission.py:56
 msgid "Manage portal"
 msgstr "Adminstrer le portail"
 
 #: src/mobyle2/core/permission.py:57
-#: src/mobyle2/core/templates/user/user_home.pt:5
 msgid "Add an user"
 msgstr "Ajouter un utilisateur"
 
@@ -32,11 +159,11 @@ msgid "Edit an user"
 msgstr "Editer un utilisateur"
 
 #: src/mobyle2/core/permission.py:59
-#: src/mobyle2/core/templates/user/user_home.pt:6
 msgid "Delete an user"
 msgstr "Supprimer un utilisateur"
 
 #: src/mobyle2/core/permission.py:61
+#: src/mobyle2/core/templates/user/user_group.pt:5
 msgid "Add a group"
 msgstr "Ajouter un utilisateur"
 
@@ -49,7 +176,7 @@ msgid "Delete a group"
 msgstr "Supprimer moi"
 
 #: src/mobyle2/core/permission.py:65
-#: src/mobyle2/core/templates/user/user_home.pt:7
+#: src/mobyle2/core/templates/user/user_home.pt:6
 msgid "Manage groups"
 msgstr "Administrer les groupes"
 
@@ -134,10 +261,6 @@ msgstr "Editer un notebook"
 msgid "Delete a notebook"
 msgstr "Supprimer un notebook"
 
-#: src/mobyle2/core/permission.py:101 src/mobyle2/core/models/auth.py:165
-msgid "View job"
-msgstr "Voire un job"
-
 #: src/mobyle2/core/permission.py:102
 msgid "Run a job"
 msgstr "Executer un job"
@@ -154,178 +277,107 @@ msgstr "Editer un job"
 msgid "Delete a job"
 msgstr "Supprimer un job"
 
-#: src/mobyle2/core/validator.py:14
-msgid "You must set a not null string"
-msgstr "Vous devez saisir une chaine non vide"
+#: src/mobyle2/core/subscribers.py:55
+msgid "Default project created on sign in"
+msgstr "Projet créé automatiquent à la première connexion"
 
-#: src/mobyle2/core/validator.py:23 src/mobyle2/core/validator.py:28
+#: src/mobyle2/core/validator.py:15
+#, python-format
+msgid "Those roleid do not exists: %s"
+msgstr "Ce roleid n'éxiste pas : %s"
+
+#: src/mobyle2/core/validator.py:16
+#, python-format
+msgid "Those userid do not exists: %s"
+msgstr "Cet userid n'éxiste pas : %s"
+
+#: src/mobyle2/core/validator.py:17
 msgid "This role already exists"
 msgstr "Ce role éxiste déjà"
 
-#: src/mobyle2/core/validator.py:31
+#: src/mobyle2/core/validator.py:18
+msgid "This group already exists"
+msgstr "Ce groupe éxiste déjà"
+
+#: src/mobyle2/core/validator.py:19
+#, python-format
+msgid "Those groupid do not exists: %s"
+msgstr "Ces groupid n'éxistent pas : %s"
+
+#: src/mobyle2/core/validator.py:20
+#, python-format
+msgid "This roleid does not exists: %s"
+msgstr "Ce role n'éxiste pas : %s"
+
+#: src/mobyle2/core/validator.py:21
+#, python-format
+msgid "This userid does not exists: %s"
+msgstr "Cet userid n'éxiste pas: %s"
+
+#: src/mobyle2/core/validator.py:22
+#, python-format
+msgid "This groupid does not exists: %s"
+msgstr "Ce groupid n'éxiste pas: %s"
+
+#: src/mobyle2/core/validator.py:27
+msgid "You must set a not null string"
+msgstr "Vous devez saisir une chaine non vide"
+
+#: src/mobyle2/core/validator.py:64
+msgid "Those ${label} do not exists: ${userids}"
+msgstr "Ces ${label} n'éxistent pas: ${userids}"
+
+#: src/mobyle2/core/validator.py:92 src/mobyle2/core/views/user.py:548
+msgid "Already exists"
+msgstr "Existe déjà"
+
+#: src/mobyle2/core/validator.py:120
 msgid "Fail"
 msgstr "Raté"
+
+#: src/mobyle2/core/widget.py:74
+msgid "No results matched..."
+msgstr "Pas de résultat correspondant..."
 
 #: src/mobyle2/core/forms/__init__.py:54
 msgid "Self registration is turned off by the administrator on this portal."
 msgstr "La création de compte est désactivée par l'administrateur de ce portail."
 
-#: src/mobyle2/core/models/auth.py:108
+#: src/mobyle2/core/models/auth.py:107
 #: src/mobyle2/core/templates/auth/auth_list.pt:3
 msgid "Authentication backends"
 msgstr "Méthodes d'identification"
 
-#: src/mobyle2/core/models/auth.py:142
-msgid "View access"
-msgstr "Acces en lecture"
-
-#: src/mobyle2/core/models/auth.py:143
-msgid "Delete access"
-msgstr "Supprimer l'acces"
-
-#: src/mobyle2/core/models/auth.py:144
-msgid "Edit access"
-msgstr "Editer l'access"
-
-#: src/mobyle2/core/models/auth.py:145
-msgid "Create access"
-msgstr "Créer l'acces"
-
-#: src/mobyle2/core/models/auth.py:146
-msgid "Create group"
-msgstr "Créer le groupe"
-
-#: src/mobyle2/core/models/auth.py:147
-msgid "Delete group"
-msgstr "Supprimer le groupe"
-
-#: src/mobyle2/core/models/auth.py:148
-msgid "Edit group"
-msgstr "Editer le groupe"
-
-#: src/mobyle2/core/models/auth.py:149
-msgid "Create user"
-msgstr "Créer l'utilisateur"
-
-#: src/mobyle2/core/models/auth.py:150
-msgid "Delete user"
-msgstr "Supprimer l'utilisateur"
-
-#: src/mobyle2/core/models/auth.py:151
-msgid "Edit user"
-msgstr "Editer un utilisateur"
-
-#: src/mobyle2/core/models/auth.py:152
-msgid "View project"
-msgstr "Voire un projet"
-
-#: src/mobyle2/core/models/auth.py:153
-msgid "Create project"
-msgstr "Créer un projet"
-
-#: src/mobyle2/core/models/auth.py:154
-msgid "Delete project"
-msgstr "Supprimer le projet"
-
-#: src/mobyle2/core/models/auth.py:155
-msgid "Edit project"
-msgstr "Editer le projet"
-
-#: src/mobyle2/core/models/auth.py:156
-msgid "View notebook"
-msgstr "Voire le notbook"
-
-#: src/mobyle2/core/models/auth.py:157
-msgid "Create notebook"
-msgstr "Créér le notbook"
-
-#: src/mobyle2/core/models/auth.py:158
-msgid "Delete notebook"
-msgstr "Supprimer le notebook"
-
-#: src/mobyle2/core/models/auth.py:159
-msgid "Edit notebook"
-msgstr "Editer le notebook"
-
-#: src/mobyle2/core/models/auth.py:160
-msgid "View service"
-msgstr "Voire le service"
-
-#: src/mobyle2/core/models/auth.py:161
-msgid "Create service"
-msgstr "Créer le service"
-
-#: src/mobyle2/core/models/auth.py:162
-msgid "Delete service"
-msgstr "Supprimer le service"
-
-#: src/mobyle2/core/models/auth.py:163
-msgid "Edit service"
-msgstr "Editer le service"
-
-#: src/mobyle2/core/models/auth.py:164
-msgid "Run job"
-msgstr "Executer le job"
-
-#: src/mobyle2/core/models/auth.py:166
-msgid "Create job"
-msgstr "Créer le job"
-
-#: src/mobyle2/core/models/auth.py:167
-msgid "Delete job"
-msgstr "Supprimer le job"
-
-#: src/mobyle2/core/models/auth.py:168
-msgid "Edit job"
-msgstr "Editer le job"
-
-#: src/mobyle2/core/models/auth.py:171
-msgid "Anonym"
-msgstr "Anonyme"
-
-#: src/mobyle2/core/models/auth.py:172
-msgid "Internal user"
-msgstr "Utilisateur interne"
-
-#: src/mobyle2/core/models/auth.py:173
-msgid "External user"
-msgstr "Utilisateur externe"
-
-#: src/mobyle2/core/models/auth.py:174
-msgid "Project owner"
-msgstr "Créateur du projet"
-
-#: src/mobyle2/core/models/auth.py:175
-msgid "Project watcher"
-msgstr "Surveillant du projet"
-
-#: src/mobyle2/core/models/auth.py:176
-msgid "Project contributor"
-msgstr "Contributeur du projet"
-
-#: src/mobyle2/core/models/auth.py:177
-msgid "Project manager"
-msgstr "Administrateur du projet"
-
-#: src/mobyle2/core/models/auth.py:178
-msgid "Portal administrator"
-msgstr "Administrateur du portail"
-
-#: src/mobyle2/core/models/project.py:72
+#: src/mobyle2/core/models/project.py:279
 msgid "Projects"
 msgstr "Projets"
 
-#: src/mobyle2/core/models/root.py:24
+#: src/mobyle2/core/models/project.py:395
+msgid "Services"
+msgstr "Services"
+
+#: src/mobyle2/core/models/project.py:419
+msgid "Workflows"
+msgstr "Workflows"
+
+#: src/mobyle2/core/models/project.py:424
+msgid "Programs"
+msgstr "Programmes"
+
+#: src/mobyle2/core/models/project.py:429
+msgid "Viewers"
+msgstr "Voire les viewers"
+
+#: src/mobyle2/core/models/root.py:36
 msgid "Home"
 msgstr "Acceuil"
 
-#: src/mobyle2/core/models/user.py:63 src/mobyle2/core/views/user.py:294
+#: src/mobyle2/core/models/user.py:125 src/mobyle2/core/views/__init__.py:227
+#: src/mobyle2/core/views/user.py:403 src/mobyle2/core/views/user.py:433
+#: src/mobyle2/core/views/user.py:526 src/mobyle2/core/views/user.py:705
+#: src/mobyle2/core/views/user.py:745
 msgid "Users"
 msgstr "Utilisateur"
-
-#: src/mobyle2/core/templates/auth/auth_add.mako:3
-msgid "Backend configuration"
-msgstr "Configuration des méthodes d'identification"
 
 #: src/mobyle2/core/templates/auth/auth_add.pt:3
 #: src/mobyle2/core/templates/auth/auth_delete.pt:3
@@ -336,17 +388,14 @@ msgstr "Lister les méthodes d'identification"
 msgid "Edit backend settings"
 msgstr "Editer les paramêtres d'identification"
 
-#: src/mobyle2/core/templates/auth/auth_home.mako:3
 #: src/mobyle2/core/templates/auth/auth_home.pt:3
 msgid "Authentication backends configuration"
 msgstr "Configuration des méthodes d'identification"
 
-#: src/mobyle2/core/templates/auth/auth_home.mako:5
 #: src/mobyle2/core/templates/auth/auth_home.pt:5
 msgid "Edit general authentication settings"
 msgstr "Editer les paramêtres généreaux d'identification"
 
-#: src/mobyle2/core/templates/auth/auth_home.mako:6
 #: src/mobyle2/core/templates/auth/auth_home.pt:6
 msgid "List backends"
 msgstr "Lister les méthodes d'identification"
@@ -361,11 +410,6 @@ msgstr "Ajouter une méthode d'identification"
 msgid "Restart the server to apply configuration"
 msgstr "Redémarrer le server pour appliquer la configuration"
 
-#: src/mobyle2/core/templates/auth/auth_list.mako:3
-msgid "Add a new identification backend"
-msgstr "Ajouter une nouvelle méthode d'identification"
-
-#: src/mobyle2/core/templates/auth/auth_manage_settings.mako:3
 #: src/mobyle2/core/templates/auth/auth_manage_settings.pt:3
 msgid "Manage general authentication settings"
 msgstr "Editer les paramêtres généreaux d'identification"
@@ -432,7 +476,14 @@ msgstr "Mot dx passe de la clé d'API"
 msgid "There was a problem with this section"
 msgstr "Il y a eu un probleme dans cette section"
 
-#: src/mobyle2/core/templates/includes/breadcrumbs.mako:3
+#: src/mobyle2/core/templates/deform/readonly/chosen-select.pt:3
+msgid "Selected"
+msgstr "Selectionné"
+
+#: src/mobyle2/core/templates/deform/readonly/chosen-select.pt:4
+msgid "Not Selected"
+msgstr "Pas selectionné"
+
 #: src/mobyle2/core/templates/includes/breadcrumbs.pt:3
 msgid "You are here"
 msgstr "Vous êtes ici"
@@ -449,6 +500,10 @@ msgstr "Bienvenu"
 msgid "Logout"
 msgstr "Se déconnecter"
 
+#: src/mobyle2/core/templates/project/programs_home.pt:5
+msgid "view program ${a}"
+msgstr "Voire le programme ${a}"
+
 #: src/mobyle2/core/templates/project/project_add.pt:3
 msgid "Project configuration"
 msgstr "Configuration du projet"
@@ -457,37 +512,74 @@ msgstr "Configuration du projet"
 msgid "Projects configuration"
 msgstr "Configuration des projets"
 
-#: src/mobyle2/core/templates/project/project_home.pt:5
-msgid "List projects"
-msgstr "Liste des projets"
+#: src/mobyle2/core/templates/project/project_role.pt:3
+#: src/mobyle2/core/templates/user/user_acl.pt:3
+msgid "Access managment"
+msgstr "Administrer les accès"
+
+#: src/mobyle2/core/templates/project/server_home.pt:5
+msgid "view services"
+msgstr "voire les services"
+
+#: src/mobyle2/core/templates/project/server_home.pt:6
+msgid "view workflows"
+msgstr "Voire les workflows"
+
+#: src/mobyle2/core/templates/project/server_home.pt:7
+msgid "view viewers"
+msgstr "Voire les viewers"
+
+#: src/mobyle2/core/templates/project/server_home.pt:8
+msgid "view programs"
+msgstr "Voire les programmes"
+
+#: src/mobyle2/core/templates/project/servers_home.pt:5
+msgid "view server ${a}"
+msgstr "Voire le serveur ${a}"
+
+#: src/mobyle2/core/templates/project/services_home.pt:5
+msgid "view program ${a} (${c.items[a].context.type})"
+msgstr "voire le program ${a}  (${c.items[a].context.type})"
+
+#: src/mobyle2/core/templates/project/viewers_home.pt:5
+msgid "view viewer ${a}"
+msgstr "voire le viever ${a}"
+
+#: src/mobyle2/core/templates/project/workflows_home.pt:5
+msgid "view workflow ${a}"
+msgstr "voire le workflow ${a}"
 
 #: src/mobyle2/core/templates/root/reload.pt:3
 msgid "Are you sure you want to reload the webserver ?"
 msgstr "Etes vous sur de vouloir recharger le serveur web ?"
 
-#: src/mobyle2/core/templates/user/user_acl.pt:3
-msgid "Access managment"
-msgstr "Administrer les accès"
+#: src/mobyle2/core/templates/user/user_group.pt:3
+msgid "Group managment"
+msgstr "Administrer les groupes"
+
+#: src/mobyle2/core/templates/user/user_group.pt:10
+msgid "Existing groups"
+msgstr "Groupes éxistants"
 
 #: src/mobyle2/core/templates/user/user_home.pt:3
 msgid "Users and groups access managment"
 msgstr "Administrer les acces des utilisateurs et des groupes"
 
-#: src/mobyle2/core/templates/user/user_home.pt:8
+#: src/mobyle2/core/templates/user/user_home.pt:5
+msgid "Manage users"
+msgstr "Administrer les utilisateurs"
+
+#: src/mobyle2/core/templates/user/user_home.pt:7
 msgid "Manage global roles"
 msgstr "Administrer les roles globaux"
 
-#: src/mobyle2/core/templates/user/user_home.pt:9
+#: src/mobyle2/core/templates/user/user_home.pt:8
 msgid "Manage permissions"
 msgstr "Administrer les permissions"
 
-#: src/mobyle2/core/templates/user/user_home.pt:10
+#: src/mobyle2/core/templates/user/user_home.pt:9
 msgid "Assign permission to roles"
 msgstr "Attribuer des permissions aux roles"
-
-#: src/mobyle2/core/templates/user/user_home.pt:11
-msgid "Assign roles to user or group"
-msgstr "Attribuer des roles à des utilisateurs ou des groupes"
 
 #: src/mobyle2/core/templates/user/user_permission.pt:3
 msgid "Permission managment"
@@ -497,58 +589,90 @@ msgstr "Administrer les permissions"
 msgid "Role managment"
 msgstr "Administrer les roles"
 
-#: src/mobyle2/core/views/auth.py:79 src/mobyle2/core/views/auth.py:269
-#: src/mobyle2/core/views/auth.py:405 src/mobyle2/core/views/project.py:37
-#: src/mobyle2/core/views/user.py:79 src/mobyle2/core/views/user.py:173
-#: src/mobyle2/core/views/user.py:239 src/mobyle2/core/views/user.py:328
+#: src/mobyle2/core/templates/user/user_user.pt:3
+msgid "User managment"
+msgstr "Administrer les utilisateurs"
+
+#: src/mobyle2/core/templates/user/user_user.pt:5
+msgid "Add a user"
+msgstr "Ajouter un utilisateur"
+
+#: src/mobyle2/core/templates/user/user_user.pt:10
+msgid "Existing users"
+msgstr "Utilisateurs éxistant"
+
+#: src/mobyle2/core/views/__init__.py:230 src/mobyle2/core/views/user.py:403
+#: src/mobyle2/core/views/user.py:526 src/mobyle2/core/views/user.py:564
+#: src/mobyle2/core/views/user.py:705 src/mobyle2/core/views/user.py:746
+msgid "Groups"
+msgstr "Groupes"
+
+#: src/mobyle2/core/views/__init__.py:242 src/mobyle2/core/views/auth.py:88
+#: src/mobyle2/core/views/auth.py:291 src/mobyle2/core/views/auth.py:435
+#: src/mobyle2/core/views/project.py:53 src/mobyle2/core/views/project.py:227
+#: src/mobyle2/core/views/project.py:267 src/mobyle2/core/views/user.py:77
+#: src/mobyle2/core/views/user.py:211 src/mobyle2/core/views/user.py:276
+#: src/mobyle2/core/views/user.py:342 src/mobyle2/core/views/user.py:461
+#: src/mobyle2/core/views/user.py:598 src/mobyle2/core/views/user.py:774
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/mobyle2/core/views/auth.py:123 src/mobyle2/core/views/project.py:23
+#. Default: info
+#: src/mobyle2/core/views/__init__.py:287 src/mobyle2/core/views/user.py:818
+msgid "Role modified"
+msgstr "Role Modifé"
+
+#: src/mobyle2/core/views/__init__.py:294
+#, python-format
+msgid "Something went wrongwhile modifying project: %s"
+msgstr "Quelquechose s'est mal passé en sauvant vos paramêtres: %s"
+
+#: src/mobyle2/core/views/auth.py:140 src/mobyle2/core/views/project.py:36
+#: src/mobyle2/core/views/user.py:577
 msgid "Name"
 msgstr "Nom"
 
-#: src/mobyle2/core/views/auth.py:124 src/mobyle2/core/views/project.py:24
+#: src/mobyle2/core/views/auth.py:143 src/mobyle2/core/views/project.py:39
 msgid "Backend description"
 msgstr "Description de la méthode"
 
-#: src/mobyle2/core/views/auth.py:125
+#: src/mobyle2/core/views/auth.py:146
 msgid "Enabled"
 msgstr "Activé"
 
-#: src/mobyle2/core/views/auth.py:125
+#: src/mobyle2/core/views/auth.py:147
 msgid "Is this backend enabled ?"
 msgstr "Est ce que cette méthode est activée ?"
 
-#: src/mobyle2/core/views/auth.py:131
+#: src/mobyle2/core/views/auth.py:153
 msgid "Authentication backend"
 msgstr "Méthode d'identification"
 
-#: src/mobyle2/core/views/auth.py:136 src/mobyle2/core/views/auth.py:143
+#: src/mobyle2/core/views/auth.py:157 src/mobyle2/core/views/auth.py:164
 msgid "Host"
 msgstr "Hote"
 
-#: src/mobyle2/core/views/auth.py:137 src/mobyle2/core/views/auth.py:144
+#: src/mobyle2/core/views/auth.py:158 src/mobyle2/core/views/auth.py:165
 msgid "Port"
 msgstr "Port"
 
-#: src/mobyle2/core/views/auth.py:138
+#: src/mobyle2/core/views/auth.py:159
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/mobyle2/core/views/auth.py:139
+#: src/mobyle2/core/views/auth.py:160 src/mobyle2/core/views/user.py:571
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/mobyle2/core/views/auth.py:140
+#: src/mobyle2/core/views/auth.py:161
 msgid "Database"
 msgstr "Base de données"
 
-#: src/mobyle2/core/views/auth.py:145
+#: src/mobyle2/core/views/auth.py:167
 msgid "Use SSL?"
 msgstr "Utiliser le chiffrage SSL ?"
 
-#: src/mobyle2/core/views/auth.py:148
+#: src/mobyle2/core/views/auth.py:170
 msgid ""
 "Base dn mask to connect as in the form \"cn=USERID,ou=people\", ex: "
 "\"cn=USERID,o=paster,dc=paris,dc=net. USERID is the placeholder for the "
@@ -560,41 +684,40 @@ msgstr ""
 "par le login\"\n"
 "\"entré par l'utilisateur."
 
-#: src/mobyle2/core/views/auth.py:157
+#: src/mobyle2/core/views/auth.py:179
 msgid "API consumer"
 msgstr "Clé d'API"
 
-#: src/mobyle2/core/views/auth.py:158
+#: src/mobyle2/core/views/auth.py:180
 msgid "API consumer secret"
 msgstr "password lié à la clé d'API"
 
-#: src/mobyle2/core/views/auth.py:161
+#: src/mobyle2/core/views/auth.py:183
 msgid "Openid Realm"
 msgstr "OpenID Realm"
 
-#: src/mobyle2/core/views/auth.py:164
+#: src/mobyle2/core/views/auth.py:186
 msgid "API Scope"
 msgstr "API Scope"
 
-#: src/mobyle2/core/views/auth.py:167
+#: src/mobyle2/core/views/auth.py:189
 msgid "Service Realm"
 msgstr "URL du service"
 
-#: src/mobyle2/core/views/auth.py:170
+#: src/mobyle2/core/views/auth.py:192
 msgid "Full path to the file"
 msgstr "Chemin complet vers le fichier"
 
-#: src/mobyle2/core/views/auth.py:236 src/mobyle2/core/views/auth.py:243
+#: src/mobyle2/core/views/auth.py:259 src/mobyle2/core/views/auth.py:265
 msgid "Authentication backend details"
 msgstr "Détails de la méthode d'identification"
 
-#: src/mobyle2/core/views/auth.py:301
+#: src/mobyle2/core/views/auth.py:324
 msgid "A new authentication backend has been created"
 msgstr "Une nouvelle méthode d'identification a été crée"
 
-#: src/mobyle2/core/views/auth.py:307 src/mobyle2/core/views/auth.py:372
-#: src/mobyle2/core/views/auth.py:418 src/mobyle2/core/views/project.py:70
-#: src/mobyle2/core/views/project.py:118
+#: src/mobyle2/core/views/auth.py:330 src/mobyle2/core/views/auth.py:399
+#: src/mobyle2/core/views/auth.py:449
 msgid ""
 "You can try to change some settings because an exception occured while "
 "adding your new authbackend : ${msg}"
@@ -603,64 +726,165 @@ msgstr ""
 "s'est produite pendant l'enregistrement de votre nouvelle méthode "
 "d'identification : ${msg}"
 
-#: src/mobyle2/core/views/auth.py:365
+#: src/mobyle2/core/views/auth.py:392
 msgid "Backend has been updated"
 msgstr "La méthode d'identification a été mise à jour"
 
-#: src/mobyle2/core/views/auth.py:401
+#: src/mobyle2/core/views/auth.py:431
 msgid "delete me"
 msgstr "Supprimer moi"
 
-#: src/mobyle2/core/views/project.py:64
+#: src/mobyle2/core/views/auth.py:446
+msgid "Authentication backend deleted"
+msgstr "Méthode d'identification supprimée"
+
+#: src/mobyle2/core/views/auth.py:470
+msgid "Access denied to this section"
+msgstr "Accès refusé pours cette section"
+
+#: src/mobyle2/core/views/project.py:81
 msgid "A new project has been created"
 msgstr "Un nouveau projet a été créé"
 
-#: src/mobyle2/core/views/project.py:112
-msgid "Project has been updated"
-msgstr "Le projet a été mis à jour"
+#: src/mobyle2/core/views/project.py:87
+msgid ""
+"You can try to change some settings because an exception occured while "
+"adding your new project : ${msg}"
+msgstr ""
+"Vous pouvez essayer de changer quelques paramêtres car une exception "
+"s'est produite pendant l'enregistrement de votre nouveeau projet : ${msg}"
 
-#: src/mobyle2/core/views/user.py:138
+#: src/mobyle2/core/views/project.py:111
+msgid "Public projects"
+msgstr "Projets publiques"
+
+#: src/mobyle2/core/views/project.py:134
+msgid "My projects"
+msgstr "Mes projets"
+
+#: src/mobyle2/core/views/project.py:139
+msgid "Projects where i have activities"
+msgstr "Les projets où j'ai une activité"
+
+#: src/mobyle2/core/views/project.py:183
+msgid "Project has been updated"
+msgstr "Le projet à été mis à jour"
+
+#: src/mobyle2/core/views/project.py:189
+msgid ""
+"You can try to change some settings because an exception occured while "
+"editing your authbackend: ${msg}"
+msgstr ""
+"Vous pouvez essayer de changer quelques paramêtres car une exception "
+"s'est produite pendant l'enregistrement de votre nouvelle méthode "
+"d'identification : ${msg}"
+
+#: src/mobyle2/core/views/project.py:222
+msgid "View projects of a member"
+msgstr "Voire les projets d'un membre"
+
+#: src/mobyle2/core/views/project.py:226
+msgid "Project management"
+msgstr "Administration du projet"
+
+#: src/mobyle2/core/views/project.py:261 src/mobyle2/core/views/user.py:270
+msgid "Role name"
+msgstr "Nom du role"
+
+#: src/mobyle2/core/views/project.py:266 src/mobyle2/core/views/user.py:275
+msgid "Role description"
+msgstr "Description de la méthode"
+
+#: src/mobyle2/core/views/project.py:281 src/mobyle2/core/views/user.py:171
+#: src/mobyle2/core/views/user.py:225 src/mobyle2/core/views/user.py:290
+#: src/mobyle2/core/views/user.py:357
+msgid "Items have been deleted"
+msgstr "Les éléments ont été supprimés"
+
+#: src/mobyle2/core/views/user.py:136
 #, python-format
 msgid "Something goes wrong while saving access parameters: %s"
 msgstr "Quelquechose s'est mal passé en sauvant vos paramêtres: %s"
 
-#: src/mobyle2/core/views/user.py:147
+#: src/mobyle2/core/views/user.py:145
 msgid "Access parameters have been saved"
 msgstr "Les paramêtres d'accès ont été sauvegardés"
 
-#: src/mobyle2/core/views/user.py:167
-msgid "Role name"
-msgstr "Nom du role"
+#: src/mobyle2/core/views/user.py:204
+msgid "Group name"
+msgstr "Nom du groupe"
 
-#: src/mobyle2/core/views/user.py:172
-msgid "Role description"
-msgstr "Description de la méthode"
+#: src/mobyle2/core/views/user.py:210
+msgid "Group description"
+msgstr "Description du groupe"
 
-#: src/mobyle2/core/views/user.py:187 src/mobyle2/core/views/user.py:254
-msgid "Items have been deleted"
-msgstr "Les éléments ont été supprimés"
-
-#: src/mobyle2/core/views/user.py:233
+#: src/mobyle2/core/views/user.py:336
 msgid "Permission name"
 msgstr "Nom de la permission"
 
-#: src/mobyle2/core/views/user.py:238
+#: src/mobyle2/core/views/user.py:341
 msgid "Permission description"
 msgstr "Description de la méthode"
 
-#: src/mobyle2/core/views/user.py:295
-msgid "Groups"
-msgstr "Groupes"
+#: src/mobyle2/core/views/user.py:441 src/mobyle2/core/views/user.py:448
+msgid "Group"
+msgstr "Groupe"
 
-#: src/mobyle2/core/views/user.py:302
-msgid "Ressources"
-msgstr "Ressources"
+#: src/mobyle2/core/views/user.py:456 src/mobyle2/core/views/user.py:769
+#, fuzzy
+msgid "Description"
+msgstr "Description de la méthode :"
 
-#: src/mobyle2/core/views/user.py:311 src/mobyle2/core/views/user.py:318
-msgid "Ressource type"
-msgstr "Type de ressource"
+#: src/mobyle2/core/views/user.py:460
+msgid "Edit group"
+msgstr "Editer le groupe"
 
-#: src/mobyle2/core/views/user.py:327
-msgid "Attribute roles"
-msgstr "Attribuer les roles"
+#. Default: info
+#: src/mobyle2/core/views/user.py:501
+msgid "Group modified"
+msgstr "Groupe modifié"
+
+#: src/mobyle2/core/views/user.py:508
+#, python-format
+msgid "Something went wrongwhile modifying group: %s"
+msgstr "Quelquechose s'est mal passé en sauvant votre groupe: %s"
+
+#: src/mobyle2/core/views/user.py:583
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#: src/mobyle2/core/views/user.py:589
+msgid "Email"
+msgstr "Mèl"
+
+#: src/mobyle2/core/views/user.py:593
+msgid "Edit user"
+msgstr "Editer un utilisateur"
+
+#: src/mobyle2/core/views/user.py:595
+msgid "Add user"
+msgstr "Ajouter un utilisateur"
+
+#. Default: info
+#: src/mobyle2/core/views/user.py:654
+msgid "User modified"
+msgstr "L'utilisateur a été modifié"
+
+#: src/mobyle2/core/views/user.py:661
+#, python-format
+msgid "Something went wrongwhile modifying user: %s"
+msgstr "Quelquechose s'est mal passé en sauvant l'utilisateur: %s"
+
+#: src/mobyle2/core/views/user.py:678
+msgid "User was created"
+msgstr "L'utilisateur a été créé"
+
+#: src/mobyle2/core/views/user.py:754
+msgid "Role"
+msgstr "Role"
+
+#: src/mobyle2/core/views/user.py:825
+#, python-format
+msgid "Something went wrongwhile modifying role: %s"
+msgstr "Quelquechose s'est mal passé en sauvant vos paramêtres d'accès: %s"
 
