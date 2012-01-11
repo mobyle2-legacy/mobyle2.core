@@ -432,7 +432,7 @@ class Delete(AuthView):
         params = self.get_base_params()
         request = self.request
         params['ab'] = ab = self.request.context.ab
-        form = w.Form(request, authbackend_delete_schema(), buttons=(_('Send'),), use_ajax=True)
+        form = w.Form(request, authbackend_delete_schema(), buttons=(_('Send'),))
         params['f_content'] = form.render()
         if request.method == 'POST':
             controls = request.POST.items()
@@ -443,6 +443,7 @@ class Delete(AuthView):
                     session.delete(ab)
                     self.request.registry.notify(RegenerateVelruseConfigEvent(self.request))
                     session.commit()
+                    self.request.session.flash(_('Authentication backend deleted'), 'error')
                     return HTTPFound(location=auths_list)
                 except Exception, e:
                     message = _(u'You can try to change some '
