@@ -1,0 +1,8 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    Services home
+    <ul tal:repeat="a c.items">
+      <li><a i18n:translate="" href="${u(c.items[a])}">view program ${a} (${c.items[a].context.type})</a></li>
+    </ul>   
+  </metal>
+</metal>

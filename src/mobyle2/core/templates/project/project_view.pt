@@ -4,5 +4,8 @@
     <a tal:condition="can_editroles" class="edit roles" tal:attributes="href python:u(c)+'@@role'">Access control</a>
     <p><strong>Name: </strong>${c.project.name}</p>
     <p><strong>Description: </strong>${c.project.description}</p>
+    <ul>
+      <li><a href="${u(c)}servers">view servers</a></li>
+    </ul>
   </metal>
 </metal>

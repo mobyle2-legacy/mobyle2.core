@@ -32,7 +32,7 @@ class Server(Base):
     name = Column(Unicode(50), unique=True)
     url = Column(Unicode(255))
     help_mail = Column(Unicode(255))
-    project = relationship('Project', backref='implied_service', secondary='projects_servers', uselist=False)
+    projects = relationship('Project', backref='implied_service', secondary='projects_servers')
 
     @classmethod
     def get_local_server(self):
@@ -60,32 +60,6 @@ class ProjectServer(Base):
         self.project = project
         self.server = server
 
-class ServerRessource(object):
-    def __init__(self, resource, parent):
-        self.resource = resource
-        self.__name__ = "%s"%resource.id
-        self.__parent__ = parent
-
-
-class Servers:
-
-    @property
-    def items(self):
-        return OrderedDict(
-            [("%s"%a.id,
-              ServerRessource(a, self))
-             for a in self.session.query(
-                 Server).all()])
-
-    def __init__(self, name, parent):
-        self.__name__ = name
-        self.__parent__ = parent
-        self.__description__ = _('Remote Servers')
-        self.request = parent.request
-        self.session = parent.session
-
-    def __getitem__(self, item):
-        return self.items.get(item, None)
 
 def create_local_server(registry=None):
     server_name = LOCAL_SERVER_NAME

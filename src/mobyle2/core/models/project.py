@@ -21,6 +21,8 @@ from pyramid.security import (
 from mobyle2.core.basemodel import P, R, SecuredObject
 from mobyle2.core.models import Base, DBSession as session
 from mobyle2.core.utils import _, mobyle2_settings
+from mobyle2.core.models.server import Server, ProjectServer
+from mobyle2.core.models.service import Service
 
 T, F = True, False
 PUBLIC_PROJECT_NAME = 'Public project'
@@ -81,8 +83,7 @@ class Project(Base):
     usersroles = relationship('ProjectUserRole', backref='projets')
     groupsrolesF = relationship('ProjectGroupRole', backref='projects')
     servers = relationship('Server', backref='implied_project', secondary='projects_servers')
-
-    #services = relationship("Service", backref="project", uselist=True)
+    services = relationship('Service', backref='implied_project')
 
     @classmethod
     def _projects_dir(self):
@@ -92,18 +93,24 @@ class Project(Base):
     def projects_dir(self, registry=None):
         return mobyle2_settings('projects_dir', registry=registry)
 
-
     def object_acls(self, acls):
         for a in default_project_acls:
             self.append_acl(acls, a)
 
-    def __init__(self, name, description, owner, directory=None, services=None):
+    def __init__(self, name, description, owner, directory=None):
         self.name = name
         self.description = description
         self.owner = owner
         self.directory = directory
-        if services is not None:
-            self.services.extend(services)
+        # !IMPORTANT! Call autolink on localhost server when we traverse /project/servers
+        # link here localhost node
+        localhost = Server.get_local_server()
+        import pdb;pdb.set_trace()  ## Breakpoint ##
+        if not localhost in self.servers:
+            self.servers.append(localhost)
+            session.add(self)
+            session.commit()
+
 
     @classmethod
     def logger(self):
@@ -209,40 +216,72 @@ class Project(Base):
         if len(public_user.projects): p = public_user.projects[0]
         return p
 
+    @property
+    def is_public(self):
+        # leave import there for circular problems
+        from mobyle2.core.models import user
+        public_user = user.User.search(PUBLIC_PROJECT_USERNAME)
+        return self.user.id == public_user.id
+
+    def get_services(self, service_type=None, server=None):
+        services = []
+        if server is not None:
+            servers = [server]
+        else:
+            servers = self.servers
+        for s in servers:
+            kw = dict(server=s, project=self)
+            if service_type is not None:
+                kw['type'] = service_type
+            svcs = self.session.query(Service).filter_by(**kw).all()
+            for sv in svcs:
+                if not sv in services:
+                    services.append(sv)
+        return services
+
+    def get_services_by_classification(self):
+        """To_implement"""
+        services = self.get_services()
+        return services
+
+    def get_services_by_package(self):
+        """To_implement"""
+        services = self.get_services()
+        return services
+
+
 class ProjectRessource(SecuredObject):
     __managed_type__ = 'project'
     __managed_roles__ = default_project_roles
     __acl_groups__ = "ProjectGroupRole"
     __acl_users__ = "ProjectUserRole"
     __default_acls__  = default_project_acls
-    def __init__(self, p, parent):
-        self.project = p
-        self.__name__ = "%s" % p.id
-        self.__parent__ = parent
-        SecuredObject.__init__(self, self.project)
+    _items = None
+
+    @property
+    def items(self):
+        if not self._items:
+            self._items = OrderedDict()
+            try:
+                self.items['servers'] = Servers(parent=self, name='servers')
+            except Exception, e:
+                self.logger.error('Cant load servers : %s' % e)
+        return self._items
+
+    def __init__(self, *a, **k):
+        SecuredObject.__init__(self, *a, **k)
+        # compatibility
+        self.project = self.context
 
 
 class Projects(SecuredObject):
     __default_acls__  = default_projects_acls
+    __description__ = _("Projects")
     @property
     def items(self):
-        self._items = OrderedDict([("%s" % a.id, ProjectRessource(a, self))
+        self._items = OrderedDict([("%s" % a.id, ProjectRessource(a, self, "%s" % a.id))
                                    for a in self.session.query(Project).all()])
         return self._items
-
-    def __init__(self, name, parent):
-        self.context = self
-        self.__name__ = name
-        self.__parent__ = parent
-        self.__description__ = _("Projects")
-        self.request = parent.request
-        self.session = parent.session
-        SecuredObject.__init__(self)
-
-    def __getitem__(self, item):
-        return self.items.get(item, None)
-
-
 
 
 #class ProjectAcl(Base):
@@ -334,5 +373,85 @@ def create_public_workspace(registry=None):
         usr.email = user_public_email
         usr.login = username
         transaction.commit()
+
+
+class ServiceRessource(SecuredObject): 
+    """."""
+
+
+class WorkflowResource(ServiceRessource):
+    """."""
+
+
+class ProgramResource(ServiceRessource):
+    """."""
+
+
+class ViewerResource(ServiceRessource):
+    """."""
+
+
+class Services(SecuredObject):
+    __description__ = _('Services')
+    type = None
+    _items = None
+    @property
+    def items(self):
+        tmap = {
+            'workflow': WorkflowResource,
+            'program': ProgramResource,
+            'viewer': ViewerResource,
+        }
+        if not self._items:
+            parent = self.__parent__
+            server  = parent.context
+            project  = parent.__parent__.__parent__.context
+            ditems = project.get_services(server=server,service_type=self.type)
+            Res = tmap.get(self.type, ServiceRessource)
+            self._items = OrderedDict([('%s' % a.id,
+                                        Res(a, self, '%s' % a.id))
+                                       for a in ditems])
+        return self._items
+
+
+class Workflows(Services):
+    type = 'workflow'
+    __description__ = _('Workflows')
+
+
+class Programs(Services):
+    type = 'program'
+    __description__ = _('Programs')
+
+
+class Viewers(Services):
+    type = 'viewer'
+    __description__ = _('Viewers')
+
+
+class ServerRessource(SecuredObject):
+    _items = None
+    @property
+    def items(self):
+        if not self._items:
+            self._items = OrderedDict()
+            try:
+                self._items['services'] = Services(name='services',  parent=self)
+                self._items['programs'] = Programs(name='programs',  parent=self)
+                self._items['workflows'] = Workflows(name='workflows',  parent=self)
+                self._items['viewers'] = Viewers(name='viewers', parent=self)
+            except Exception, e:
+                self.logger.error(
+                    'Cant load services for : %s %s' % ( self.__name__, e))
+        return self._items
+
+class Servers(SecuredObject):
+    __description__ = 'Servers'
+    @property
+    def items(self):
+        items = OrderedDict([("%s" % a.id,
+                              ServerRessource(a, self, "%s" % a.id))
+                             for a in self.__parent__.context.servers])
+        return items
 
 

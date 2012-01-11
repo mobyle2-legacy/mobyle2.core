@@ -33,6 +33,23 @@ mapping_apps = OrderedDict([
 
 
 class Root(SecuredObject):
+    __description__ = _('Home')
+    _items = None
+    @property
+    def items(self):
+        if not self._items:
+            request = self.request
+            self._items = OrderedDict()
+            maps = deepcopy(mapping_apps)
+            is_useradmin = has_permission(P['global_useradmin'], self, request)
+            is_authadmin = has_permission(P['global_authadmin'], self, request)
+            if is_useradmin:
+                maps['auths'] = AuthenticationBackends
+            if is_authadmin:
+                maps['users'] = Users
+            for item in maps:
+                self._items[item] = maps[item](parent=self, name=item)
+        return self._items
 
     def object_acls(self, acls):
         perms = Permission.all()
@@ -47,28 +64,7 @@ class Root(SecuredObject):
                 if not acl in acls:
                     self.append_acl(acls, acl)
 
-    def __init__(self, request):
-        self.__name__ = ''
-        self.__description__ = _('Home')
-        self.__parent__ = None
-        self.request = request
-        self.session = DBSession()
-        self.items = OrderedDict()
-        maps = deepcopy(mapping_apps)
-        SecuredObject.__init__(self)
-        is_useradmin = has_permission(P['global_useradmin'], self, request)
-        is_authadmin = has_permission(P['global_authadmin'], self, request)
-        if is_useradmin:
-            maps['auths'] = AuthenticationBackends
-        if is_authadmin:
-            maps['users'] = Users
-        for item in maps:
-            self.items[item] = maps[item](item, self)
-
-    def __getitem__(self, item):
-        return self.items.get(item, None)
-
 def root_factory(request):
-    return Root(request)
+    return  Root(None, None, request = request, session = DBSession())
 
 # vim:set et sts=4 ts=4 tw=80:

@@ -17,6 +17,7 @@ from pyramid.decorator import reify
 
 
 from mobyle2.core.utils import _
+from mobyle2.core.basemodel import SecuredObject
 from mobyle2.core.models import Base, DBSession as session
 from mobyle2.core.models.registry import get_registry_key , set_registry_key
 from mobyle2.core.basemodel import (
@@ -97,31 +98,24 @@ class AuthenticationBackend(Base):
         self.username = username
         self.use_ssl = use_ssl
 
-class AuthenticationBackendRessource(object):
-    def __init__(self, ab, parent):
-        self.ab = ab
-        self.__name__ = "%s"%ab.id
-        self.__parent__ = parent
+class AuthenticationBackendRessource(SecuredObject):
+    def __init__(self, *a, **kw):
+        SecuredObject.__init__(self, *a, **kw)
+        self.ab = self.context
 
-class AuthenticationBackends:
-
+class AuthenticationBackends(SecuredObject):
+    __description__ = _('Authentication backends') 
+    _items = None
     @property
     def items(self):
-        return OrderedDict(
+        if not self._items:
+            self._items =  OrderedDict(
             [("%s"%a.id,
-              AuthenticationBackendRessource(a, self))
+              AuthenticationBackendRessource(a, self, '%s'% a.id))
              for a in self.session.query(
-                 AuthenticationBackend).all()])
+                 AuthenticationBackend).all()]) 
+        return self._items
 
-    def __init__(self, name, parent):
-        self.__name__ = name
-        self.__parent__ = parent
-        self.__description__ = _('Authentication backends')
-        self.request = parent.request
-        self.session = parent.session
-
-    def __getitem__(self, item):
-        return self.items.get(item, None)
 
 def self_registration():
     return get_registry_key('auth.self_registration')

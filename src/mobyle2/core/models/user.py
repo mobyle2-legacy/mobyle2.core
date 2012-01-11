@@ -11,6 +11,7 @@ from pyramid.decorator import reify
 
 
 from mobyle2.core.models.auth import Role
+from mobyle2.core.basemodel import SecuredObject
 
 
 from mobyle2.core.utils import _
@@ -114,28 +115,20 @@ class UserRole(Base):
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
-
-class UserRessource(object):
-    def __init__(self, p, parent):
-        self.user = p
-        self.__name__ = "%s"%p.id
-        self.__parent__ = parent
+class UserRessource(SecuredObject):
+    def __init__(self, *args, **kw):
+        SecuredObject.__init__(self, *args, **kw)
+        self.user = self.context
 
 
-class Users:
+class Users(SecuredObject):
+    __description__ = _("Users") 
+    _items = None
     @property
     def items(self):
-        self._items = OrderedDict([("%s"%a.id, UserRessource(a, self))
-                                   for a in self.session.query(User).all()])
+        if not self._items:
+            self._items = OrderedDict([("%s"%a.id, UserRessource(a, self, "%s"%id))
+                                       for a in self.session.query(User).all()])
         return self._items
 
-    def __init__(self, name, parent):
-        self.__name__ = name
-        self.__parent__ = parent
-        self.__description__ = _("Users")
-        self.request = parent.request
-        self.session = parent.session
-
-    def __getitem__(self, item):
-        return self.items.get(item, None)
 

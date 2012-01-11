@@ -1,0 +1,5 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    Workflow home
+  </metal>
+</metal>

@@ -1,0 +1,11 @@
+<metal metal:use-macro="main.macros['main']">
+  <metal metal:fill-slot="content_body">
+    Server home
+    <ul>
+      <li><a i18n:translate="" href="${u(c)}services">view services</a></li>
+      <li><a i18n:translate="" href="${u(c)}workflows">view workflows</a></li>
+      <li><a i18n:translate="" href="${u(c)}viewers">view viewers</a></li>
+      <li><a i18n:translate="" href="${u(c)}programs">view programs</a></li>
+    </ul>
+  </metal>
+</metal>

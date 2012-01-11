@@ -40,47 +40,32 @@ class Service(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(100), unique=True)
     server_id = Column(Integer, ForeignKey("servers.id", name="fk_service_server", use_alter=True), nullable=False)
+    project_id = Column(Integer, ForeignKey("projects.id", name="fk_service_project", use_alter=True), nullable=False)
+    description = Column(Unicode(2500),)
     package = Column(Unicode(2500), default='not read', nullable=False)
     classification = Column(Unicode(2500), default='not read', nullable=False)
     enable = Column(Boolean(), default=True, nullable=False)
     exportable = Column(Boolean(), default=False, nullable=False)
     type = Column(Enum('program', 'workflow', 'viewer', name='service_type'), default='program', nullable=False)
     server = relationship('Server', backref='service')
+    project = relationship('Project', backref='service')
 
     def __init__(self,
-                 name=None,
-                 url=None,
-                 help_mail=None,
+                 name = None,
+                 package = 'not read',
+                 classification = 'not read',
+                 enable = True,
+                 exportable = True,
+                 type = 'program',
+                 server=None,
+                 project=None,
                 ):
         self.name = name
-        self.url = url
-        self.help_mail = help_mail
-
-
-class ServiceRessource(object):
-    def __init__(self, resource, parent):
-        self.resource = resource
-        self.__name__ = "%s"%resource.id
-        self.__parent__ = parent
-
-
-class Services:
-
-    @property
-    def items(self):
-        return OrderedDict(
-            [("%s"%a.id,
-              ServiceRessource(a, self))
-             for a in self.session.query(
-                 Service).all()])
-
-    def __init__(self, name, parent):
-        self.__name__ = name
-        self.__parent__ = parent
-        self.__description__ = _('Remote Servers')
-        self.request = parent.request
-        self.session = parent.session
-
-    def __getitem__(self, item):
-        return self.items.get(item, None)
+        self.package = package
+        self.classification = classification
+        self.enable = enable
+        self.exportable = exportable
+        self.type = type
+        self.server = server
+        self.project = project
 

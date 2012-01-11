@@ -23,6 +23,7 @@ from pyramid.security import (
 
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import logging
 
 from mobyle2.core.utils import _
 
@@ -128,7 +129,30 @@ def acl_for_role_proxy_factory(self, rolename, acluser, aclgroup):
             return grp in p.list_groups
     return Proxy()
 
-class SecuredObject(object):
+
+class Traversable(object):
+    items = {}
+    def __getitem__(self, item):
+        return self.items.get(item, None)
+
+    def __init__(self, context=None, parent=None, name=None, request=None, session=None):
+        self.context = context
+        self.__parent__ = parent
+        self.__name__ = name
+        if hasattr(self, '__description__'):
+            self.__description__ = getattr(self, '__description__')
+        if parent is not None:
+            self.request = parent.request
+            self.session = parent.session
+        if request is not None:
+            self.request = request
+        if session is not None:
+            self.session = session
+        self.logger = logging.getLogger('%s.%s' % (
+            self.__class__.__module__, self.__class__.__name__))
+
+
+class SecuredObject(Traversable):
     """Base Mixin to implement object security with acl and roles mangement
     by using two separated tables containing acls for users & groups.
     You ll have an object with security related methods and proxy wrappers to manage role assigments.
@@ -236,8 +260,10 @@ class SecuredObject(object):
     __default_acls__ = []
     """Default access list, see pyramid.security acl stuff and the __acl__ method in this class"""
 
-    def __init__(self, context=None):
-        self.context = context
+    def __init__(self, context=None, parent=None, name=None, request=None, session=None):
+        if context is None:
+            context = self
+        Traversable. __init__(self, context, parent, name, request, session)
         self.acluser = self.__acl_users__
         self.aclgroup = self.__acl_groups__
         if isinstance(self.acluser, basestring):

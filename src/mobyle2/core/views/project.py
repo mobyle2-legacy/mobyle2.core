@@ -222,8 +222,8 @@ class Home(Add):
                 userwrap = UserWrap(name="user", title=_("View projects of a member"),
                                     widget = widget.SingleChosenSelectWidget(url, width='400px'),
                                     default=[], validator = v.not_existing_user, missing=tuple(),)
-            form = widget.Form(request, 
-                               ProjectManagementSchema(title=_("Project management")), 
+            form = widget.Form(request,
+                               ProjectManagementSchema(title=_("Project management")),
                                buttons=(_('Send'),), formid='view_member_projects')
         if is_a_get:
             params['form'] = form.render()
@@ -312,5 +312,52 @@ class ManageRole(Base):
             rdata.append(item)
         params['roles'] = rdata
         return render_to_response(self.template, params, request)
+
+class ServersHome(ProjectView):
+    template = '../templates/project/servers_home.pt'
+    def __call__(self):
+        form, request, context = None, self.request, self.request.context
+        is_a_get = request.method == 'GET'
+        is_a_post = request.method == 'POST'
+        params = {'view': self}
+        params.update(get_base_params(self))
+        return render_to_response(self.template, params, self.request)
+
+class ServerHome(ServersHome):
+    template = '../templates/project/server_home.pt'
+
+
+class ServicesHome(ServersHome):
+    template = '../templates/project/services_home.pt'
+
+
+class ServiceHome(ServersHome):
+    template = '../templates/project/service_home.pt'
+
+
+class WorkflowsHome(ServersHome):
+    template = '../templates/project/workflows_home.pt'
+
+
+class ProgramsHome(ServersHome):
+    template = '../templates/project/programs_home.pt'
+
+
+class ViewersHome(ServersHome):
+    template = '../templates/project/viewers_home.pt'
+
+
+class WorkflowHome(ServersHome):
+    template = '../templates/project/workflow_home.pt'
+
+
+class ProgramHome(ServersHome):
+    template = '../templates/project/program_home.pt'
+
+
+class ViewerHome(ServersHome):
+    template = '../templates/project/viewer_home.pt'
+
+
 
 # vim:set et sts=4 ts=4 tw=80:
