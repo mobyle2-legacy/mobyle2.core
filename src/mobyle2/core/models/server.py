@@ -51,8 +51,8 @@ class Server(Base):
 
 class ProjectServer(Base):
     __tablename__ = 'projects_servers'
-    project_id = Column(Integer, ForeignKey("servers.id",  name="fk_projectserver_server",  use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
-    server_id =  Column(Integer, ForeignKey("projects.id", name="fk_projectserver_project", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    project_id = Column(Integer, ForeignKey("projects.id", name="fk_projectserver_project", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True)
+    server_id =  Column(Integer, ForeignKey("servers.id",  name="fk_projectserver_server", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"),  primary_key=True) 
     project    = relationship('Project')
     server    = relationship('Server')
 
