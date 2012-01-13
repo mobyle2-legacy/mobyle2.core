@@ -1,3 +1,5 @@
+import logging
+
 from ordereddict import OrderedDict
 from mobyle2.core.models import DBSession as session, Base, metadata
 from sqlalchemy import Column
@@ -11,6 +13,7 @@ from pyramid.decorator import reify
 
 
 from mobyle2.core.models.auth import Role
+from mobyle2.core.models.project import Project
 from mobyle2.core.basemodel import SecuredObject
 
 
@@ -74,18 +77,45 @@ class User(Base):
             user = getattr(self, '_base_user_obj', None)
         return user
 
-    def __init__(self, user=None, id=None, status=None):
-        if (user is None) and (id is None):
+    def construct(self):
+       base_user = self.base_user
+       if not len(self.projects):
+            # we do not have yet an project even the default one, 
+            # creating the user project
+            will, tries, project = -1, 10 , None 
+            message = ''
+            while tries:
+                tries -= 1
+                will += 1
+                try:
+                    pname = 'Default project of %s' % base_user.username
+                    if will:
+                        pname = '%s (%s)' % (pname, will)
+                    project = Project.create(pname, _('Default project created on sign in'), self)
+                    break
+                except Exception, e:
+                    raise
+                    message = '%s' % e
+                    tries -= 1
+            if message:
+                error = 'Default project for %s cannot be created' % base_user.username
+                if message: error += ' : %s' % message
+                logging.getLogger('mobyle2.create_user').error(error)
+
+    def __init__(self, id=None, base_user=None, status=None):
+        if (base_user is None) and (id is None):
             raise Exception('must supply id or user')
         if id:
             self.id = id
-        if user:
-            self.base_user = user
+        elif base_user is not None:
+            self.id = base_user.id
+        if base_user:
+            self.base_user = base_user
         self.status = status
+        self.construct()
 
     def get_status(self):
         user_statuses.get(self.status, None)
-
 
     @classmethod
     def search(self, pattern):
