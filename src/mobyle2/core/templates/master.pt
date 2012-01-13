@@ -59,6 +59,9 @@
             <metal:define metal:define-slot="content">
               <metal:define metal:define-slot="left_slot">
                 <div class="left_slot grid_1 ">
+                  <div class="services" tal:condition="services_portlet|nothing">
+                    <metal:define metal:use-macro="services.macros['main']"/>
+                  </div>
                   &nbsp;
                 </div>
               </metal:define>

@@ -1,0 +1,3 @@
+<metal metal:define-macro="main">
+    public services
+</metal>
