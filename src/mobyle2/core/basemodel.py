@@ -21,7 +21,7 @@ from pyramid.security import (
     Authenticated,
 )
 
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, reconstructor
 from sqlalchemy.ext.declarative import declarative_base
 import logging
 
@@ -34,6 +34,23 @@ DBSession = scoped_session(sessionmaker())
 MDBSession = scoped_session(sessionmaker())
 class AbstractModel(object):
     session = DBSession
+    @reconstructor
+    def reconstruct(self):
+        """See construct"""
+        return self.construct()
+
+    def construct(self):
+        """Implement this method in subclasses if you need to run code 
+        which would have been in __init__ instead.
+        Blog extract:
+          When performing query(), 
+                SQLAlchemy does not execute __init__ of the corresponding ORM objects.
+          Thus, if you have some logic inside __init__, those won’t get executed.
+          To have the desired behavior, you need to put such logic 
+          inside a function that takes no arguments, then, attach @orm.reconstructor on it.
+
+         """
+
     @classmethod
     def by_name(cls, name):
         return cls.session.query(cls).filter(cls.name==name).one()
