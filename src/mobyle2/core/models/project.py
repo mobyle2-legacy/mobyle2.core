@@ -1,3 +1,4 @@
+import logging
 import os
 from ordereddict import OrderedDict
 
@@ -7,7 +8,7 @@ import logging
 from sqlalchemy import Unicode
 from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, synonym
 
 from pyramid.security import (
     authenticated_userid,
@@ -23,10 +24,12 @@ from mobyle2.core.models import Base, DBSession as session
 from mobyle2.core.utils import _, mobyle2_settings
 from mobyle2.core.models.server import Server, ProjectServer
 from mobyle2.core.models.service import Service
+from mobyle2.core.models.registry import get_registry_key, set_registry_key
 
 T, F = True, False
 PUBLIC_PROJECT_NAME = 'Public project'
 PUBLIC_PROJECT_USERNAME = 'Mobyle2 Public'
+PROJECTS_DIR = 'mobyle2.projects_dir'
 
 
 default_project_section_acls_mapping = {
@@ -71,13 +74,17 @@ for m, l in ((default_project_acls_mapping, default_project_acls,),
             if not acl in l:
                 l.append(acl)
 
+def projects_dir(directory=None):
+    if directory is not None:
+        set_registry_key(PROJECTS_DIR, directory)
+    return get_registry_key(PROJECTS_DIR)
 
 class Project(Base):
     __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(50), unique=True)
     description = Column(Unicode(255))
-    directory = Column(Unicode(2550))
+    _directory = Column('directory', Unicode(2550))
     user_id = Column(Integer, ForeignKey("users.id", "fk_project_user", use_alter=True))
     owner = relationship("User", primaryjoin="Project.user_id==User.id")
     usersroles = relationship('ProjectUserRole', backref='projets')
@@ -85,32 +92,27 @@ class Project(Base):
     servers = relationship('Server', backref='implied_project', secondary='projects_servers')
     services = relationship('Service', backref='implied_project')
 
-    @classmethod
-    def _projects_dir(self):
-        return mobyle2_settings('projects_dir')
-
-    @classmethod
-    def projects_dir(self, registry=None):
-        return mobyle2_settings('projects_dir', registry=registry)
-
     def object_acls(self, acls):
         for a in default_project_acls:
             self.append_acl(acls, a)
 
-    def __init__(self, name, description, owner, directory=None):
-        self.name = name
-        self.description = description
-        self.owner = owner
-        self.directory = directory
+    def construct(self, commit=True):
         # !IMPORTANT! Call autolink on localhost server when we traverse /project/servers
         # link here localhost node
         localhost = Server.get_local_server()
-        import pdb;pdb.set_trace()  ## Breakpoint ##
+        modified = False
         if not localhost in self.servers:
+            modified = True
             self.servers.append(localhost)
+        if commit and modified:
             session.add(self)
             session.commit()
-
+    
+    def __init__(self, name, description, owner):
+        self.name = name
+        self.description = description
+        self.owner = owner
+        self.construct(commit=False)
 
     @classmethod
     def logger(self):
@@ -131,12 +133,16 @@ class Project(Base):
         except Exception, e:
             logger.error('Cant remove instance %s,%s: %s' % (instance.id, instance.name, e))
 
-    def create_directory(self, registry=None):
+    @property
+    def projects_dir(self):
+        return projects_dir()
+
+    def create_directory(self):
         p = self
         if p.id is None:
             raise Exception('Project.create: invalid project state')
         subdir = "%s" % (p.id / 1000)
-        pdir = os.path.join(Project.projects_dir(registry=registry), subdir, "%s"%p.id)
+        pdir = os.path.join(p.projects_dir, subdir, "%s"%p.id)
         tries = 0
         if os.path.exists(pdir):
             while tries < 10000:
@@ -145,46 +151,38 @@ class Project(Base):
                     break
         if not os.path.exists(pdir):
             os.makedirs(pdir)
-            p.directory = pdir
+            p._directory = pdir
+            session.add(p)
             session.commit()
         else:
             raise Exception('Project directory Alrealdy exists')
 
+    def _set_directory(self, directory):
+         self._directory = directory
+    
+    def _get_directory(self):
+         directory = None
+         if self.id is not None:
+             if self.directory is None:
+                 self.create_directory()
+         if self.id is not None and self._directory is None:
+             raise Exception('project in  inconsistent state, no FS directory')
+         return directory
+    
+    directory = synonym('_directory', descriptor=property(_get_directory, _set_directory))
 
     @classmethod
-    def create(cls, name=None, description=None, user=None, directory=None, services=None, registry=None):
-        p = cls(name, description, user, directory, services)
+    def create(cls, name=None, description=None, user=None):
+        p = cls(name=name, description=description, owner=user)
         session.add(p)
-        try:
-            session.commit()
-        except Exception, e:
-            try:
-                session.rollback()
-            except Exception, e:
-                pass
-        try:
-            if p is not None:
-                p.create_directory(registry=registry)
-        except Exception, e:
-            if p is not None:
-                # try to delete a project in an inconsistent state
-                try:
-                    session.delete(p)
-                    session.commit()
-                    p = None
-                except Exception, e:
-                    try:
-                        session.rollback()
-                    except Exception, e:
-                        pass
-            raise e
         # give user the owner role
         if p is not None:
             p.make_owner(p.owner)
+            p.create_directory()
         return p
 
     def make_owner(self, user):
-        sproject = ProjectRessource(self, None)
+        sproject = ProjectRessource(self)
         sproject.proxy_roles[R['project_owner']].append_user(user)
 
     @classmethod
@@ -356,10 +354,14 @@ def create_public_workspace(registry=None):
     username = PUBLIC_PROJECT_USERNAME
     project_desc = '%s description' % project_name
     user_public_email = '%s@internal' % username
+    # imports here for circular import references 
     from apex.models import create_user, AuthUser
+    from mobyle2.core.models.user import User
     import transaction
-    usr = AuthUser.get_by_login(username)
-    if usr is None:
+    ausr = AuthUser.get_by_login(username)
+    # running mobyle2 __init__ recreate default project if deleted
+    usr = User.by_id(ausr.id)
+    if ausr is None:
         kwargs = {
             'email': user_public_email,
             'username': username,
@@ -367,11 +369,11 @@ def create_public_workspace(registry=None):
         }
         if registry:
             kwargs['registry'] = registry
-        usr = create_user(**kwargs)
+        ausr = create_user(**kwargs)
     else:
-        usr.username = username
-        usr.email = user_public_email
-        usr.login = username
+        ausr.username = username
+        ausr.email = user_public_email
+        ausr.login = username
         transaction.commit()
 
 
