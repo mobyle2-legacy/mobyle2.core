@@ -2,7 +2,7 @@
   <metal metal:fill-slot="content_body">
     Servers home
     <ul tal:repeat="a c.items">
-      <li><a i18n:translate="" href="${u(c.items[a])}">view server ${a}</a></li>
+      <li tal:define="item c.items[a]"><a i18n:translate="" href="${u(item)}">view server ${item.__description__}</a></li>
     </ul>
   </metal>
 </metal>

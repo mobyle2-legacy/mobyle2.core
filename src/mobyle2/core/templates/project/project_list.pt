@@ -6,9 +6,9 @@
         tal:define="projects projects_map[section]['items']">
         <h2 i18n:translate="">${projects_map[section]['label']}</h2>
         <ul>
-          <tal:r tal:repeat="project projects">
-            <li>
-              <a tal:attributes="href python:'%s%s'% (u(c), project.id)">
+          <tal:r tal:repeat="projectr projects">
+            <li tal:define="project projectr.context">
+              <a tal:attributes="href python:u(projectr)">
                 ${project.name} (${project.id} - ${project.description})</a>
             </li>        
           </tal:r>
