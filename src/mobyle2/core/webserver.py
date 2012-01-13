@@ -16,7 +16,7 @@ from sqlalchemy import engine_from_config
 from mobyle2.core.models import initialize_sql, DBSession
 from mobyle2.core.config import dn
 from mobyle2.core.auth import AuthTktAuthenticationPolicy, ACLAuthorizationPolicy
-from mobyle2.core.models.registry import get_registry_key
+from mobyle2.core.models.registry import get_registry_key, set_registry_key
 
 from mobyle2.core.interfaces import IMobyle2View
 
@@ -235,6 +235,10 @@ def includeme(config, debug=False):
     from mobyle2.core.models.project import create_public_workspace
     from mobyle2.core.models.server import create_local_server
     create_public_workspace(registry=config.registry)
+    # reflect configuration because we do not have the registry avalaible in the pyramid machinery
+    # at the server configuration
+    from mobyle2.core.models.project import projects_dir, PROJECTS_DIR
+    projects_dir(settings[PROJECTS_DIR])
     create_local_server(registry=config.registry)
     set_registry_key('mobyle2.needrestart', False)
     return config
