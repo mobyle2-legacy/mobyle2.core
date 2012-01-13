@@ -138,8 +138,8 @@ class List(Base):
                     projects['own']['items'].append(p)
             projects['activity'] = {'label':_('Projects where i have activities'), 'items': []}
             pr = project.Project.by_participation(usr)
-            for p in pr and p is not None:
-                if not_present(p):
+            for p in pr:
+                if not_present(p) and p is not None:
                     projects['activity']['items'].append(p)
         params['projects_map'] = projects
         return render_to_response(self.template, params, self.request)
