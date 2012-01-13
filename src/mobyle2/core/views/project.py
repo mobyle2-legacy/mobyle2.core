@@ -103,17 +103,18 @@ class Add(ProjectView):
 class List(Base):
     template = '../templates/project/project_list.pt'
     def __call__(self):
+        c = self.request.context
         request = self.request
         params = {}
         params.update(get_base_params(self))
         projects = OrderedDict()
         projects['public'] = {
             'label':_('Public projects') ,
-            'items':[project.Project.get_public_project()]}
+            'items':[c.find_context(project.Project.get_public_project())['item']]}
         def not_present(p):
             ids = []
             for k in projects:
-                if p.id in [q.id for q in projects[k]['items']]:
+                if p.id in [q.context.id for q in projects[k]['items']]:
                     return False
             return True
         # maybe we are admin and want to see projects from a particular user
@@ -135,12 +136,12 @@ class List(Base):
             pr = project.Project.by_owner(usr)
             for p in pr:
                 if not_present(p) and p is not None:
-                    projects['own']['items'].append(p)
+                    projects['own']['items'].append(c.find_context(p)['item'])
             projects['activity'] = {'label':_('Projects where i have activities'), 'items': []}
             pr = project.Project.by_participation(usr)
             for p in pr:
                 if not_present(p) and p is not None:
-                    projects['activity']['items'].append(p)
+                    projects['activity']['items'].append(c.find_context(p)['item'])
         params['projects_map'] = projects
         return render_to_response(self.template, params, self.request)
 
@@ -225,23 +226,23 @@ class Home(Add):
             form = widget.Form(request,
                                ProjectManagementSchema(title=_("Project management")),
                                buttons=(_('Send'),), formid='view_member_projects')
-        if is_a_get:
-            params['form'] = form.render()
-        if is_a_post:
-            if is_project_manager:
-                try:
-                    modified = False
-                    controls = request.POST.items()
-                    fdata  = form.validate(controls)
-                    id = fdata['userwrap'][0][0]
-                    url = "%s@@list?id=%s" % (
-                        self.request.resource_url(self.request.context),
-                        id
-                    )
-                    return HTTPFound(location=url)
-                    params['form'] = form.render()
-                except deform.exception.ValidationFailure, e:
-                    params['form'] = e.render()
+            if is_a_get:
+                params['form'] = form.render()
+            if is_a_post:
+                if is_project_manager:
+                    try:
+                        modified = False
+                        controls = request.POST.items()
+                        fdata  = form.validate(controls)
+                        id = fdata['userwrap'][0][0]
+                        url = "%s@@list?id=%s" % (
+                            self.request.resource_url(self.request.context),
+                            id
+                        )
+                        return HTTPFound(location=url)
+                        params['form'] = form.render()
+                    except deform.exception.ValidationFailure, e:
+                        params['form'] = e.render()
         params['can_add'] = can_add
         params['is_project_manager'] = is_project_manager
         return render_to_response(self.template, params, self.request)
