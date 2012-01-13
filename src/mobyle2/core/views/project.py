@@ -134,11 +134,11 @@ class List(Base):
             projects['own'] = {'label':_('My projects'), 'items': []}
             pr = project.Project.by_owner(usr)
             for p in pr:
-                if not_present(p):
+                if not_present(p) and p is not None:
                     projects['own']['items'].append(p)
             projects['activity'] = {'label':_('Projects where i have activities'), 'items': []}
             pr = project.Project.by_participation(usr)
-            for p in pr:
+            for p in pr and p is not None:
                 if not_present(p):
                     projects['activity']['items'].append(p)
         params['projects_map'] = projects

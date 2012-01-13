@@ -10,6 +10,11 @@ from signal import SIGUSR2
 class Home(Base):
     template = '../templates/root/home.pt'
 
+class Pdb(Base):
+    template = '../templates/root/home.pt'
+    def __call__(self):
+        import pdb;pdb.set_trace()  ## Breakpoint ## 
+
 class RedirectAfterLogin(Base):
     def __call__(self):
         return HTTPFound(

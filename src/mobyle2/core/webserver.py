@@ -171,6 +171,7 @@ def includeme(config, debug=False):
     config.add_static_view('mobyle2.static', settings['mobyle2.static_dir'])
     # basr urls
     config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn, permission= P['global_view'])
+    #config.add_view('%s.views.root.Pdb' % dn,    name='pdb',  context='%s.models.root.Root' % dn, permission= P['global_view'])
     # auth managment
     config.add_view('%s.views.root.Reload' % dn,  name='reload', context='%s.models.root.Root' % dn, permission = P['global_authadmin'])
     config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn, permission = P['global_authadmin'])
