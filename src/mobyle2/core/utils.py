@@ -50,3 +50,26 @@ def mobyle2_settings(key=None, default=None, registry=None):
                 apex_settings.append({k.split('.')[1]: v})
         return apex_settings 
 
+from plone.i18n.normalizer import IDNormalizer
+import unicodedata
+id_normalizer = IDNormalizer()
+
+def normalizeId(string):
+    if not isinstance(string, unicode):
+        try:
+            string = unicode(string)
+        except:
+            string = unicode(string.encode('utf-8'))
+    else:
+        string = string.encode('utf-8')
+    st = id_normalizer.normalize(
+        unicodedata.normalize('NFKD', string.decode('utf-8')).encode('ascii', 'ignore')
+    )
+    return st
+
+
+
+
+
+
+
