@@ -22,6 +22,7 @@ setup(
         "colander",
         "cryptacular",
         "Chameleon",
+        "plone.i18n",# for the I18NNormalizer utility
         "translationstring",
         "Babel",
         'zope.dottedname',
