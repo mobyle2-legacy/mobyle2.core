@@ -25,10 +25,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker, reconstructor
 from sqlalchemy.ext.declarative import declarative_base
 import logging
 
-from mobyle2.core.utils import _
-
-
-
+from mobyle2.core.utils import _, normalizeId
 
 DBSession = scoped_session(sessionmaker())
 MDBSession = scoped_session(sessionmaker())
@@ -149,15 +146,23 @@ def acl_for_role_proxy_factory(self, rolename, acluser, aclgroup):
 
 class Traversable(object):
     items = {}
+
+    def find_context(self, item):
+        for k in self.items:
+            if self.items[k].context == item:
+                return {'key': k, 'item': self.items[k]}
+
     def __getitem__(self, item):
         return self.items.get(item, None)
 
-    def __init__(self, context=None, parent=None, name=None, request=None, session=None):
+    def __init__(self, context=None, parent=None, name=None, id=None, request=None, session=None):
         self.context = context
         self.__parent__ = parent
-        self.__name__ = name
+        self.__name__ = id
         if hasattr(self, '__description__'):
             self.__description__ = getattr(self, '__description__')
+        if name:
+            self.__description__ = name
         if parent is not None:
             self.request = parent.request
             self.session = parent.session
@@ -277,10 +282,12 @@ class SecuredObject(Traversable):
     __default_acls__ = []
     """Default access list, see pyramid.security acl stuff and the __acl__ method in this class"""
 
-    def __init__(self, context=None, parent=None, name=None, request=None, session=None):
+    def __init__(self, context=None, parent=None, name=None, id=None, request=None, session=None):
+        if (id is None) and (name is not None):
+            id = normalizeId(name)
         if context is None:
             context = self
-        Traversable. __init__(self, context, parent, name, request, session)
+        Traversable.__init__(self, context=context, parent=parent, id=id, name=name, request=request, session=session)
         self.acluser = self.__acl_users__
         self.aclgroup = self.__acl_groups__
         if isinstance(self.acluser, basestring):
