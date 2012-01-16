@@ -1,3 +1,21 @@
 <metal metal:define-macro="main">
-    public services
+  <!-- TO WRAP WITH ACCORDION OR TABS (jquery ui) -->
+  <div id="treeviews">
+    <div id="classfications_services_treeview"> </div>
+    <div id="packages_services_treeview"> </div>
+  </div>
+  <script language="JavaScript">
+    $(document).ready(
+    function () {
+      $("#classfications_services_treeview")
+      .jstree({
+        "json_data" : {
+          "ajax" : {"url": "${classifications_service_treeview_url}"},
+        },
+        "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]
+        /* "plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ] */
+      })
+    }
+    );
+  </script>
 </metal>

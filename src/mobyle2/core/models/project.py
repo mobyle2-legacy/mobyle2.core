@@ -1,5 +1,6 @@
 import logging
 import os
+from copy import deepcopy
 from ordereddict import OrderedDict
 
 import shutil
@@ -21,7 +22,7 @@ from pyramid.security import (
 
 from mobyle2.core.basemodel import P, R, SecuredObject
 from mobyle2.core.models import Base, DBSession as session
-from mobyle2.core.utils import _, mobyle2_settings
+from mobyle2.core.utils import _, mobyle2_settings, normalizeId
 from mobyle2.core.models.server import Server, ProjectServer
 from mobyle2.core.models.service import Service
 from mobyle2.core.models.registry import get_registry_key, set_registry_key
@@ -107,7 +108,7 @@ class Project(Base):
         if commit and modified:
             session.add(self)
             session.commit()
-    
+
     def __init__(self, name, description, owner):
         self.name = name
         self.description = description
@@ -159,7 +160,7 @@ class Project(Base):
 
     def _set_directory(self, directory):
          self._directory = directory
-    
+
     def _get_directory(self):
          directory = None
          if self.id is not None:
@@ -168,7 +169,7 @@ class Project(Base):
          if self.id is not None and self._directory is None:
              raise Exception('project in  inconsistent state, no FS directory')
          return directory
-    
+
     directory = synonym('_directory', descriptor=property(_get_directory, _set_directory))
 
     @classmethod
@@ -231,6 +232,7 @@ class Project(Base):
             kw = dict(server=s, project=self)
             if service_type is not None:
                 kw['type'] = service_type
+                kw['enable'] = True
             svcs = self.session.query(Service).filter_by(**kw).all()
             for sv in svcs:
                 if not sv in services:
@@ -239,12 +241,28 @@ class Project(Base):
 
     def get_services_by_classification(self):
         """To_implement"""
-        services = self.get_services()
+        def node(resource=None):
+            return {'children': OrderedDict(),
+                    "resource": resource}
+        tree = node()
+        raw_services = self.get_services()
+        services = tree['children']['Services'] = node()
+        for s in raw_services:
+            if not s.type in services['children']:
+                services['children']["%ss"%s.type] = node()
+            categs = s.classification.split(':')
+            data = services['children']["%ss"%s.type]
+            for c in categs:
+                if not c in data['children']:
+                    data['children'][c] = node()
+                data = data['children'][c]
+            data['children'][s.name] = node(s)
         return services
 
     def get_services_by_package(self):
         """To_implement"""
-        services = self.get_services()
+        services = OrderedDict()
+        raw_services = self.get_services()
         return services
 
 
@@ -277,10 +295,18 @@ class Projects(SecuredObject):
     __description__ = _("Projects")
     @property
     def items(self):
-        self._items = OrderedDict([("%s" % a.id, ProjectRessource(a, self, "%s" % a.id))
-                                   for a in self.session.query(Project).all()])
+        default_p = Project.get_public_project()
+        self._items = OrderedDict()
+        for p in self.session.query(Project).all():
+            if default_p == p:
+                name = _('Public project')
+                id = None
+            else:
+                name = p.name
+                id = p.id
+            pr = ProjectRessource(p, self, id=id, name=name)
+            self._items[pr.__name__] = pr
         return self._items
-
 
 #class ProjectAcl(Base):
 #    __tablename__ = 'authentication_project_acl'
@@ -354,7 +380,7 @@ def create_public_workspace(registry=None):
     username = PUBLIC_PROJECT_USERNAME
     project_desc = '%s description' % project_name
     user_public_email = '%s@internal' % username
-    # imports here for circular import references 
+    # imports here for circular import references
     from apex.models import create_user, AuthUser
     from mobyle2.core.models.user import User
     import transaction
@@ -377,7 +403,7 @@ def create_public_workspace(registry=None):
         transaction.commit()
 
 
-class ServiceRessource(SecuredObject): 
+class ServiceRessource(SecuredObject):
     """."""
 
 
@@ -410,9 +436,10 @@ class Services(SecuredObject):
             project  = parent.__parent__.__parent__.context
             ditems = project.get_services(server=server,service_type=self.type)
             Res = tmap.get(self.type, ServiceRessource)
-            self._items = OrderedDict([('%s' % a.id,
-                                        Res(a, self, '%s' % a.id))
-                                       for a in ditems])
+            self._items = OrderedDict()
+            for a in ditems:
+                 res = Res(a, self, name=a.name)
+                 self._items[res.__name__] = res
         return self._items
 
 
@@ -451,9 +478,9 @@ class Servers(SecuredObject):
     __description__ = 'Servers'
     @property
     def items(self):
-        items = OrderedDict([("%s" % a.id,
-                              ServerRessource(a, self, "%s" % a.id))
-                             for a in self.__parent__.context.servers])
+        items = OrderedDict()
+        for a in self.__parent__.context.servers:
+            res = ServerRessource(a, self, name=a.name)
+            items[res.__name__] = res
         return items
-
 

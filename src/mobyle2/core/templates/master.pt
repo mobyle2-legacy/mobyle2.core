@@ -13,14 +13,23 @@
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
         <link rel="shortcut icon"  href="${static}/img/pylons.ico')"/>
         <metal:define metal:define-slot="js_slot">
-          <script type="text/javascript" src="${static}/js/jquery-1.7.min.js"></script>
+          <script type="text/javascript" src="${static}/js/jquery-1.7.1.min.js"></script>
           <!--<script type="text/javascript" src="${dstatic}/scripts/jquery-1.4.2.min.js"></script>-->
-          <script type="text/javascript" src="${dstatic}/scripts/deform.js"></script>
+          <tal:comment tal:condition="nothing">DEFORM</tal:comment>
           <script type="text/javascript" src="${dstatic}/scripts/jquery.form.js"></script>
-          <script type="text/javascript" src="${static}/js/jquery-ui-1.8.16.custom.min.js"></script>
+          <script type="text/javascript" src="${dstatic}/scripts/deform.js"></script>
+          <tal:comment tal:condition="nothing">jquery ui</tal:comment>
+          <script type="text/javascript" src="${static}/js/jquery-ui-1.8.17.custom.min.js"></script>
+          <tal:comment tal:condition="nothing">datatables</tal:comment>
           <script type="text/javascript" src="${static}/js/jquery.dataTables.min.js"></script>
+          <tal:comment tal:condition="nothing">JSJTREE</tal:comment>
+          <script type="text/javascript" src="${static}/js/jquery.hotkeys.js"></script>
+          <script type="text/javascript" src="${static}/js/jquery.cookie.js"></script>
+          <script type="text/javascript" src="${static}/js/jquery.jstree.js"></script>
+          <tal:comment tal:condition="nothing">chosen</tal:comment>
           <script type="text/javascript" src="${static}/js/chosen.jquery.js"></script>
           <script type="text/javascript" src="${static}/js/ajax-chosen.js"></script>
+          <tal:comment tal:condition="nothing">custom JS</tal:comment>
           <script type="text/javascript" src="${static}/js/mobyle2.js"></script>
           <script type="text/javascript"
             tal:condition="js|nothing"
@@ -28,11 +37,21 @@
             tal:attributes="src j"/>
         </metal:define>
         <metal:define metal:define-slot="css_slot">
+          <tal:comment tal:condition="nothing">DEFORM</tal:comment>
           <link rel="stylesheet" type="text/css" href="${dstatic}/css/form.css"/>
+          <tal:comment tal:condition="nothing">CHOSEN</tal:comment>
           <link rel="stylesheet" type="text/css" href="${static}/css/chosen.css"/>
+          <tal:comment tal:condition="nothing">960.js</tal:comment>
           <link rel="stylesheet" type="text/css"  href="${static}/css/grid.css"/>
-          <link rel="stylesheet" type="text/css"  href="${static}/css/ui-lightness/jquery-ui-1.8.16.custom.css"/>
+          <tal:comment tal:condition="nothing">JQUERYUI
+            <link rel="stylesheet" type="text/css"  href="${static}/css/jqueryui/ui-lightness/jquery-ui-1.8.16.custom.css"/>
+            <link rel="stylesheet" type="text/css"  href="${static}/css/jqueryui/aristo/Aristo.css"/> 
+          <link rel="stylesheet" type="text/css"  href="${static}/css/jqueryui/smoothness/jquery-ui-1.8.17.custom.css"/>
+          </tal:comment>
+            <link rel="stylesheet" type="text/css"  href="${static}/css/jqueryui/ui-lightness/jquery-ui-1.8.16.custom.css"/>
+          <tal:comment tal:condition="nothing">DATATABLES</tal:comment>
           <link rel="stylesheet" type="text/css"  href="${static}/css/datatables.css"/>
+          <tal:comment tal:condition="nothing">CUSTOM</tal:comment>
           <link rel="stylesheet" type="text/css"  href="${static}/css/mobyle2.css"/>
         </metal:define>
       </metal:define>

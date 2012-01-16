@@ -9,7 +9,7 @@ from pyramid.security import unauthenticated_userid
 from pyramid.traversal import resource_path, resource_path_tuple, traverse
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render_to_response
-from pyramid.interfaces import IAuthorizationPolicy 
+from pyramid.interfaces import IAuthorizationPolicy
 from pyramid.httpexceptions import HTTPFound
 from pyramid.threadlocal import get_current_request
 
@@ -100,6 +100,7 @@ def get_base_params(view=None,
                     main=True,
                     apex=True,
                     login=True,
+                    services_portlet=True,
                     banner=True):
     if event is not None:
         req = event['request']
@@ -118,6 +119,7 @@ def get_base_params(view=None,
     if globaltabs: p['globaltabs'] =  get_renderer('../templates/includes/globaltabs.pt').implementation()
     if breadcrumbs:p['breadcrumbs'] = get_renderer('../templates/includes/breadcrumbs.pt').implementation()
     if main:       p['main'] =        get_renderer('../templates/master.pt').implementation()
+    ########################### PORTLETS STUFF
     if login:
         if not 'came_from' in req.GET:
             if request is not None:
@@ -133,9 +135,14 @@ def get_base_params(view=None,
             p['login_params'] = {}
         p['login_form'] = get_renderer('apex:templates/apex_template.pt').implementation()
         p['login'] = get_renderer('../templates/includes/login.pt').implementation()
+    if services_portlet:
+        p['services'] = get_renderer('../templates/includes/services.pt').implementation()
+        p['classifications_service_treeview_url'] = req.resource_url(req.root) + '@@classifications_services_treeview'
+        p['packages_service_treeview_url'] = req.resource_url(req.root) + '@@packages_services_treeview'
     p['u'] = req.resource_url
     p['root'] = getattr(req, 'root', None)
     p['get_globaltabs'] = get_globaltabs
+    p['services_portlet'] = services_portlet
     p['get_breadcrumbs'] = get_breadcrumbs
     p['static'] = req.static_url('mobyle2.core:static/')[:-1]
     p['dstatic'] = req.static_url('deform:static/')[:-1]
@@ -157,9 +164,9 @@ class Base:
     @property
     def effective_principals(self):
         ap = self.request.registry.queryUtility(IAuthorizationPolicy)
-        global_p = ap.get_contextual_principals(self.request.context) 
+        global_p = ap.get_contextual_principals(self.request.context)
         return global_p
- 
+
     def __call__(self):
         params = {'view': self}
         params.update(self.get_base_params())
@@ -235,7 +242,7 @@ class ManageRole(Base):
             sh = colander.Schema(title=_('Edit role %s' % p.name),
                    validator=v.role_edit_form_global_validator)
             for r in roles:
-                field = members_factory(r, members[r]) 
+                field = members_factory(r, members[r])
                 sh.add(field)
             form = widget.Form(request,
                                sh,

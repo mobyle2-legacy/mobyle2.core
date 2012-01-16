@@ -193,6 +193,8 @@ def includeme(config, debug=False):
     config.add_view('%s.views.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.project.ProjectRessource' % dn, renderer='json', permission = P['project_editperm'])
     config.add_view('%s.views.AjaxUsersList' % dn, name='ajax_users_list',   context='%s.models.project.Projects' % dn, renderer='json', permission = P['project_editperm'])
     config.add_view('%s.views.AjaxGroupsList' % dn, name='ajax_groups_list', context='%s.models.project.Projects' % dn, renderer='json', permission = P['project_editperm'])
+    config.add_view('%s.views.project.ClassificationsServicesTreeview' % dn, name='classifications_services_treeview', context='%s.models.root.Root' % dn, renderer='json', permission = P['project_list'])
+    config.add_view('%s.views.project.PackagesServicesTreeview' % dn, name='packages_services_treeview', context='%s.models.root.Root' % dn, renderer='json', permission = P['project_list'])
     # project > servers urls
     config.add_view('%s.views.project.ServersHome' % dn, name='', context='%s.models.project.Servers' % dn, permission = P['project_view'])
     config.add_view('%s.views.project.ServerHome' % dn, name='', context='%s.models.project.ServerRessource' % dn, permission = P['project_view'])

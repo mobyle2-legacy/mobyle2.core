@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-01-11 23:25+0100\n"
+"POT-Creation-Date: 2012-01-16 10:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,136 +17,136 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: src/mobyle2/core/basemodel.py:395
+#: src/mobyle2/core/basemodel.py:419
 msgid "Anonym"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:396
+#: src/mobyle2/core/basemodel.py:420
 msgid "Internal user"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:397
+#: src/mobyle2/core/basemodel.py:421
 msgid "External user"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:398
+#: src/mobyle2/core/basemodel.py:422
 msgid "Project owner"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:399
+#: src/mobyle2/core/basemodel.py:423
 msgid "Project watcher"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:400
+#: src/mobyle2/core/basemodel.py:424
 msgid "Project contributor"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:401
+#: src/mobyle2/core/basemodel.py:425
 msgid "Project manager"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:402
+#: src/mobyle2/core/basemodel.py:426
 msgid "Portal administrator"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:442
+#: src/mobyle2/core/basemodel.py:466
 msgid "Administrative access"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:443
+#: src/mobyle2/core/basemodel.py:467
 msgid "Server management"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:444
+#: src/mobyle2/core/basemodel.py:468
 msgid "Service management"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:445
+#: src/mobyle2/core/basemodel.py:469
 msgid "Manage project permissions"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:446
+#: src/mobyle2/core/basemodel.py:470
 msgid "Users only administrative access"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:447
+#: src/mobyle2/core/basemodel.py:471
 msgid "Authentication backends only administrative access"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:448
+#: src/mobyle2/core/basemodel.py:472
 msgid "View access"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:449
+#: src/mobyle2/core/basemodel.py:473
 #: src/mobyle2/core/templates/project/project_home.pt:5
 msgid "List projects"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:450
+#: src/mobyle2/core/basemodel.py:474
 msgid "View project"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:451
+#: src/mobyle2/core/basemodel.py:475
 msgid "Create project"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:452
+#: src/mobyle2/core/basemodel.py:476
 msgid "Delete project"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:453
+#: src/mobyle2/core/basemodel.py:477
 msgid "Edit project"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:454
+#: src/mobyle2/core/basemodel.py:478
 msgid "View notebook"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:455
+#: src/mobyle2/core/basemodel.py:479
 msgid "Create notebook"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:456
+#: src/mobyle2/core/basemodel.py:480
 msgid "Delete notebook"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:457
+#: src/mobyle2/core/basemodel.py:481
 msgid "Edit notebook"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:458
+#: src/mobyle2/core/basemodel.py:482
 msgid "View service"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:459
+#: src/mobyle2/core/basemodel.py:483
 msgid "Create service"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:460
+#: src/mobyle2/core/basemodel.py:484
 msgid "Delete service"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:461
+#: src/mobyle2/core/basemodel.py:485
 msgid "dit service"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:462
+#: src/mobyle2/core/basemodel.py:486
 msgid "Run job"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:463 src/mobyle2/core/permission.py:101
+#: src/mobyle2/core/basemodel.py:487 src/mobyle2/core/permission.py:101
 msgid "View job"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:464
+#: src/mobyle2/core/basemodel.py:488
 msgid "Create job"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:465
+#: src/mobyle2/core/basemodel.py:489
 msgid "Delete job"
 msgstr ""
 
-#: src/mobyle2/core/basemodel.py:466
+#: src/mobyle2/core/basemodel.py:490
 msgid "Edit job"
 msgstr ""
 
@@ -280,10 +280,6 @@ msgstr ""
 msgid "Delete a job"
 msgstr ""
 
-#: src/mobyle2/core/subscribers.py:55
-msgid "Default project created on sign in"
-msgstr ""
-
 #: src/mobyle2/core/validator.py:15
 #, python-format
 msgid "Those roleid do not exists: %s"
@@ -351,23 +347,27 @@ msgstr ""
 msgid "Authentication backends"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:279
+#: src/mobyle2/core/models/project.py:295
 msgid "Projects"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:395
+#: src/mobyle2/core/models/project.py:302
+msgid "Public project"
+msgstr ""
+
+#: src/mobyle2/core/models/project.py:423 src/mobyle2/core/views/project.py:422
 msgid "Services"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:419
+#: src/mobyle2/core/models/project.py:448
 msgid "Workflows"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:424
+#: src/mobyle2/core/models/project.py:453
 msgid "Programs"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:429
+#: src/mobyle2/core/models/project.py:458
 msgid "Viewers"
 msgstr ""
 
@@ -375,7 +375,11 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: src/mobyle2/core/models/user.py:125 src/mobyle2/core/views/__init__.py:227
+#: src/mobyle2/core/models/user.py:94
+msgid "Default project created on sign in"
+msgstr ""
+
+#: src/mobyle2/core/models/user.py:155 src/mobyle2/core/views/__init__.py:234
 #: src/mobyle2/core/views/user.py:403 src/mobyle2/core/views/user.py:433
 #: src/mobyle2/core/views/user.py:526 src/mobyle2/core/views/user.py:705
 #: src/mobyle2/core/views/user.py:745
@@ -537,7 +541,7 @@ msgid "view programs"
 msgstr ""
 
 #: src/mobyle2/core/templates/project/servers_home.pt:5
-msgid "view server ${a}"
+msgid "view server ${item.__description__}"
 msgstr ""
 
 #: src/mobyle2/core/templates/project/services_home.pt:5
@@ -604,16 +608,16 @@ msgstr ""
 msgid "Existing users"
 msgstr ""
 
-#: src/mobyle2/core/views/__init__.py:230 src/mobyle2/core/views/user.py:403
+#: src/mobyle2/core/views/__init__.py:237 src/mobyle2/core/views/user.py:403
 #: src/mobyle2/core/views/user.py:526 src/mobyle2/core/views/user.py:564
 #: src/mobyle2/core/views/user.py:705 src/mobyle2/core/views/user.py:746
 msgid "Groups"
 msgstr ""
 
-#: src/mobyle2/core/views/__init__.py:242 src/mobyle2/core/views/auth.py:88
+#: src/mobyle2/core/views/__init__.py:249 src/mobyle2/core/views/auth.py:88
 #: src/mobyle2/core/views/auth.py:291 src/mobyle2/core/views/auth.py:435
-#: src/mobyle2/core/views/project.py:53 src/mobyle2/core/views/project.py:227
-#: src/mobyle2/core/views/project.py:267 src/mobyle2/core/views/user.py:77
+#: src/mobyle2/core/views/project.py:53 src/mobyle2/core/views/project.py:228
+#: src/mobyle2/core/views/project.py:268 src/mobyle2/core/views/user.py:77
 #: src/mobyle2/core/views/user.py:211 src/mobyle2/core/views/user.py:276
 #: src/mobyle2/core/views/user.py:342 src/mobyle2/core/views/user.py:461
 #: src/mobyle2/core/views/user.py:598 src/mobyle2/core/views/user.py:774
@@ -621,11 +625,11 @@ msgid "Send"
 msgstr ""
 
 #. Default: info
-#: src/mobyle2/core/views/__init__.py:287 src/mobyle2/core/views/user.py:818
+#: src/mobyle2/core/views/__init__.py:294 src/mobyle2/core/views/user.py:818
 msgid "Role modified"
 msgstr ""
 
-#: src/mobyle2/core/views/__init__.py:294
+#: src/mobyle2/core/views/__init__.py:301
 #, python-format
 msgid "Something went wrongwhile modifying project: %s"
 msgstr ""
@@ -747,45 +751,45 @@ msgid ""
 " your new project : ${msg}"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:111
+#: src/mobyle2/core/views/project.py:112
 msgid "Public projects"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:134
+#: src/mobyle2/core/views/project.py:135
 msgid "My projects"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:139
+#: src/mobyle2/core/views/project.py:140
 msgid "Projects where i have activities"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:183
+#: src/mobyle2/core/views/project.py:184
 msgid "Project has been updated"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:189
+#: src/mobyle2/core/views/project.py:190
 msgid ""
 "You can try to change some settings because an exception occured while "
 "editing your authbackend: ${msg}"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:222
+#: src/mobyle2/core/views/project.py:223
 msgid "View projects of a member"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:226
+#: src/mobyle2/core/views/project.py:227
 msgid "Project management"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:261 src/mobyle2/core/views/user.py:270
+#: src/mobyle2/core/views/project.py:262 src/mobyle2/core/views/user.py:270
 msgid "Role name"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:266 src/mobyle2/core/views/user.py:275
+#: src/mobyle2/core/views/project.py:267 src/mobyle2/core/views/user.py:275
 msgid "Role description"
 msgstr ""
 
-#: src/mobyle2/core/views/project.py:281 src/mobyle2/core/views/user.py:171
+#: src/mobyle2/core/views/project.py:282 src/mobyle2/core/views/user.py:171
 #: src/mobyle2/core/views/user.py:225 src/mobyle2/core/views/user.py:290
 #: src/mobyle2/core/views/user.py:357
 msgid "Items have been deleted"

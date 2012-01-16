@@ -359,6 +359,120 @@ class ProgramHome(ServersHome):
 class ViewerHome(ServersHome):
     template = '../templates/project/viewer_home.pt'
 
+class Treeview(Base):
+    treeview_title = ''
+    def __init__(s, request):
+        Base.__init__(s, request)
+        __ = s.request.translate
+        s.items = 0
+        s.cache_data = {'servers': {}, 'projects': {}}
+        s.tree = s.treeview_node(__(s.treeview_title), state=True)
+        s.titles = {
+            'services': __('Services'),
+            'programs': __('Programs'),
+            'workflows': __('Workflows'),
+        }
 
+    def get_server_resource(self, server, project):
+        rproject = self.get_project_resource(project)
+        rserver = self.cache_data['servers'].get((server, project), None)
+        if rserver is None:
+            rserver = self.cache_data['servers'][(server, project)] = rproject.items[
+                'servers'].find_context(server)['item']
+        return rserver
+
+    def get_project_resource(self, project):
+        rproject = self.cache_data['projects'].get(project, None)
+        if rproject is None:
+            rproject = self.cache_data['projects'][project] = self.request.root.items[
+                'projects'].find_context(project)['item']
+        return rproject 
+
+    def treeview_node(self, 
+                      name='', 
+                      attrs=None, 
+                      icon=None, 
+                      state=False,
+                      href='#'):
+        if not attrs: attrs = {}
+        self.items += 1
+        if not 'id' in attrs:
+            attrs ['id'] = "%s_%s" % (self.treeview_title, self.items)
+        if not 'href' in attrs:
+            attrs['href'] = href
+        if not icon: icon = 'folder'
+        node = {'children': [],
+                'state' : state,
+                'attrs': attrs,
+                'data' : {'title': name, 'attrs': attrs, 'icon': icon}} 
+        if state:
+            node['state'] = 'open'
+        return node
+
+    def construct_treeview(self):
+        """Implement treeview construction here"""
+
+    def __call__(self):
+        """A CACHER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+        self.construct_treeview()
+        return [self.tree]
+
+
+class ServicesTreeview(Treeview):
+    treeview_title = _('Services')
+    by_packages = False
+    by_classifications = False
+
+    def fill_treeview(self, data, name='', parent=None):
+        request = self.request
+        attrs = {}
+        name = data.get('name', name)
+        resource = data.get('resource', None)
+        if resource is not None:
+            rserver = self.get_server_resource(resource.server, resource.project)
+            service = rserver.items[
+            '%ss' % resource.type].find_context(resource)['item']
+            attrs['href'] = request.resource_url(service)
+            name = service.context.name
+        subdata = self.treeview_node(name, attrs)
+        # the first node must be skipped, empty node
+        if parent is None:
+            parent = self.tree
+        else:
+            parent['children'].append(subdata)
+            parent = subdata
+        for node_title in data['children']:
+            self.fill_treeview(data['children'][node_title],
+                               self.titles.get(node_title, node_title), parent)
+
+    def construct_treeview(self):
+        req = self.request
+        services = OrderedDict()
+        projects = req.root['projects']
+        public_project = project.Project.get_public_project()
+        rpublic_project = projects.find_context(public_project)['item']
+        def add_ressource(rproject):
+            if ((not self.by_classifications)
+                and (not self.by_packages)):
+                raise Exception('by classif or by package!')
+            if self.by_packages:
+                catags = rproject.context.get_services_by_package()
+            elif self.by_classifications:
+                categs = rproject.context.get_services_by_classification()
+            self.fill_treeview(categs)
+        add_ressource(rpublic_project)
+        if req.user:
+            usr = user.User.by_id(req.user.id)
+            for pr in usr.projects:
+                rproject = projects.find_context(pr)['item']
+                add_ressource(rproject)
+
+
+class ClassificationsServicesTreeview(ServicesTreeview):
+    by_classifications = True
+
+
+class PackagesServicesTreeview(ServicesTreeview):
+    by_packages = True
 
 # vim:set et sts=4 ts=4 tw=80:
