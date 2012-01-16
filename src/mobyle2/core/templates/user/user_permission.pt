@@ -1,6 +1,6 @@
 <metal metal:use-macro="main.macros['main']">
   <metal metal:fill-slot="content_body">
-    <p i18n:translate="">Permission managment</p>
+    <p i18n:translate="">Permission management</p>
     <div class="add" tal:condition="add_form|nothing">
       <h1 class="add">Add a permission</h1>
       <p tal:content="structure add_form"/>

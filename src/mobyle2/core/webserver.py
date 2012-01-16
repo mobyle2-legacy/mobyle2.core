@@ -172,7 +172,7 @@ def includeme(config, debug=False):
     # basr urls
     config.add_view('%s.views.root.Home' % dn,    name='',  context='%s.models.root.Root' % dn, permission= P['global_view'])
     #config.add_view('%s.views.root.Pdb' % dn,    name='pdb',  context='%s.models.root.Root' % dn, permission= P['global_view'])
-    # auth managment
+    # auth management
     config.add_view('%s.views.root.Reload' % dn,  name='reload', context='%s.models.root.Root' % dn, permission = P['global_authadmin'])
     config.add_view('%s.views.auth.Home' % dn,    name='',  context='%s.models.auth.AuthenticationBackends' % dn, permission = P['global_authadmin'])
     config.add_view('%s.views.auth.ManageSettings' % dn,    name='manage-settings',  context='%s.models.auth.AuthenticationBackends' % dn, permission = P['global_authadmin'])
@@ -207,7 +207,7 @@ def includeme(config, debug=False):
     config.add_view('%s.views.project.ProgramHome' % dn, name='', context='%s.models.project.ProgramResource' % dn, permission = P['project_view'])
     config.add_view('%s.views.project.JobCreate' % dn, name='job_create', context='%s.models.project.ServiceResource' % dn, permission = P['job_create'])
     config.add_view('%s.views.project.ViewerHome' % dn, name='', context='%s.models.project.ViewerResource' % dn, permission = P['project_view'])
-    # users managment
+    # users management
     config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
     config.add_view('%s.views.user.EditRole' % dn, name='edit_role', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
     config.add_view('%s.views.user.EditGroup' % dn, name='edit_group', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])

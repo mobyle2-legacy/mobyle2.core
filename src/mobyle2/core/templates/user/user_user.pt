@@ -1,6 +1,6 @@
 <metal metal:use-macro="main.macros['main']">
   <metal metal:fill-slot="content_body">
-    <p i18n:translate="">User managment</p>
+    <p i18n:translate="">User management</p>
     <div class="add" >
       <h1 class="add" i18n:translate="">Add a user</h1>
       <a href="${request.resource_url(context)}@@add_user">Add an user</a>
