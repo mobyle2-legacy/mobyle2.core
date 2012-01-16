@@ -154,6 +154,7 @@ class Base:
     template = None # define in child classes.
     def __init__(self, request):
         self.request = request
+        self.context =getattr(self.request, 'context', None) 
         self.G = request.method == 'GET'
         self.P = request.method == 'POST'
 
