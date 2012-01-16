@@ -359,13 +359,13 @@ class JobCreate(ServersHome):
     def __init__(self, request):
         ServersHome.__init__(self,request)
         c = self.context
-        self.service_pid = '%s.%s.%s.pid' % (c.project.id, c.server.name, c.service.name)
+        self.service_pid = '%s%s.%s.%s.pid' % (c.project.name, c.project.id, c.server.name, c.service.name)
         self.xsl_form_path = J(SERVICE_STYLES_DIR, "form.xsl")
         self.xsl_form_url = 'file://%s' % self.xsl_form_path
         self.xsl_nspath = J(SERVICE_STYLES_DIR, "remove_ns.xsl")
         self.xsl_nsurl =  'file://%s' % self.xsl_nspath
         self.xsl_pipe = [(self.xsl_form_path,
-                          {'programPID': self.service_pid}), (self.xsl_nspath, {})]
+                          {'programPID': str(self.service_pid)}), (self.xsl_nspath, {})]
         self.xml_url = c.service.xml_url
 
     def render_xml_service(self, xml_url=None, xsl_pipe=None):
@@ -382,7 +382,6 @@ class JobCreate(ServersHome):
                 parser = etree.XMLParser(no_network=False)
                 xml = transform(xml, **params)
             except Exception, e:
-                import pdb;pdb.set_trace()  ## Breakpoint ##
                 logger.error("error while running %s XSL."  % (str(uri),), exc_info=True)
         return xml
 
