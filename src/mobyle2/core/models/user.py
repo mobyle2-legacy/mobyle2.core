@@ -145,7 +145,7 @@ class UserRole(Base):
     role_id = Column(Integer, ForeignKey("authentication_role.id", name="fk_userrole_role", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", name="fk_userrole_users", use_alter=True, ondelete="CASCADE", onupdate="CASCADE"), primary_key=True)
 
-class UserRessource(SecuredObject):
+class UserResource(SecuredObject):
     def __init__(self, *args, **kw):
         SecuredObject.__init__(self, *args, **kw)
         self.user = self.context
@@ -157,7 +157,7 @@ class Users(SecuredObject):
     @property
     def items(self):
         if not self._items:
-            self._items = OrderedDict([("%s"%a.id, UserRessource(a, self, "%s"%id))
+            self._items = OrderedDict([("%s"%a.id, UserResource(a, self, "%s"%id))
                                        for a in self.session.query(User).all()])
         return self._items
 

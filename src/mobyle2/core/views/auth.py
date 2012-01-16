@@ -241,7 +241,7 @@ class AuthView(Base):
             after_bind=auth_schema_afterbind)
         ctx = self.request.context
         # if we are in the context of an auth backend, we cant change the type
-        if isinstance(ctx, auth.AuthenticationBackendRessource):
+        if isinstance(ctx, auth.AuthenticationBackendResource):
             self.sh = self.sh.bind(remove_ab=True)
         self.for_ajax_form = False
         # maybe we are in an ajax request to solve remaining fields for a particular authtype.
@@ -259,7 +259,7 @@ class AuthView(Base):
                 ash = self.sh_map[at](name="auth_backend_infos", title=_('Authentication backend details'))
                 self.sh.add(ash)
         # if we are in the context of an auth backend, filling edit properties
-        if isinstance(ctx, auth.AuthenticationBackendRessource):
+        if isinstance(ctx, auth.AuthenticationBackendResource):
             ab = ctx.ab
             if not details_added:
                 ash = self.sh_map[ab.backend_type](name="auth_backend_infos", title=_('Authentication backend details'))

@@ -98,7 +98,7 @@ class AuthenticationBackend(Base):
         self.username = username
         self.use_ssl = use_ssl
 
-class AuthenticationBackendRessource(SecuredObject):
+class AuthenticationBackendResource(SecuredObject):
     def __init__(self, *a, **kw):
         SecuredObject.__init__(self, *a, **kw)
         self.ab = self.context
@@ -111,7 +111,7 @@ class AuthenticationBackends(SecuredObject):
         if not self._items:
             self._items =  OrderedDict(
             [("%s"%a.id,
-              AuthenticationBackendRessource(a, self, '%s'% a.id))
+              AuthenticationBackendResource(a, self, '%s'% a.id))
              for a in self.session.query(
                  AuthenticationBackend).all()]) 
         return self._items

@@ -179,7 +179,7 @@ class SecuredObject(Traversable):
     by using two separated tables containing acls for users & groups.
     You ll have an object with security related methods and proxy wrappers to manage role assigments.
 
-    It would have been better to also integrate a Ressource Mixin from which
+    It would have been better to also integrate a Resource Mixin from which
     objects would have inherited and get the (user,group) from there with the joined inheritance.
 
     Note that it uses mobyle2.core rolenaming scheme (resourcetype_rolename registration in the 'R' dict)

@@ -5,7 +5,7 @@ from pyramid.threadlocal import get_current_registry
 from mobyle2.core.views import get_base_params
 
 from mobyle2.core.models import DBSession as session
-from mobyle2.core.models.project import Project, ProjectRessource, ProjectUserRole, ProjectGroupRole, projects_dir
+from mobyle2.core.models.project import Project, ProjectResource, ProjectUserRole, ProjectGroupRole, projects_dir
 from mobyle2.core.models.registry import set_registry_key, get_registry_key, set_registry_key
 from mobyle2.core.models.user import User
 
