@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import os
 import copy
+import urllib
+import logging
+
 from ordereddict import OrderedDict
-import deform
-from deform.exception import ValidationFailure
-import colander
+
+import pkg_resources
+
+from lxml import etree
+
 from sqlalchemy.sql import expression as se
+
+import colander
+from deform.exception import ValidationFailure
+import deform
 
 from pyramid.renderers import render_to_response
 from pyramid.security import has_permission
 from pyramid.httpexceptions import HTTPFound
-
 
 from mobyle2.core.basemodel import P
 from mobyle2.core.views import Base, get_base_params
@@ -25,7 +33,17 @@ from mobyle2.core.models import (
 )
 from mobyle2.core import validator as v
 
+SERVICE_STYLES_DIR = pkg_resources.resource_filename('mobyle2.core', 'static/service_styles')
 R = a.R
+J = os.path.join
+
+class CustomResolver(etree.Resolver):
+    """CustomResolver is a Resolver for lxml that allows
+    (among other things) to handle HTTPS protocol,
+    which is not handled natively by lxml/libxml2.
+    """
+    def resolve(self, url, id, context):
+        return self.resolve_file(urllib.urlopen(url), context)
 
 class ProjectView(Base):
     def __init__(self, request):
@@ -39,13 +57,12 @@ class ProjectView(Base):
                                               title=_('Backend description'),)
         self.sh_map = {'base': ProjectSchema}
         self.fmap = {'name': 'name', 'description': 'description'}
-        request = self.request
 
         def global_project_validator(form, value):
             pass
         self.sh = self.sh_map['base'](validator=global_project_validator)
         ctx = self.request.context
-        if isinstance(ctx, project.ProjectRessource):
+        if isinstance(ctx, project.ProjectResource):
             ab = ctx.project
             keys = {'name': 'name', 'description': 'description'}
             for k in keys:
@@ -334,6 +351,48 @@ class ServicesHome(ServersHome):
 
 class ServiceHome(ServersHome):
     template = '../templates/project/service_home.pt'
+
+
+class JobCreate(ServersHome):
+    template = '../templates/project/job_create.pt'
+
+    def __init__(self, request):
+        ServersHome.__init__(self,request)
+        c = self.context
+        self.service_pid = '%s.%s.%s.pid' % (c.project.id, c.server.name, c.service.name)
+        self.xsl_form_path = J(SERVICE_STYLES_DIR, "form.xsl")
+        self.xsl_form_url = 'file://%s' % self.xsl_form_path
+        self.xsl_nspath = J(SERVICE_STYLES_DIR, "remove_ns.xsl")
+        self.xsl_nsurl =  'file://%s' % self.xsl_nspath
+        self.xsl_pipe = [(self.xsl_form_path,
+                          {'programPID': self.service_pid}), (self.xsl_nspath, {})]
+        self.xml_url = c.service.xml_url
+
+    def render_xml_service(self, xml_url=None, xsl_pipe=None):
+        logger = logging.getLogger('mobyle2.JobCreate.render_xml_service')
+        if not xml_url: xml_url = self.xml_url
+        if not xsl_pipe: xsl_pipe = self.xsl_pipe
+        parser = etree.XMLParser(no_network=False)
+        parser.resolvers.add(CustomResolver())
+        xml = etree.parse(xml_url, parser)
+        for uri, params in xsl_pipe:
+            xslt_doc = etree.parse(uri, parser)
+            transform = etree.XSLT(xslt_doc)
+            try:
+                parser = etree.XMLParser(no_network=False)
+                xml = transform(xml, **params)
+            except Exception, e:
+                import pdb;pdb.set_trace()  ## Breakpoint ##
+                logger.error("error while running %s XSL."  % (str(uri),), exc_info=True)
+        return xml
+
+    def __call__(self):
+        form, request, context = None, self.request, self.request.context
+        form = self.render_xml_service()
+        params = {'view': self}
+        params.update(get_base_params(self))
+        params["form"] = form
+        return render_to_response(self.template, params, self.request)
 
 
 class WorkflowsHome(ServersHome):

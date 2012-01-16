@@ -11,6 +11,7 @@ from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, synonym
 
+from pyramid.location import lineage
 from pyramid.security import (
     authenticated_userid,
     Everyone,
@@ -164,10 +165,12 @@ class Project(Base):
     def _get_directory(self):
          directory = None
          if self.id is not None:
-             if self.directory is None:
+             if self._directory is None:
                  self.create_directory()
          if self.id is not None and self._directory is None:
              raise Exception('project in  inconsistent state, no FS directory')
+         else:
+             directory = self._directory
          return directory
 
     directory = synonym('_directory', descriptor=property(_get_directory, _set_directory))
@@ -183,7 +186,7 @@ class Project(Base):
         return p
 
     def make_owner(self, user):
-        sproject = ProjectRessource(self)
+        sproject = ProjectResource(self)
         sproject.proxy_roles[R['project_owner']].append_user(user)
 
     @classmethod
@@ -266,7 +269,7 @@ class Project(Base):
         return services
 
 
-class ProjectRessource(SecuredObject):
+class ProjectResource(SecuredObject):
     __managed_type__ = 'project'
     __managed_roles__ = default_project_roles
     __acl_groups__ = "ProjectGroupRole"
@@ -303,8 +306,8 @@ class Projects(SecuredObject):
                 id = None
             else:
                 name = p.name
-                id = p.id
-            pr = ProjectRessource(p, self, id=id, name=name)
+                id = "%s" % p.id
+            pr = ProjectResource(p, self, id=id, name=name)
             self._items[pr.__name__] = pr
         return self._items
 
@@ -403,19 +406,26 @@ def create_public_workspace(registry=None):
         transaction.commit()
 
 
-class ServiceRessource(SecuredObject):
+class ServiceResource(SecuredObject):
+    """."""
+    def __init__(self, *a, **k):
+        SecuredObject.__init__(self, *a, **k)
+        self.rproject = [a for a in lineage(self) if isinstance(a, ProjectResource)][0]
+        self.project = self.rproject.context
+        self.service = self.context
+        self.rserver =  [a for a in lineage(self) if isinstance(a, ServerResource)][0]
+        self.server =  self.rserver.context
+
+
+class WorkflowResource(ServiceResource):
     """."""
 
 
-class WorkflowResource(ServiceRessource):
+class ProgramResource(ServiceResource):
     """."""
 
 
-class ProgramResource(ServiceRessource):
-    """."""
-
-
-class ViewerResource(ServiceRessource):
+class ViewerResource(ServiceResource):
     """."""
 
 
@@ -435,7 +445,7 @@ class Services(SecuredObject):
             server  = parent.context
             project  = parent.__parent__.__parent__.context
             ditems = project.get_services(server=server,service_type=self.type)
-            Res = tmap.get(self.type, ServiceRessource)
+            Res = tmap.get(self.type, ServiceResource)
             self._items = OrderedDict()
             for a in ditems:
                  res = Res(a, self, name=a.name)
@@ -458,7 +468,7 @@ class Viewers(Services):
     __description__ = _('Viewers')
 
 
-class ServerRessource(SecuredObject):
+class ServerResource(SecuredObject):
     _items = None
     @property
     def items(self):
@@ -480,7 +490,7 @@ class Servers(SecuredObject):
     def items(self):
         items = OrderedDict()
         for a in self.__parent__.context.servers:
-            res = ServerRessource(a, self, name=a.name)
+            res = ServerResource(a, self, name=a.name)
             items[res.__name__] = res
         return items
 
