@@ -12,8 +12,8 @@
         "json_data" : {
           "ajax" : {"url": "${classifications_service_treeview_url}"},
         },
-        /* "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]*/
-        "plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]
+         "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]
+        /*"plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]*/
       })
     }
     );

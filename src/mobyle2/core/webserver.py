@@ -205,6 +205,7 @@ def includeme(config, debug=False):
     config.add_view('%s.views.project.ViewersHome' % dn, name='', context='%s.models.project.Viewers' % dn, permission = P['project_view'])
     config.add_view('%s.views.project.WorkflowHome' % dn, name='', context='%s.models.project.WorkflowResource' % dn, permission = P['project_view'])
     config.add_view('%s.views.project.ProgramHome' % dn, name='', context='%s.models.project.ProgramResource' % dn, permission = P['project_view'])
+    #config.add_view('%s.views.project.' % dn, name='', context='%s.models.project.ProgramResource' % dn, permission = P['project_view'])
     config.add_view('%s.views.project.ViewerHome' % dn, name='', context='%s.models.project.ViewerResource' % dn, permission = P['project_view'])
     # users managment
     config.add_view('%s.views.user.Home' % dn, name='', context='%s.models.user.Users' % dn, permission = P['global_useradmin'])
