@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 from sqlalchemy import Column
 from sqlalchemy import Unicode
@@ -69,3 +70,21 @@ class Service(Base):
         self.server = server
         self.project = project
 
+    @property
+    def directory(self):
+         directory = None
+         if self.id is not None:
+             if self.project is not None and self.server is not None:
+                 directory = os.path.join(self.project.directory, self.server.name, self.name)
+                 if not os.path.exists(directory): os.makedirs(directory)
+         if self.id is not None and directory is None:
+             raise Exception('service in  inconsistent state, no FS directory')
+         return directory
+
+    @property
+    def xml_file(self):
+        return os.path.join(self.directory, '%s.xml' % (self.name))
+
+    @property
+    def xml_url(self):
+        return 'file://%s' % self.xml_file
