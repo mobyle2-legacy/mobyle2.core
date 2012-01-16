@@ -386,12 +386,12 @@ class Treeview(Base):
         if rproject is None:
             rproject = self.cache_data['projects'][project] = self.request.root.items[
                 'projects'].find_context(project)['item']
-        return rproject 
+        return rproject
 
-    def treeview_node(self, 
-                      name='', 
-                      attrs=None, 
-                      icon=None, 
+    def treeview_node(self,
+                      name='',
+                      attrs=None,
+                      icon=None,
                       state=False,
                       href='#'):
         if not attrs: attrs = {}
@@ -404,7 +404,7 @@ class Treeview(Base):
         node = {'children': [],
                 'state' : state,
                 'attrs': attrs,
-                'data' : {'title': name, 'attrs': attrs, 'icon': icon}} 
+                'data' : {'title': name, 'attrs': attrs, 'icon': icon}}
         if state:
             node['state'] = 'open'
         return node
@@ -439,8 +439,13 @@ class ServicesTreeview(Treeview):
         if parent is None:
             parent = self.tree
         else:
-            parent['children'].append(subdata)
-            parent = subdata
+            if not subdata["data"]["title"] in [s["data"]["title"] for s in parent['children']]:
+                parent['children'].append(subdata)
+                parent = subdata
+            else:
+                parent = [s
+                          for s in parent['children']
+                          if subdata['data']['title'] == s['data']['title']][0]
         for node_title in data['children']:
             self.fill_treeview(data['children'][node_title],
                                self.titles.get(node_title, node_title), parent)
