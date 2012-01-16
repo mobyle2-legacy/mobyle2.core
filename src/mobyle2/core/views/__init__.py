@@ -154,6 +154,8 @@ class Base:
     template = None # define in child classes.
     def __init__(self, request):
         self.request = request
+        self.G = request.method == 'GET'
+        self.P = request.method == 'POST'
 
     def translate(self, string):
         return auto_translate(self.request, string)
