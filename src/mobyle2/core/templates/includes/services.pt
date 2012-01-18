@@ -14,7 +14,10 @@
         },
          "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]
         /*"plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]*/
-      })
+      }).bind("select_node.jstree", function (e, data) {
+          var href = data.rslt.obj.children("a").attr("href");
+          document.location = href;
+      });
     }
     );
   </script>

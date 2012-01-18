@@ -365,11 +365,10 @@ class JobCreate(ServersHome):
         self.xsl_nspath = J(SERVICE_STYLES_DIR, "remove_ns.xsl")
         self.xsl_nsurl =  'file://%s' % self.xsl_nspath
         self.xsl_pipe = [(self.xsl_form_path,
-                          {'programPID': str(self.service_pid)}), (self.xsl_nspath, {})]
+                          {'programPID': "'self.service_pid'"}), (self.xsl_nspath, {})]
         self.xml_url = c.service.xml_url
 
     def render_xml_service(self, xml_url=None, xsl_pipe=None):
-        logger = logging.getLogger('mobyle2.JobCreate.render_xml_service')
         if not xml_url: xml_url = self.xml_url
         if not xsl_pipe: xsl_pipe = self.xsl_pipe
         parser = etree.XMLParser(no_network=False)
@@ -378,11 +377,8 @@ class JobCreate(ServersHome):
         for uri, params in xsl_pipe:
             xslt_doc = etree.parse(uri, parser)
             transform = etree.XSLT(xslt_doc)
-            try:
-                parser = etree.XMLParser(no_network=False)
-                xml = transform(xml, **params)
-            except Exception, e:
-                logger.error("error while running %s XSL."  % (str(uri),), exc_info=True)
+            parser = etree.XMLParser(no_network=False)
+            xml = transform(xml, **params)
         return xml
 
     def __call__(self):
@@ -448,21 +444,21 @@ class Treeview(Base):
 
     def treeview_node(self,
                       name='',
-                      attrs=None,
+                      attr=None,
                       icon=None,
                       state=False,
                       href='#'):
-        if not attrs: attrs = {}
+        if not attr: attr = {}
         self.items += 1
-        if not 'id' in attrs:
-            attrs ['id'] = "%s_%s" % (self.treeview_title, self.items)
-        if not 'href' in attrs:
-            attrs['href'] = href
+        if not 'id' in attr:
+            attr ['id'] = "%s_%s" % (self.treeview_title, self.items)
+        if not 'href' in attr:
+            attr['href'] = href
         if not icon: icon = 'folder'
         node = {'children': [],
                 'state' : state,
-                'attrs': attrs,
-                'data' : {'title': name, 'attrs': attrs, 'icon': icon}}
+                'attr': attr,
+                'data' : {'title': name, 'attr': attr, 'icon': icon}}
         if state:
             node['state'] = 'open'
         return node
@@ -483,16 +479,16 @@ class ServicesTreeview(Treeview):
 
     def fill_treeview(self, data, name='', parent=None):
         request = self.request
-        attrs = {}
+        attr = {}
         name = data.get('name', name)
         resource = data.get('resource', None)
         if resource is not None:
             rserver = self.get_server_resource(resource.server, resource.project)
             service = rserver.items[
             '%ss' % resource.type].find_context(resource)['item']
-            attrs['href'] = request.resource_url(service)
+            attr['href'] = '%s@@job_create' % request.resource_url(service)
             name = service.context.name
-        subdata = self.treeview_node(name, attrs)
+        subdata = self.treeview_node(name, attr)
         # the first node must be skipped, empty node
         if parent is None:
             parent = self.tree
