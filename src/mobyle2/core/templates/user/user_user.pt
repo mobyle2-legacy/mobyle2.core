@@ -1,5 +1,5 @@
-<metal metal:use-macro="main.macros['main']">
-  <metal metal:fill-slot="content_body">
+<metal:metal metal:use-macro="main.macros['main']">
+  <metal:metal metal:fill-slot="content_body">
     <p i18n:translate="">User management</p>
     <div class="add" >
       <h1 class="add" i18n:translate="">Add a user</h1>
@@ -38,5 +38,5 @@
         <input type="submit" name="Send" value="Send"/>
       </form>
     </div>
-  </metal>
-</metal>
+  </metal:metal>
+</metal:metal>

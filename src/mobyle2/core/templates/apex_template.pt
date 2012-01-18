@@ -1,7 +1,7 @@
 <tal:d tal:define="nologin python:True">
   <metal:main metal:use-macro="main.macros['main']">
-    <metal metal:fill-slot="content_body">
-      <metal metal:use-macro="apex_template.macros['main']"/>
-    </metal>
+    <metal:metal metal:fill-slot="content_body">
+      <metal:metal metal:use-macro="apex_template.macros['main']"/>
+    </metal:metal>
   </metal:main>
 </tal:d>

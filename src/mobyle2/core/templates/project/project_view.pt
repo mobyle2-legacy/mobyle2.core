@@ -1,5 +1,5 @@
-<metal metal:use-macro="main.macros['main']">
-  <metal metal:fill-slot="content_body">
+<metal:metal metal:use-macro="main.macros['main']">
+  <metal:metal metal:fill-slot="content_body">
     <a tal:condition="can_edit" class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a>
     <a tal:condition="can_editroles" class="edit roles" tal:attributes="href python:u(c)+'@@role'">Access control</a>
     <p><strong>Name: </strong>${c.project.name}</p>
@@ -7,5 +7,5 @@
     <ul>
       <li><a href="${u(c)}servers">view servers</a></li>
     </ul>
-  </metal>
-</metal>
+  </metal:metal>
+</metal:metal>

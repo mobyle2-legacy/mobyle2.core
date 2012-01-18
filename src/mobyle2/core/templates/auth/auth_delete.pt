@@ -1,5 +1,5 @@
-<metal metal:use-macro="main.macros['main']">
-  <metal metal:fill-slot="content_body">
+<metal:metal metal:use-macro="main.macros['main']">
+  <metal:metal metal:fill-slot="content_body">
     <h1 i18n:translate="">Backend</h1>
     <div id="add_auth_backend_holder">
       <h1>Are you sure you want to delete</h1>
@@ -10,5 +10,5 @@
       </ul>
       <tal i18n:translate="" tal:content="structure f_content"/>
     </div>
-  </metal>
-</metal>
+  </metal:metal>
+</metal:metal>

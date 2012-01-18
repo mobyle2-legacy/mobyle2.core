@@ -1,5 +1,5 @@
-<metal metal:use-macro="main.macros['main']">
-  <metal metal:fill-slot="content_body">
+<metal:metal metal:use-macro="main.macros['main']">
+  <metal:metal metal:fill-slot="content_body">
     <p i18n:translate="">Authentication backends configuration</p>
     <ul>
       <li><a i18n:translate="" href="${request.resource_url(context)}@@manage-settings">Edit general authentication settings</a></li>
@@ -12,5 +12,5 @@
       </a>
       </li>
     </ul>
-  </metal>
-</metal>
+  </metal:metal>
+</metal:metal>

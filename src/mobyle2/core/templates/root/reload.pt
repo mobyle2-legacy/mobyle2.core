@@ -1,5 +1,5 @@
 <metal:main metal:use-macro="main.macros['main']">
-  <metal metal:fill-slot="content_body">
+  <metal:metal metal:fill-slot="content_body">
     <p 
       i18n:translate=""
       tal:condition="python:request.GET.get('confirm', False)|nothing">Are you sure you want to reload the webserver ?</p>
@@ -40,5 +40,5 @@
           $('#reloadform').append($('#server_reloaded').val());
       } 
     </script>  
-  </metal>
+  </metal:metal>
 </metal:main>

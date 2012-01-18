@@ -1,5 +1,5 @@
-<metal metal:use-macro="main.macros['main']">
-  <metal metal:fill-slot="content_body">
+<metal:metal metal:use-macro="main.macros['main']">
+  <metal:metal metal:fill-slot="content_body">
     <ul class="actions authbackend-actions">
       <li><a class="edit" tal:attributes="href python:u(c)+'@@edit'">Edit</a></li>
       <li><a class="edit" tal:attributes="href python:u(c)+'@@delete'">Delete</a></li>
@@ -41,5 +41,5 @@
         <p><strong i18n:translate="">Realm : </strong> ${ab.realm}</p>
       </tal:b>
     </div>
-  </metal>
-</metal>
+  </metal:metal>
+</metal:metal>

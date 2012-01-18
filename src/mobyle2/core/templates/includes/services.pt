@@ -1,4 +1,4 @@
-<metal metal:define-macro="main">
+<metal:metal metal:define-macro="main">
   <!-- TO WRAP WITH ACCORDION OR TABS (jquery ui) -->
   <div id="treeviews">
     <div id="classfications_services_treeview"> </div>
@@ -21,4 +21,4 @@
     }
     );
   </script>
-</metal>
+</metal:metal>

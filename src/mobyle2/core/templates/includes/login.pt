@@ -9,7 +9,7 @@
         action request.route_url('apex_login');
         ">
         <h1 i18n:domain="Apex"  i18n:translate="">Login</h1>
-        <metal metal:use-macro="login_form.macros['main']"/>
+        <metal:metal metal:use-macro="login_form.macros['main']"/>
       </div>
     </tal:d>
   </tal:if>
