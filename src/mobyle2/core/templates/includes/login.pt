@@ -1,4 +1,4 @@
-<metal metal:define-macro="main">
+<metal:metal metal:define-macro="main">
   <tal:if tal:condition="not: nologin|nothing">
     <tal:d tal:condition="not:request.user">
       <div id="login-box" class="login-box" 
@@ -22,4 +22,4 @@
       </li>
     </ul>
   </div>
-</metal>
+</metal:metal>
