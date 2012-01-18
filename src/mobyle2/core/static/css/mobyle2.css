@@ -1,11 +1,33 @@
 /* 
  mobyle2.css
  */
+body {
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+#main{
+  width: 100%;
+  display: table;
+}
+
+#left_menu{
+  width: 25%;
+  display: table-cell;
+}
+
+#main_content{
+  width: 75%;
+  display: table-cell;
+}
 
 #banner {
-  height:150px;
-  line-height:100%;
   vertical-align:middle; 
+  display: table;
+}
+
+#banner div{
+  display:table-cell;
 }
 
 .global_tabs-wrap {

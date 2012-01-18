@@ -1,7 +1,6 @@
 <metal:define metal:define-macro="main">
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html
-    xmlns="http://www.w3.org/1999/xhtml"
+<!DOCTYPE html>
+<html
     xml:lang="en"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="mobyle2">
@@ -42,7 +41,7 @@
           <tal:comment tal:condition="nothing">CHOSEN</tal:comment>
           <link rel="stylesheet" type="text/css" href="${static}/css/chosen.css"/>
           <tal:comment tal:condition="nothing">960.js</tal:comment>
-          <link rel="stylesheet" type="text/css"  href="${static}/css/grid.css"/>
+          <!--<link rel="stylesheet" type="text/css"  href="${static}/css/grid.css"/>-->
           <tal:comment tal:condition="nothing">JQUERYUI
             <link rel="stylesheet" type="text/css"  href="${static}/css/jqueryui/ui-lightness/jquery-ui-1.8.16.custom.css"/>
             <link rel="stylesheet" type="text/css"  href="${static}/css/jqueryui/aristo/Aristo.css"/> 
@@ -60,32 +59,27 @@
       <body>
         <div id="wrap" class="container_6">
           <metal:define metal:define-slot="header">
-            <div id="header">
+            <header>
               <metal:define metal:define-slot="header_body">
-                <div class="banner-wrap">
                   <metal:define metal:use-macro="banner.macros['main']"/>
-                </div>
-                <div class="global_tabs-wrap">
+                  <metal:define metal:use-macro="login.macros['main']"/>
                   <metal:define metal:use-macro="globaltabs.macros['main']"/>
-                </div>
-                <div class="breadcrumbs-wrap">
                   <metal:define metal:use-macro="breadcrumbs.macros['main']"/>
-                </div>
               </metal:define>
-            </div>
+            </header>
           </metal:define>
           <div id="content">
             <metal:define metal:define-slot="content">
               <metal:define metal:define-slot="left_slot">
-                <div class="left_slot grid_1 ">
+                <aside id="left_menu">
                   <div class="services" tal:condition="services_portlet|nothing">
                     <metal:define metal:use-macro="services.macros['main']"/>
                   </div>
                   &nbsp;
-                </div>
+                </aside>
               </metal:define>
               <metal:define metal:define-slot="middle_slot">
-                <div class="middle_slot grid_4">
+                <section id="main_content">
                   <div id="above-content">
                     <metal:define metal:define-slot="flash">
                       <ul>
@@ -124,15 +118,8 @@
                     <metal:define metal:define-slot="below_content">
                     </metal:define>
                   </div>
-                </div>
+                </section>
               </metal:define>
-              <metal:define metal:define-slot="right_slot">
-                <div class="right_slot grid_1 push_6">
-                  <div class="login-wrap">
-                    <metal:define metal:use-macro="login.macros['main']"/>
-                  </div>
-                </div>
-              </metal:define>   
             </metal:define>
           </div>
           <div id="bottom">
