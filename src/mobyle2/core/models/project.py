@@ -178,7 +178,6 @@ class Project(Base):
     @classmethod
     def create(cls, name=None, description=None, user=None):
         p = cls(name=name, description=description, owner=user)
-        session.add(p)
         # give user the owner role
         if p is not None:
             p.make_owner(p.owner)
@@ -388,8 +387,7 @@ def create_public_workspace(registry=None):
     from mobyle2.core.models.user import User
     import transaction
     ausr = AuthUser.get_by_login(username)
-    # running mobyle2 __init__ recreate default project if deleted
-    usr = User.by_id(ausr.id)
+    modified = False
     if ausr is None:
         kwargs = {
             'email': user_public_email,
@@ -403,7 +401,13 @@ def create_public_workspace(registry=None):
         ausr.username = username
         ausr.email = user_public_email
         ausr.login = username
+        modified = True
+    # running mobyle2 __init__ recreate default project if deleted
+    # only after we are sure user is created
+    usr = User.by_id(ausr.id)
+    if modified:
         transaction.commit()
+
 
 
 class ServiceResource(SecuredObject):

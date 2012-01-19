@@ -237,12 +237,13 @@ def includeme(config, debug=False):
     from mobyle2.core.models.registry import set_registry_key
     from mobyle2.core.models.project import create_public_workspace
     from mobyle2.core.models.server import create_local_server
-    create_public_workspace(registry=config.registry)
-    # reflect configuration because we do not have the registry avalaible in the pyramid machinery
-    # at the server configuration
     from mobyle2.core.models.project import projects_dir, PROJECTS_DIR
     projects_dir(settings[PROJECTS_DIR])
     create_local_server(registry=config.registry)
+    create_public_workspace(registry=config.registry)
+    # reflect configuration because we do not have the registry avalaible in the pyramid machinery
+    # at the server configuration
+
     set_registry_key('mobyle2.needrestart', False)
     return config
 
