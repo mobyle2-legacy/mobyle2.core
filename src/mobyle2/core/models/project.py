@@ -250,7 +250,7 @@ class Project(Base):
         raw_services = self.get_services()
         services = tree['children']['Services'] = node()
         for s in raw_services:
-            if not s.type in services['children']:
+            if not "%ss" % s.type in services['children']:
                 services['children']["%ss"%s.type] = node()
             categs = s.classification.split(':')
             data = services['children']["%ss"%s.type]
