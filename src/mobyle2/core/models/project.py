@@ -259,6 +259,15 @@ class Project(Base):
                     data['children'][c] = node()
                 data = data['children'][c]
             data['children'][s.name] = node(s)
+	def sort_node_children(node):
+	    """sort alphabetically the children of the node"""
+	    unsorted_children = node['children']
+	    for n,v in unsorted_children.items():
+		unsorted_children[n]=sort_node_children(v)
+	    sorted_children = OrderedDict(sorted(unsorted_children.items(), key=lambda t: t[0]))
+	    return {'children':sorted_children,
+	    'resource':node['resource']}
+	tree = sort_node_children(tree)
         return services
 
     def get_services_by_package(self):
