@@ -271,7 +271,7 @@ class Project(Base):
                     data['children'][c] = node()
                 data = data['children'][c]
             data['children'][s.name] = node(s)
-	    tree = sort_node_children(tree)
+	    services = sort_node_children(services)
         return services
 
     def get_services_by_classification(self):
