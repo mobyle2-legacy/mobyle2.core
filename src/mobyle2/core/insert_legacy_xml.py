@@ -15,21 +15,31 @@ from mobyle2.core.models import DBSession as session
 public_project = Project.get_public_project()
 public_user = public_project.owner
 
-def insert_service(name,stype,description,package,classification):
+def insert_update_service(name,stype,description,package,classification):
     """Insert a service in the database as belonging
     to the local - and only - server of the public project."""
-    s = Service()
-    s.name = name
-    s.description = description
-    s.package = package
-    s.server = public_project.servers[0]
-    s.project = public_project
-    s.classification = classification
-    #TODO: service is assumed to be a program
-    s.type = stype
-    session.add(s)
-    session.commit()
-    return s
+    try:
+	svc = session.query(Service).filter_by(name=name,
+				             server=public_project.servers[0],
+				             project=public_project).first()
+	if not svc:
+	    logging.info("service %s new, adding to the server" % name)
+            svc = Service()
+            svc.name = name
+            svc.server = public_project.servers[0]
+            svc.project = public_project
+	    session.add(svc)
+	else:
+	    logging.info("service %s already here, updating" % name)
+        svc.description = description+"TOTO"
+        svc.package = package
+        svc.classification = classification
+        svc.type = stype
+        session.commit()
+        return svc
+    except:
+	session.rollback()
+	raise
 
 def parse_service(path):
     """Parse a Mobyle1 xml file to get the mandatory information
@@ -48,7 +58,7 @@ def import_mobyle1_service(path):
     try:
         logging.info("parsing %s..." % path)
         s_d = parse_service(path)
-        service = insert_service(s_d['name'], s_d['type'], s_d['description'],\
+        service = insert_update_service(s_d['name'], s_d['type'], s_d['description'],\
                 s_d['package'],s_d['classification'])
         shutil.copyfile(path,service.xml_file)
     except:
