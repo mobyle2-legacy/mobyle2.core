@@ -1,13 +1,13 @@
 <metal:metal metal:define-macro="main">
   <!-- TO WRAP WITH ACCORDION OR TABS (jquery ui) -->
   <div id="treeviews">
-    <div id="classfications_services_treeview"> </div>
+    <div id="classifications_services_treeview"> </div>
     <div id="packages_services_treeview"> </div>
   </div>
   <script language="JavaScript">
     $(document).ready(
     function () {
-      $("#classfications_services_treeview")
+      $("#classifications_services_treeview")
       .jstree({
         "json_data" : {
           "ajax" : {"url": "${classifications_service_treeview_url}"},
@@ -18,7 +18,17 @@
           var href = data.rslt.obj.children("a").attr("href");
           document.location = href;
       });
-    }
-    );
+      $("#packages_services_treeview")
+      .jstree({
+        "json_data" : {
+          "ajax" : {"url": "${packages_service_treeview_url}"},
+        },
+         "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]
+        /*"plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]*/
+      }).bind("select_node.jstree", function (e, data) {
+          var href = data.rslt.obj.children("a").attr("href");
+          document.location = href;
+      });
+    });
   </script>
 </metal:metal>

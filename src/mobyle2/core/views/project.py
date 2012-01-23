@@ -500,9 +500,10 @@ class ServicesTreeview(Treeview):
                 parent = [s
                           for s in parent['children']
                           if subdata['data']['title'] == s['data']['title']][0]
-        for node_title in data['children']:
-            self.fill_treeview(data['children'][node_title],
-                               self.titles.get(node_title, node_title), parent)
+        if data.has_key('children'):
+            for node_title in data['children']:
+                self.fill_treeview(data['children'][node_title],
+                                   self.titles.get(node_title, node_title), parent)
 
     def construct_treeview(self):
         req = self.request
@@ -515,7 +516,7 @@ class ServicesTreeview(Treeview):
                 and (not self.by_packages)):
                 raise Exception('by classif or by package!')
             if self.by_packages:
-                catags = rproject.context.get_services_by_package()
+                categs = rproject.context.get_services_by_package()
             elif self.by_classifications:
                 categs = rproject.context.get_services_by_classification()
             self.fill_treeview(categs)

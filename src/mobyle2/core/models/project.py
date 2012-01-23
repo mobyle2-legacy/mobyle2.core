@@ -81,6 +81,20 @@ def projects_dir(directory=None):
         set_registry_key(PROJECTS_DIR, directory)
     return get_registry_key(PROJECTS_DIR)
 
+
+def node(resource=None):
+    return {'children': OrderedDict(),
+            'resource': resource}
+
+def sort_node_children(node):
+	"""sort alphabetically the children of the node"""
+	unsorted_children = node['children']
+	for n,v in unsorted_children.items():
+		unsorted_children[n]=sort_node_children(v)
+	sorted_children = OrderedDict(sorted(unsorted_children.items(), key=lambda t: t[0]))
+	return {'children':sorted_children,
+	    'resource':node['resource']}
+
 class Project(Base):
     __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
@@ -241,40 +255,37 @@ class Project(Base):
                     services.append(sv)
         return services
 
-    def get_services_by_classification(self):
-        """To_implement"""
-        def node(resource=None):
-            return {'children': OrderedDict(),
-                    "resource": resource}
+    def get_services_by_something(self,category_getter):
+        """Get a tree of the available services, sorted using the hierarchy
+        get from a getter function"""
         tree = node()
         raw_services = self.get_services()
         services = tree['children']['Services'] = node()
         for s in raw_services:
             if not "%ss" % s.type in services['children']:
                 services['children']["%ss"%s.type] = node()
-            categs = s.classification.split(':')
+            categs = category_getter(s)
             data = services['children']["%ss"%s.type]
             for c in categs:
                 if not c in data['children']:
                     data['children'][c] = node()
                 data = data['children'][c]
             data['children'][s.name] = node(s)
-	def sort_node_children(node):
-	    """sort alphabetically the children of the node"""
-	    unsorted_children = node['children']
-	    for n,v in unsorted_children.items():
-		unsorted_children[n]=sort_node_children(v)
-	    sorted_children = OrderedDict(sorted(unsorted_children.items(), key=lambda t: t[0]))
-	    return {'children':sorted_children,
-	    'resource':node['resource']}
-	tree = sort_node_children(tree)
+	    tree = sort_node_children(tree)
         return services
 
+    def get_services_by_classification(self):
+        """Get a tree of the available services by classification category."""
+        def classification_getter(service):
+            return service.classification.split(':')
+        return self.get_services_by_something(classification_getter)
+
     def get_services_by_package(self):
-        """To_implement"""
+        """Get a tree of the available services by package"""
         services = OrderedDict()
-        raw_services = self.get_services()
-        return services
+        def package_getter(service):
+            return ([service.package],[])[service.package=='']
+        return self.get_services_by_something(package_getter)
 
 
 class ProjectResource(SecuredObject):
