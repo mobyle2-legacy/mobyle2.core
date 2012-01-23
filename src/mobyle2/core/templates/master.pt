@@ -68,10 +68,10 @@
               </metal:define>
             </header>
           </metal:define>
-          <div id="content">
+          <div id="content" class="ui-widget-content">
             <metal:define metal:define-slot="content">
               <metal:define metal:define-slot="left_slot">
-                <aside id="left_menu">
+                <aside id="left_menu" class="ui-widget-content">
                   <div class="services" tal:condition="services_portlet|nothing">
                     <metal:define metal:use-macro="services.macros['main']"/>
                   </div>
@@ -79,7 +79,7 @@
                 </aside>
               </metal:define>
               <metal:define metal:define-slot="middle_slot">
-                <section id="main_content">
+                <section id="main_content" class="ui-widget-content">
                   <div id="above-content">
                     <metal:define metal:define-slot="flash">
                       <ul>

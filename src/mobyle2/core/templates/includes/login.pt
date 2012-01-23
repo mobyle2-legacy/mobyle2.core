@@ -1,7 +1,7 @@
 <metal:metal metal:define-macro="main">
   <tal:if tal:condition="not: nologin|nothing">
     <tal:d tal:condition="not:request.user">
-      <div id="login-box" class="login-box" 
+      <div id="login-box" class="login-box ui-widget-content" 
         tal:define="form login_params['form'];
         velruse_forms login_params['velruse_forms'];
         self_register login_params['self_register'];
@@ -14,11 +14,11 @@
     </tal:d>
   </tal:if>
   <div id="user_box" tal:condition="request.user"
-    tal:define="uid request.user.email|request.user.username|nothing">
-    <tal:b  i18n:translate="">Welcome</tal:b> <a href="${request.route_url('apex_edit')}"><tal:b tal:content="uid"/></a>
+    tal:define="uid request.user.email|request.user.username|nothing" class="ui-widget-content">
+    <tal:b  i18n:translate="">Welcome</tal:b> <a href="${request.route_url('apex_edit')}" class="ui-state-default"><tal:b tal:content="uid"/></a>
     <ul>
       <li>
-      <a i18n:translate="" href="${request.route_url('apex_logout')}?came_from=${request.url}">Logout</a>
+      <a i18n:translate="" href="${request.route_url('apex_logout')}?came_from=${request.url}" class="ui-state-default">Logout</a>
       </li>
     </ul>
   </div>

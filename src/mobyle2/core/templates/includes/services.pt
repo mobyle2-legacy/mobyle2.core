@@ -1,5 +1,5 @@
 <metal:metal metal:define-macro="main">
-  <div id="services_treeviews">
+  <div id="services_treeviews" class="ui-widget-content">
     <form name="services_search" onsubmit="return false;">
       <input type="search"  size="10" name="search_services_string" id="search_services_string"/>
       <input type="submit" value="Search" name="services_search_submit" id="services_search_submit" 

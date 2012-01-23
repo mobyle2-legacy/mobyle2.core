@@ -1,9 +1,9 @@
 <metal:define metal:define-macro="main">
-<div id="breadcrumbs">
+<div id="breadcrumbs" class="ui-widget-content">
   <p class="title" i18n:translate="">You are here</p>
   <ul>
     <tal:r tal:repeat="i python:get_breadcrumbs(request)">
-    <li tal:attributes="class python:i['class']">
+    <li tal:attributes="class python:'ui-state-default ' + i['class']">
     <a tal:attributes="href python:i['url']" tal:content="python:i['name']"></a>
     </li>
     </tal:r>
