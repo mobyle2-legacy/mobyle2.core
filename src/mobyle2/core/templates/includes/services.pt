@@ -22,6 +22,9 @@
                       "case_insensitive" : true,
                       "show_only_matches": true 
                     },
+	 "cookies" : {
+		      "save_selected":false 
+		     }
         /*"plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]*/
       }).bind("select_node.jstree", function (e, data) {
           var href = data.rslt.obj.children("a").attr("href");
