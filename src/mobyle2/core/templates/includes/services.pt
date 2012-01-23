@@ -1,29 +1,27 @@
 <metal:metal metal:define-macro="main">
-  <!-- TO WRAP WITH ACCORDION OR TABS (jquery ui) -->
-  <div id="treeviews">
-    <div id="classifications_services_treeview"> </div>
-    <div id="packages_services_treeview"> </div>
+  <div id="services_treeviews">
+    <form name="services_search" onsubmit="return false;">
+      <input type="search"  size="10" name="search_services_string" id="search_services_string"/>
+      <input type="submit" value="Search" name="services_search_submit" id="services_search_submit" 
+        onclick="$('#services_treeview').jstree('search',$('#search_services_string').val());">
+      <input type="button" value="Show all" name="services_search_submit" id="services_search_submit" 
+        onclick="$('#services_treeview').jstree('clear_search');">
+    </form>
+    <div id="services_treeview"> </div>
   </div>
   <script language="JavaScript">
     $(document).ready(
     function () {
-      $("#classifications_services_treeview")
+      $("#services_treeview")
       .jstree({
         "json_data" : {
           "ajax" : {"url": "${classifications_service_treeview_url}"},
         },
-         "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]
-        /*"plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]*/
-      }).bind("select_node.jstree", function (e, data) {
-          var href = data.rslt.obj.children("a").attr("href");
-          document.location = href;
-      });
-      $("#packages_services_treeview")
-      .jstree({
-        "json_data" : {
-          "ajax" : {"url": "${packages_service_treeview_url}"},
-        },
-         "plugins" : ["json_data", "ui", "themeroller", "hotkeys"]
+         "plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies", "search"],
+         "search" : {
+                      "case_insensitive" : true,
+                      "show_only_matches": true 
+                    },
         /*"plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies" ]*/
       }).bind("select_node.jstree", function (e, data) {
           var href = data.rslt.obj.children("a").attr("href");
