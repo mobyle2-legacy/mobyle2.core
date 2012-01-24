@@ -13,12 +13,15 @@ body {
 
 #left_menu{
   width: 25%;
-  display: table-cell;
+  overflow-x: hidden;
+  vertical-align: top;
+  float: left;
 }
 
 #main_content{
   width: 75%;
   display: table-cell;
+  vertical-align: top;
 }
 
 #banner {
@@ -37,6 +40,7 @@ body {
 #globaltabs {
   padding-top:10px;
 }
+
 #globaltabs li {
   margin-right:10px;
   list-style-type:none;
