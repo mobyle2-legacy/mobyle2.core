@@ -417,6 +417,26 @@ class ProgramHome(ServersHome):
 class ViewerHome(ServersHome):
     template = '../templates/project/viewer_home.pt'
 
+class ServicesRegistry(Base):
+
+    def __init__(s, request):
+        Base.__init__(s, request)
+        __ = s.request.translate
+        s.items = 0
+        s.cache_data = {'servers': {}, 'projects': {}}
+
+    def __call__(self):
+        req = self.request
+        services = OrderedDict()
+        projects = req.root['projects']
+        public_project = project.Project.get_public_project()
+        rpublic_project = projects.find_context(public_project)['item']
+	res = {}
+	for service in rpublic_project.context.get_services():
+	    res[service.name]=service.description
+	return res
+        #return {}
+
 class Treeview(Base):
     treeview_title = ''
     def __init__(s, request):
