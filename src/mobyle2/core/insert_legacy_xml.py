@@ -48,7 +48,7 @@ def parse_service(path):
     d = {}
     d['type'] = s_xml.xpath('/*')[0].xpath('local-name()')
     d['name'] = s_xml.xpath('/*/head/name/text()')[0]
-    d['description'] = ' '.join([s.strip().replace('\n','') for s in s_xml.xpath('/*/head/doc/description//text()')])
+    d['description'] = ' '.join([s.strip().replace('\n','') for s in s_xml.xpath('/*/head/doc/description//text()')]).trim()
     d['classification'] = s_xml.xpath('/*/head/category/text()')[0]
     d['package'] = ''.join(s_xml.xpath('/*/head/package/name/text()'))
     return d
