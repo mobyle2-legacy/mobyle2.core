@@ -31,7 +31,7 @@ def insert_update_service(name,stype,description,package,classification):
 	    session.add(svc)
 	else:
 	    logging.info("service %s already here, updating" % name)
-        svc.description = description+"TOTO"
+        svc.description = description
         svc.package = package
         svc.classification = classification
         svc.type = stype
@@ -48,7 +48,7 @@ def parse_service(path):
     d = {}
     d['type'] = s_xml.xpath('/*')[0].xpath('local-name()')
     d['name'] = s_xml.xpath('/*/head/name/text()')[0]
-    d['description'] = ''.join(s_xml.xpath('/*/head/doc/description//text()'))
+    d['description'] = ' '.join([s.strip().replace('\n','') for s in s_xml.xpath('/*/head/doc/description//text()')])
     d['classification'] = s_xml.xpath('/*/head/category/text()')[0]
     d['package'] = ''.join(s_xml.xpath('/*/head/package/name/text()'))
     return d
