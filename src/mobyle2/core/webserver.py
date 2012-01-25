@@ -30,7 +30,7 @@ def locale_negotiator(request):
     settings = get_current_registry().settings
     languages = settings['available_languages'].split()
     # first try from the browser wwanted locales
-    browser_pref_langs = request.get('HTTP_ACCEPT_LANGUAGE', '')
+    browser_pref_langs = request.environ.get('HTTP_ACCEPT_LANGUAGE', '')
     browser_pref_langs = browser_pref_langs.split(',')
     locale_name = ''
     i = 0
