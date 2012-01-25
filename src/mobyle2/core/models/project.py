@@ -312,9 +312,9 @@ class ProjectResource(SecuredObject):
         if not self._items:
             self._items = OrderedDict()
             try:
-                self.items['servers'] = Servers(parent=self, name='servers')
+                self._items['servers'] = Servers(parent=self, name='servers')
             except Exception, e:
-                self.logger.error('Cant load servers : %s' % e)
+                self.logger.error('Cant load servers : %s' % e, exc_info=True)
         return self._items
 
     def __init__(self, *a, **k):
