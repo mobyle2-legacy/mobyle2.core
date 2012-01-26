@@ -15,7 +15,10 @@
   </tal:if>
   <div id="user_box" tal:condition="request.user"
     tal:define="uid request.user.email|request.user.username|nothing" class="ui-widget-content">
-    <tal:b  i18n:translate="">Welcome</tal:b> <a href="${request.route_url('apex_edit')}" class="ui-state-default"><tal:b tal:content="uid"/></a>
+    <tal:b  i18n:translate="">Welcome</tal:b> 
+    <!--<a href="\\$\{\request.route_url('apex_edit')}" class="ui-state-default"><tal:b tal:content="uid"/></a> 
+    TODO: apex_edit route is now invalid: replace with the correct user edition link-->
+    <a class="ui-state-default"><tal:b tal:content="uid"/></a>
     <ul>
       <li>
       <a i18n:translate="" href="${request.route_url('apex_logout')}?came_from=${request.url}" class="ui-state-default">Logout</a>
