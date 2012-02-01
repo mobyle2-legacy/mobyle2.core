@@ -83,15 +83,18 @@ def velruse_config(config):
             providers += '\n%s' % 'velruse.providers.openidconsumer'
             if ab.realm:
                 settings['velruse.openid.realm'] = ab.realm
-        if ab.backend_type in ['twitter', 'github', 'google']:
+        if ab.backend_type in ['twitter', 'github', 'google', 'facebook']:
             providers += '\n%s' % 'velruse.providers.%s' % (t)
             settings['velruse.%s.consumer_key'    % (t)] = ab.username
             settings['velruse.%s.consumer_secret' % (t)] = ab.password
             if ab.authorize:
-                if ab.backend_type in ['twitter', 'github', 'google']:
+                if ab.backend_type in ['twitter', 'github', 'google', 'facebook']:
                     settings['velruse.%s.authorize' %(t)] = ab.authorize
                 if ab.backend_type in ['github']:
                     settings['velruse.%s.scope' %(t)] = ab.authorize
+		if ab.backend_type=='facebook':
+		    settings['velruse.%s.app_id' %(t)] = ab.username
+		    settings['velruse.%s.app_secret' %(t)] = ab.password
     settings['velruse.providers'] = providers
 
  
