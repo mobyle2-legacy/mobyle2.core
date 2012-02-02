@@ -14,10 +14,24 @@
     function () {
       $("#services_treeview")
       .jstree({
-        "json_data" : {
-          "ajax" : {"url": "${classifications_service_treeview_url}"},
-        },
-         "plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies", "search"],
+         "json_data" : {
+           "ajax" : {"url": "${classifications_service_treeview_url}"},
+         },
+	 "sort" : function (a, b) {
+			// this function is passed to jstree's sort plugin
+			// it sorts the tree by ordering node children subnodes first and leaves second
+			// and alphabetically
+			if((this.is_leaf(a) && this.is_leaf(b)) || (!this.is_leaf(a) && !this.is_leaf(b))){
+			  // if same type, order alphabetically
+			  return this.get_text(a) > this.get_text(b) ? 1 : -1;
+			}else if(this.is_leaf(a) && !this.is_leaf(b)){
+			  // otherwise, subnode comes first
+			  return  1;
+			}else{
+			  return -1;
+			}
+			},
+         "plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies", "search", "sort"],
          "search" : {
                       "case_insensitive" : true,
                       "show_only_matches": true 
