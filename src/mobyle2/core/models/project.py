@@ -87,25 +87,6 @@ def node(resource=None):
     return {'children': OrderedDict(),
             'resource': resource}
 
-def sort_srv(item):
-    """Sort function used to sort sub-nodes first then the leaves, and 
-    alphabetically"""
-    key, value= item
-    if value['children']:
-        return '      '+key
-    else:
-        return key
-
-def sort_node_children(node):
-	"""Sort the children of a node recursively"""
-	unsorted_children = node['children']
-	for n,v in unsorted_children.items():
-		unsorted_children[n]=sort_node_children(v)
-	sorted_children = OrderedDict(sorted(unsorted_children.items(), \
-                key=sort_srv))
-	return {'children':sorted_children,
-	    'resource':node['resource']}
-
 class Project(Base):
     __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
@@ -282,7 +263,6 @@ class Project(Base):
                     data['children'][c] = node()
                 data = data['children'][c]
             data['children'][s.name] = node(s)
-	    services = sort_node_children(services)
         return services
 
     def get_services_by_classification(self):
