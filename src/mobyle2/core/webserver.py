@@ -3,7 +3,7 @@
 __docformat__ = 'restructuredtext en'
 
 import os
-import pkg_resources
+#import pkg_resources
 from webob import Request, exc
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
@@ -24,6 +24,14 @@ from mobyle2.core.events import RegenerateVelruseConfigEvent
 from pyramid_mailer.interfaces import IMailer
 
 from weberror.evalexception import make_eval_exception
+
+# set the default renderer to use by default mobyle2 templates, then deform templates
+from pkg_resources import resource_filename
+from deform import Form
+deform_templates = resource_filename('deform', 'templates')
+mobyle2_templates = resource_filename('mobyle2.core', 'templates/deform')
+search_path = (mobyle2_templates,deform_templates)
+Form.set_zpt_renderer(search_path)
 
 def locale_negotiator(request):
     """This code is inspired by the plonelanguatetool negociation!"""

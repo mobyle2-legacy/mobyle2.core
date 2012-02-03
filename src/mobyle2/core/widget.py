@@ -3,7 +3,8 @@
 __docformat__ = 'restructuredtext en'
 
 import colander
-from deform import widget,ZPTRendererFactory, schema
+#from deform import widget,ZPTRendererFactory, schema
+from deform import widget, schema
 import deform
 from pkg_resources import resource_filename
 from mobyle2.core.utils import _
@@ -12,20 +13,9 @@ import demjson as json
 
 from colander import null
 
-deform_templates = resource_filename('deform', 'templates')
-mobyle2_templates = resource_filename('mobyle2.core', 'templates/deform')
-search_path = (mobyle2_templates, deform_templates)
-
-def renderer_factory(request=None):
-    translator = request.translate
-    renderer_factory = ZPTRendererFactory(
-        search_path=search_path, translator=translator)
-    return renderer_factory
-
 class Form(deform.Form):
 
     def __init__(self, request, *args, **kwargs):
-        kwargs['renderer'] = renderer_factory(request)
         deform.Form.__init__(self, *args, **kwargs)
         self.request = request
 
