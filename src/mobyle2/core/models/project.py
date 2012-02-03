@@ -285,6 +285,7 @@ class ProjectResource(SecuredObject):
     __acl_groups__ = "ProjectGroupRole"
     __acl_users__ = "ProjectUserRole"
     __default_acls__  = default_project_acls
+    __description__ = _('Projects')
     _items = None
 
     @property

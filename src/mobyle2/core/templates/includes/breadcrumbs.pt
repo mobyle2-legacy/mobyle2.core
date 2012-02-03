@@ -4,7 +4,7 @@
   <ul>
     <tal:r tal:repeat="i python:get_breadcrumbs(request)">
     <li tal:attributes="class python:'ui-state-default ' + i['class']">
-    <a tal:attributes="href python:i['url']" tal:content="python:i['name']"></a>
+    <a tal:attributes="href python:i['url']" i18n:translate="" tal:content="python:i['name']"></a>
     </li>
     </tal:r>
   </ul>

@@ -470,7 +470,7 @@ default_permissions = {
     P['global_useradmin']: _('Users only administrative access'),
     P['global_authadmin']: _('Authentication backends only administrative access'),
     P['global_view']: _('View access'),
-    P['project_list']: _('List projects'),
+    P['project_list']: _('List of projects'),
     P['project_view']: _('View project'),
     P['project_create']: _('Create project'),
     P['project_delete']: _('Delete project'),

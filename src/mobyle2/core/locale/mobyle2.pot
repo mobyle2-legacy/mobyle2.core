@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-02-03 15:14+0100\n"
+"POT-Creation-Date: 2012-02-03 16:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,7 +79,8 @@ msgstr ""
 
 #: src/mobyle2/core/basemodel.py:473
 #: src/mobyle2/core/templates/project/project_home.pt:5
-msgid "List projects"
+#: src/mobyle2/core/templates/project/project_list.pt:3
+msgid "List of projects"
 msgstr ""
 
 #: src/mobyle2/core/basemodel.py:474
@@ -347,27 +348,27 @@ msgstr ""
 msgid "Authentication backends"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:308
+#: src/mobyle2/core/models/project.py:288 src/mobyle2/core/models/project.py:309
 msgid "Projects"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:315
+#: src/mobyle2/core/models/project.py:316
 msgid "Public project"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:448 src/mobyle2/core/views/project.py:501
+#: src/mobyle2/core/models/project.py:449 src/mobyle2/core/views/project.py:501
 msgid "Services"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:473
+#: src/mobyle2/core/models/project.py:474
 msgid "Workflows"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:478
+#: src/mobyle2/core/models/project.py:479
 msgid "Programs"
 msgstr ""
 
-#: src/mobyle2/core/models/project.py:483
+#: src/mobyle2/core/models/project.py:484
 msgid "Viewers"
 msgstr ""
 

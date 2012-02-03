@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
-"POT-Creation-Date: 2012-02-03 15:14+0100\n"
+"POT-Creation-Date: 2012-02-03 16:43+0100\n"
 "PO-Revision-Date: 2012-01-16 10:44+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -63,19 +63,21 @@ msgstr "Administrer les permissions au niveau de ce projet"
 
 #: src/mobyle2/core/basemodel.py:470
 msgid "Users only administrative access"
-msgstr "Acces à l'administration des utilisateurs"
+msgstr "Accès à l'administration des utilisateurs"
 
 #: src/mobyle2/core/basemodel.py:471
 msgid "Authentication backends only administrative access"
-msgstr "Acces à la Configuration des méthodes d'identification"
+msgstr "Accès à la Configuration des méthodes d'identification"
 
 #: src/mobyle2/core/basemodel.py:472
 msgid "View access"
-msgstr "Acces en lecture"
+msgstr "Accès en lecture"
 
 #: src/mobyle2/core/basemodel.py:473
 #: src/mobyle2/core/templates/project/project_home.pt:5
-msgid "List projects"
+#: src/mobyle2/core/templates/project/project_list.pt:3
+#, fuzzy
+msgid "List of projects"
 msgstr "Liste des projets"
 
 #: src/mobyle2/core/basemodel.py:474
@@ -100,7 +102,7 @@ msgstr "Voir le notebook"
 
 #: src/mobyle2/core/basemodel.py:479
 msgid "Create notebook"
-msgstr "Créér le notbook"
+msgstr "Créer le notbook"
 
 #: src/mobyle2/core/basemodel.py:480
 msgid "Delete notebook"
@@ -148,7 +150,7 @@ msgstr "Editer le job"
 
 #: src/mobyle2/core/permission.py:56
 msgid "Manage portal"
-msgstr "Adminstrer le portail"
+msgstr "Administrer le portail"
 
 #: src/mobyle2/core/permission.py:57
 msgid "Add an user"
@@ -173,7 +175,7 @@ msgstr "Ajouter un groupe"
 
 #: src/mobyle2/core/permission.py:63
 msgid "Delete a group"
-msgstr "Supprimer moi"
+msgstr "Supprimer un groupe"
 
 #: src/mobyle2/core/permission.py:65
 #: src/mobyle2/core/templates/user/user_home.pt:6
@@ -182,15 +184,15 @@ msgstr "Administrer les groupes"
 
 #: src/mobyle2/core/permission.py:66
 msgid "Manage roles"
-msgstr "Administrer les roles"
+msgstr "Administrer les rôles"
 
 #: src/mobyle2/core/permission.py:68
 msgid "Manage group project access"
-msgstr "Administrer les acces par groupes du projets"
+msgstr "Administrer les accès par groupes du projets"
 
 #: src/mobyle2/core/permission.py:69
 msgid "Manage project roles"
-msgstr "Administrer les roles du projet"
+msgstr "Administrer les rôles du projet"
 
 #: src/mobyle2/core/permission.py:71
 msgid "Edit the root project"
@@ -280,40 +282,40 @@ msgstr "Supprimer un job"
 #: src/mobyle2/core/validator.py:15
 #, python-format
 msgid "Those roleid do not exists: %s"
-msgstr "Ce roleid n'éxiste pas : %s"
+msgstr "Ce roleid n'existe pas : %s"
 
 #: src/mobyle2/core/validator.py:16
 #, python-format
 msgid "Those userid do not exists: %s"
-msgstr "Cet userid n'éxiste pas : %s"
+msgstr "Cet userid n'existe pas : %s"
 
 #: src/mobyle2/core/validator.py:17
 msgid "This role already exists"
-msgstr "Ce role éxiste déjà"
+msgstr "Ce rôle existe déjà"
 
 #: src/mobyle2/core/validator.py:18
 msgid "This group already exists"
-msgstr "Ce groupe éxiste déjà"
+msgstr "Ce groupe existe déjà"
 
 #: src/mobyle2/core/validator.py:19
 #, python-format
 msgid "Those groupid do not exists: %s"
-msgstr "Ces groupid n'éxistent pas : %s"
+msgstr "Ces groupid n'existent pas : %s"
 
 #: src/mobyle2/core/validator.py:20
 #, python-format
 msgid "This roleid does not exists: %s"
-msgstr "Ce role n'éxiste pas : %s"
+msgstr "Ce role n'existe pas : %s"
 
 #: src/mobyle2/core/validator.py:21
 #, python-format
 msgid "This userid does not exists: %s"
-msgstr "Cet userid n'éxiste pas: %s"
+msgstr "Cet userid n'existe pas: %s"
 
 #: src/mobyle2/core/validator.py:22
 #, python-format
 msgid "This groupid does not exists: %s"
-msgstr "Ce groupid n'éxiste pas: %s"
+msgstr "Ce groupid n'existe pas: %s"
 
 #: src/mobyle2/core/validator.py:27
 msgid "You must set a not null string"
@@ -321,7 +323,7 @@ msgstr "Vous devez saisir une chaine non vide"
 
 #: src/mobyle2/core/validator.py:64
 msgid "Those ${label} do not exists: ${userids}"
-msgstr "Ces ${label} n'éxistent pas: ${userids}"
+msgstr "Ces ${label} n'existent pas: ${userids}"
 
 #: src/mobyle2/core/validator.py:92 src/mobyle2/core/views/user.py:548
 msgid "Already exists"
@@ -344,27 +346,28 @@ msgstr "La création de compte est désactivée par l'administrateur de ce porta
 msgid "Authentication backends"
 msgstr "Méthodes d'identification"
 
-#: src/mobyle2/core/models/project.py:308
+#: src/mobyle2/core/models/project.py:288
+#: src/mobyle2/core/models/project.py:309
 msgid "Projects"
 msgstr "Projets"
 
-#: src/mobyle2/core/models/project.py:315
+#: src/mobyle2/core/models/project.py:316
 msgid "Public project"
 msgstr "Projets publiques"
 
-#: src/mobyle2/core/models/project.py:448 src/mobyle2/core/views/project.py:501
+#: src/mobyle2/core/models/project.py:449 src/mobyle2/core/views/project.py:501
 msgid "Services"
 msgstr "Services"
 
-#: src/mobyle2/core/models/project.py:473
+#: src/mobyle2/core/models/project.py:474
 msgid "Workflows"
 msgstr "Workflows"
 
-#: src/mobyle2/core/models/project.py:478
+#: src/mobyle2/core/models/project.py:479
 msgid "Programs"
 msgstr "Programmes"
 
-#: src/mobyle2/core/models/project.py:483
+#: src/mobyle2/core/models/project.py:484
 msgid "Viewers"
 msgstr "Voir les viewers"
 
@@ -563,7 +566,7 @@ msgstr "Administrer les groupes"
 
 #: src/mobyle2/core/templates/user/user_group.pt:10
 msgid "Existing groups"
-msgstr "Groupes éxistants"
+msgstr "Groupes existants"
 
 #: src/mobyle2/core/templates/user/user_home.pt:3
 msgid "Users and groups access management"
@@ -603,7 +606,7 @@ msgstr "Ajouter un utilisateur"
 
 #: src/mobyle2/core/templates/user/user_user.pt:10
 msgid "Existing users"
-msgstr "Utilisateurs éxistant"
+msgstr "Utilisateurs existant"
 
 #: src/mobyle2/core/views/__init__.py:240 src/mobyle2/core/views/user.py:403
 #: src/mobyle2/core/views/user.py:526 src/mobyle2/core/views/user.py:564
@@ -760,7 +763,7 @@ msgstr ""
 
 #: src/mobyle2/core/views/project.py:129
 msgid "Public projects"
-msgstr "Projet publique"
+msgstr "Projets publics"
 
 #: src/mobyle2/core/views/project.py:152
 msgid "My projects"
