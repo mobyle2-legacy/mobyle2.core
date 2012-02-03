@@ -268,7 +268,7 @@ class Project(Base):
     def get_services_by_classification(self):
         """Get a tree of the available services by classification category."""
         def classification_getter(service):
-            return service.classification.split(':')
+            return (service.classification.split(':'),[])[service.classification=='']
         return self.get_services_by_something(classification_getter)
 
     def get_services_by_package(self):
