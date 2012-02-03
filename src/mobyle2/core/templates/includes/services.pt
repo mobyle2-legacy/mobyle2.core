@@ -31,6 +31,7 @@
 			  return -1;
 			}
 			},
+         "themeroller" : {"item-open":false, "item_clsd": false, "item_leaf": false}, 
          "plugins" : ["json_data", "ui", "themeroller", "hotkeys", "cookies", "search", "sort"],
          "search" : {
                       "case_insensitive" : true,
