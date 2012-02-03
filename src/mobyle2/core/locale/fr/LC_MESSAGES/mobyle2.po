@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobyle2.core 1.0\n"
 "Report-Msgid-Bugs-To: Mathieu PASQUET <kiorky@cryptelium.net> \n"
-"POT-Creation-Date: 2012-01-16 16:20+0100\n"
+"POT-Creation-Date: 2012-02-03 15:14+0100\n"
 "PO-Revision-Date: 2012-01-16 10:44+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -331,7 +331,7 @@ msgstr "Existe déjà"
 msgid "Fail"
 msgstr "Raté"
 
-#: src/mobyle2/core/widget.py:74
+#: src/mobyle2/core/widget.py:64
 msgid "No results matched..."
 msgstr "Pas de résultat correspondant..."
 
@@ -344,44 +344,44 @@ msgstr "La création de compte est désactivée par l'administrateur de ce porta
 msgid "Authentication backends"
 msgstr "Méthodes d'identification"
 
-#: src/mobyle2/core/models/project.py:298
+#: src/mobyle2/core/models/project.py:308
 msgid "Projects"
 msgstr "Projets"
 
-#: src/mobyle2/core/models/project.py:305
+#: src/mobyle2/core/models/project.py:315
 msgid "Public project"
 msgstr "Projets publiques"
 
-#: src/mobyle2/core/models/project.py:433 src/mobyle2/core/views/project.py:480
+#: src/mobyle2/core/models/project.py:448 src/mobyle2/core/views/project.py:501
 msgid "Services"
 msgstr "Services"
 
-#: src/mobyle2/core/models/project.py:458
+#: src/mobyle2/core/models/project.py:473
 msgid "Workflows"
 msgstr "Workflows"
 
-#: src/mobyle2/core/models/project.py:463
+#: src/mobyle2/core/models/project.py:478
 msgid "Programs"
 msgstr "Programmes"
 
-#: src/mobyle2/core/models/project.py:468
+#: src/mobyle2/core/models/project.py:483
 msgid "Viewers"
 msgstr "Voir les viewers"
 
 #: src/mobyle2/core/models/root.py:36
 msgid "Home"
-msgstr "Acceuil"
+msgstr "Accueil"
 
 #: src/mobyle2/core/models/user.py:94
 msgid "Default project created on sign in"
-msgstr "Projet créé automatiquent à la première connexion"
+msgstr "Projet créé automatiquement à la première connexion"
 
 #: src/mobyle2/core/models/user.py:155 src/mobyle2/core/views/__init__.py:237
 #: src/mobyle2/core/views/user.py:403 src/mobyle2/core/views/user.py:433
 #: src/mobyle2/core/views/user.py:526 src/mobyle2/core/views/user.py:705
 #: src/mobyle2/core/views/user.py:745
 msgid "Users"
-msgstr "Utilisateur"
+msgstr "Utilisateurs"
 
 #: src/mobyle2/core/templates/auth/auth_add.pt:3
 #: src/mobyle2/core/templates/auth/auth_delete.pt:3
@@ -500,7 +500,7 @@ msgstr "Identifiant"
 msgid "Welcome"
 msgstr "Bienvenu"
 
-#: src/mobyle2/core/templates/includes/login.pt:21
+#: src/mobyle2/core/templates/includes/login.pt:22
 msgid "Logout"
 msgstr "Se déconnecter"
 
