@@ -1,22 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -
+# -*- coding: utf-8 -*-
+import os
+
 from setuptools import setup, find_packages
 
-name = 'mobyle2.core'
-setup(
-    name=name,
-    namespace_packages=[         'mobyle2', 'Mobyle',
-         'mobyle2.core',],
+here = os.path.abspath(os.path.dirname(__file__))
+#README = open(os.path.join(here, 'README.txt')).read()
+#CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-    version = '1.0',
-    description = 'Project mobyle2',
-    long_description = '' ,
-    author = 'Mathieu Le Marec- Pasquet',
-    author_email = 'mpa <mpa@makina-corpus.com>',
-    license = 'GPL',
-    keywords = '',
-    url='http://pypi.python.org/pypi/%s' % name,
-    install_requires = [
+
+requires = [
         "apex",
         "CherryPy",
         "colander",
@@ -62,49 +54,33 @@ setup(
         "WebError",
         "WebOb",
     ],
-    classifiers=[
-        'Development Status :: 4 - Beta',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-    ],
-    packages = find_packages('src'),
-    package_dir = {'': 'src'},
-    # Make setuptools include all data files under version control,
-    # svn and CVS by default
-    include_package_data=True,
-    zip_safe=False,
-    extras_require={'test': ['IPython', 'zope.testing'
-    #, 'mocker'
-    ]},
-    message_extractors = {
-        '': [
-            ('**.pt',   'lingua_xml', None ),
-            ('**.py',   'lingua_python', None ),
-            ('**.mako', 'mako', None),
-            ('static/**', 'ignore', None),
-        ],
-        #'': [
-        #    ('**.pt',   'lingua_xml', None ),
-        #    ('**.py',   'lingua_python', None ),
-        #    ('**.mako', 'mako', None),
-        #    ('static/**', 'ignore', None),
-        #],
 
-    },
-    entry_points = {
-        'paste.app_factory':  [
-            'main=mobyle2.core.webserver:wsgi_app_factory' ,
-        ],
-        'paste.filter_app_factory':  [
-            'weberror=mobyle2.core.webserver:weberror_wrapper' ,
-        ],
-        'console_scripts': [
-            '%s=mobyle2.core.webserver:main' % name ,
-        ],
-    }
-)
 
+
+setup(name='mobyle2.core',
+      version='0.0',
+      description='mobyle2 core',
+      #long_description=README + '\n\n' +  CHANGES,
+      classifiers=[
+        "Programming Language :: Python",
+        "Framework :: Pylons",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+        ],
+      author='',
+      author_email='',
+      url='',
+      keywords='web pyramid pylons',
+      packages=find_packages(),
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=requires,
+      tests_require=requires,
+      test_suite="mobyle2.core",
+      entry_points = """\
+      [paste.app_factory]
+      main = mobyle2.core:main
+      """,
+      paster_plugins=['pyramid'],
+      )
 
