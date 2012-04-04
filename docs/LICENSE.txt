@@ -1,4 +1,4 @@
-  mobyle2.core  copyrighted mpa <mpa@makina-corpus.com> <mpa <mpa@makina-corpus.com>>
+  mobyle2  copyrighted mpa <mpa@makina-corpus.com> <mpa <mpa@makina-corpus.com>>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

@@ -57,7 +57,7 @@ requires = [
 
 
 
-setup(name='mobyle2.core',
+setup(name='mobyle2',
       version='0.0',
       description='mobyle2 core',
       #long_description=README + '\n\n' +  CHANGES,
@@ -76,10 +76,10 @@ setup(name='mobyle2.core',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
-      test_suite="mobyle2.core",
+      test_suite="mobyle2",
       entry_points = """\
       [paste.app_factory]
-      main = mobyle2.core:main
+      main = mobyle2:main
       """,
       paster_plugins=['pyramid'],
       )
