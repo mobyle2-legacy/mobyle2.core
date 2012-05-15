@@ -1,0 +1,22 @@
+Store:
+    Type: velruse.store.mongodb_store:MongoDBStore
+    db: pytickets
+# Facebook:
+#     API Key: eb7cf817bab6e28d3b941811cf1b014e
+#     Application Secret: KMfXjzsA2qVUcnnRn3vpnwWZ2pwPRFZdb
+#     Application ID: ULZ6PkJbsqw2GxZWCIbOEBZdkrb9XwgXNjRy
+# Google:
+#     OAuth Consumer Key: yourdomain.com
+#     OAuth Consumer Secret: KMfXjzsA2qVUcnnRn3vpnwWZ2pwPRFZdb
+# Yahoo:
+#     Consumer Key: eoCrFwnpBWXjbim5dyG6EP7HzjhQzFsMAcQOEK
+#     Consumer Secret: ULZ6PkJbsqw2GxZWCIbOEBZdkrb9XwgXNjRy
+# Twitter:
+#     Consumer Key: ULZ6PkJbsqw2GxZWCIbOEBZdkrb9XwgXNjRy
+#     Consumer Secret: eoCrFwnpBWXjbim5dyG6EP7HzjhQzFsMAcQOEK
+OpenID:
+    Realm: http://pytickets:6543
+    Endpoint Regex: http://pytickets:6543/.*
+
+OpenID Store:
+        Type: openid.store.memstore:MemoryStore

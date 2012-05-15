@@ -27,7 +27,7 @@ requires = [
         "lxml",
         "zope.testbrowser",
         "ordereddict",
-        "Paste",
+#        "Paste",
         "PasteDeploy",
         "PIL",
         "psycopg2",
@@ -40,12 +40,12 @@ requires = [
         "pyramid_extdirect",
         "pyramid_who",
         "pyramid_xmlrpc",
+        "pyramid_zcml",
         "python-ldap",
         "repoze.retry",
         "repoze.tm2",
         "repoze.tm2",
         "repoze.vhm",
-        "Paste",
         "PasteScript",
         "PasteDeploy",
         "simplejson",
@@ -79,8 +79,9 @@ setup(name='mobyle2',
       test_suite="mobyle2",
       entry_points = """\
       [paste.app_factory]
-      main = mobyle2:main
+      main = mobyle2:webserver.wsgi_app_factory
       """,
       paster_plugins=['pyramid'],
+      dependency_links = ['https://github.com/cd34/apex/tarball/master#egg=apex'],
       )
 
