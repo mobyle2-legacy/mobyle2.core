@@ -82,6 +82,6 @@ setup(name='mobyle2',
       main = mobyle2:webserver.wsgi_app_factory
       """,
       paster_plugins=['pyramid'],
-      dependency_links = ['https://github.com/cd34/apex/tarball/master#egg=apex'],
+      dependency_links = ['https://github.com/mobyle2/apex/tarball/master#egg=apex'],
       )
 
