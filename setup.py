@@ -60,6 +60,7 @@ requires = [
 setup(name='mobyle2',
       version='0.0',
       description='mobyle2 core',
+      dependency_links = ['https://github.com/mobyle2/apex/tarball/master#egg=apex'],
       #long_description=README + '\n\n' +  CHANGES,
       classifiers=[
         "Programming Language :: Python",
@@ -82,6 +83,6 @@ setup(name='mobyle2',
       main = mobyle2:webserver.wsgi_app_factory
       """,
       paster_plugins=['pyramid'],
-      dependency_links = ['https://github.com/mobyle2/apex/tarball/master#egg=apex'],
+      
       )
 
